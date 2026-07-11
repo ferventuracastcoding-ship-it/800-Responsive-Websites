@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Developer Portfolio</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, sans-serif;
+}
+
+html{
+    scroll-behavior:smooth;
+}
+
+body{
+    background:#f4f4f4;
+    color:#222;
+    transition:0.3s;
+}
+
+.dark{
+    background:#111;
+    color:white;
+}
+
+header{
+    background:#2563eb;
+    color:white;
+    padding:20px;
+    position:sticky;
+    top:0;
+}
+
+nav{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    max-width:1100px;
+    margin:auto;
+}
+
+.logo{
+    font-size:24px;
+    font-weight:bold;
+}
+
+.menu{
+    display:flex;
+    gap:20px;
+}
+
+.menu a{
+    color:white;
+    text-decoration:none;
+}
+
+button{
+    padding:10px 15px;
+    border:none;
+    cursor:pointer;
+    border-radius:8px;
+}
+
+
+.hero{
+    min-height:90vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+    padding:30px;
+}
+
+.hero h1{
+    font-size:50px;
+}
+
+.hero span{
+    color:#2563eb;
+}
+
+.hero p{
+    margin:20px;
+    font-size:20px;
+}
+
+
+.container{
+    max-width:1100px;
+    margin:auto;
+    padding:40px 20px;
+}
+
+
+.cards{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+    gap:20px;
+}
+
+
+.card{
+    background:white;
+    padding:25px;
+    border-radius:15px;
+    box-shadow:0 5px 15px #0002;
+}
+
+.dark .card{
+    background:#222;
+}
+
+
+.stats{
+    display:flex;
+    justify-content:center;
+    gap:40px;
+    flex-wrap:wrap;
+    text-align:center;
+}
+
+.number{
+    font-size:40px;
+    font-weight:bold;
+    color:#2563eb;
+}
+
+
+footer{
+    background:#2563eb;
+    color:white;
+    text-align:center;
+    padding:20px;
+}
+
+
+@media(max-width:700px){
+
+.menu{
+    display:none;
+}
+
+.hero h1{
+    font-size:35px;
+}
+
+}
+</style>
+
+</head>
+
+<body>
+
+
+<header>
+
+<nav>
+
+<div class="logo">
+CodeWorld
+</div>
+
+<div class="menu">
+<a href="#home">Home</a>
+<a href="#projects">Projects</a>
+<a href="#about">About</a>
+</div>
+
+<button onclick="toggleDark()">
+🌙
+</button>
+
+</nav>
+
+</header>
+
+
+
+<section class="hero" id="home">
+
+<div>
+
+<h1>
+I Build <span>Modern Apps</span>
+</h1>
+
+<p>
+JavaScript Developer | Web Designer | Software Engineer
+</p>
+
+<button onclick="scrollProjects()">
+View Projects
+</button>
+
+</div>
+
+</section>
+
+
+
+<section class="container" id="projects">
+
+<h2>
+My Projects
+</h2>
+
+<br>
+
+<div class="cards" id="projectContainer">
+
+</div>
+
+</section>
+
+
+
+
+<section class="container" id="about">
+
+<h2>
+Statistics
+</h2>
+
+<br>
+
+<div class="stats">
+
+<div>
+<div class="number" id="projectsCount">
+0
+</div>
+<p>Projects</p>
+</div>
+
+
+<div>
+<div class="number" id="codeCount">
+0
+</div>
+<p>Lines of Code</p>
+</div>
+
+
+<div>
+<div class="number" id="yearsCount">
+0
+</div>
+<p>Years Coding</p>
+</div>
+
+
+</div>
+
+</section>
+
+
+
+<footer>
+
+© 2026 CodeWorld Portfolio
+
+</footer>
+
+
+
+<script>
+
+const projects=[
+{
+title:"Mars Colony Simulator",
+desc:"A space survival game built with JavaScript."
+},
+
+{
+title:"AI Dashboard",
+desc:"Data visualization and machine learning interface."
+},
+
+{
+title:"E-Commerce Store",
+desc:"Responsive online shopping application."
+},
+
+{
+title:"Weather App",
+desc:"Real-time weather dashboard using APIs."
+}
+];
+
+
+
+const container=
+document.getElementById("projectContainer");
+
+
+projects.forEach(project=>{
+
+let card=document.createElement("div");
+
+card.className="card";
+
+card.innerHTML=`
+
+<h3>${project.title}</h3>
+
+<p>${project.desc}</p>
+
+<br>
+
+<button>
+View
+</button>
+
+`;
+
+container.appendChild(card);
+
+});
+
+
+
+
+
+function toggleDark(){
+
+document.body.classList.toggle("dark");
+
+}
+
+
+
+
+function scrollProjects(){
+
+document
+.getElementById("projects")
+.scrollIntoView();
+
+}
+
+
+
+
+
+function animateNumber(id,target){
+
+let value=0;
+
+let timer=setInterval(()=>{
+
+value+=Math.ceil(target/50);
+
+if(value>=target){
+
+value=target;
+clearInterval(timer);
+
+}
+
+document.getElementById(id).innerHTML=value;
+
+},40);
+
+}
+
+
+
+window.onload=()=>{
+
+animateNumber(
+"projectsCount",
+100
+);
+
+
+animateNumber(
+"codeCount",
+50000
+);
+
+
+animateNumber(
+"yearsCount",
+5
+);
+
+};
+
+
+</script>
+
+
+</body>
+</html>
