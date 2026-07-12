@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Pixel Arcade</title>
+
+<style>
+
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+body{
+    background:#090014;
+    color:#fff;
+    font-family:'Press Start 2P', monospace;
+}
+
+/* HEADER */
+
+header{
+    text-align:center;
+    padding:40px 20px;
+    background:#15002b;
+    border-bottom:5px solid #ff00ff;
+}
+
+h1{
+    color:#00ffff;
+    font-size:35px;
+    text-shadow:
+    4px 4px #ff00ff;
+}
+
+header p{
+    margin-top:20px;
+    color:#ffe600;
+}
+
+
+/* NAV */
+
+nav{
+    display:flex;
+    justify-content:center;
+    gap:20px;
+    padding:20px;
+    background:#000;
+}
+
+nav button{
+    background:#ff0066;
+    color:white;
+    border:3px solid white;
+    padding:12px;
+    cursor:pointer;
+    font-family:inherit;
+}
+
+nav button:hover{
+    background:#00ffff;
+    color:#000;
+}
+
+
+/* ARCADE AREA */
+
+.arcade{
+    padding:40px;
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+    gap:30px;
+}
+
+
+/* MACHINE */
+
+.machine{
+
+    background:#222;
+    border:8px solid #00ffff;
+    padding:20px;
+    text-align:center;
+    box-shadow:
+    0 0 20px #00ffff;
+
+}
+
+
+.screen{
+
+    height:160px;
+    background:#000;
+    border:5px solid #ff00ff;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:50px;
+
+    animation:blink 2s infinite;
+
+}
+
+
+@keyframes blink{
+
+50%{
+    filter:brightness(1.5);
+}
+
+}
+
+
+.machine h2{
+
+font-size:18px;
+margin:20px 0;
+color:#ffe600;
+
+}
+
+
+.play{
+
+background:#00ff88;
+border:none;
+padding:15px;
+font-family:inherit;
+cursor:pointer;
+
+}
+
+
+.play:hover{
+
+background:#fff;
+
+}
+
+
+/* PIXEL CHARACTER */
+
+.character{
+
+font-size:70px;
+animation:jump 1s infinite alternate;
+
+}
+
+
+@keyframes jump{
+
+from{
+transform:translateY(0);
+}
+
+to{
+transform:translateY(-20px);
+}
+
+}
+
+
+
+/* SCORE */
+
+.scorebox{
+
+text-align:center;
+padding:30px;
+background:#000;
+font-size:20px;
+
+}
+
+
+#score{
+
+color:#00ff00;
+
+}
+
+
+
+/* FOOTER */
+
+footer{
+
+text-align:center;
+padding:30px;
+background:#15002b;
+color:#aaa;
+
+}
+
+
+
+/* MOBILE */
+
+@media(max-width:600px){
+
+h1{
+font-size:22px;
+}
+
+.arcade{
+padding:15px;
+}
+
+.machine{
+border-width:5px;
+}
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<header>
+
+<h1>🕹 PIXEL ARCADE</h1>
+
+<p>ENTER THE 8-BIT WORLD</p>
+
+</header>
+
+
+
+<nav>
+
+<button onclick="newGame()">NEW GAME</button>
+<button onclick="increaseScore()">INSERT COIN</button>
+
+</nav>
+
+
+
+
+<section class="scorebox">
+
+PLAYER SCORE:
+<span id="score">0000</span>
+
+</section>
+
+
+
+
+<section class="arcade">
+
+
+<div class="machine">
+
+<div class="screen">
+👾
+</div>
+
+<h2>SPACE INVADERS</h2>
+
+<button class="play" onclick="playGame('Space Invaders')">
+PLAY
+</button>
+
+</div>
+
+
+
+
+<div class="machine">
+
+<div class="screen">
+🚀
+</div>
+
+<h2>MARS ATTACK</h2>
+
+<button class="play" onclick="playGame('Mars Attack')">
+PLAY
+</button>
+
+</div>
+
+
+
+
+
+<div class="machine">
+
+<div class="screen">
+🐉
+</div>
+
+<h2>DRAGON QUEST</h2>
+
+<button class="play" onclick="playGame('Dragon Quest')">
+PLAY
+</button>
+
+</div>
+
+
+
+
+
+<div class="machine">
+
+<div class="screen character">
+🧙
+</div>
+
+<h2>PIXEL HERO</h2>
+
+<button class="play" onclick="playGame('Pixel Hero')">
+PLAY
+</button>
+
+</div>
+
+
+</section>
+
+
+
+
+<footer>
+
+<p>
+© 1985 Pixel Arcade Studios
+</p>
+
+<p>
+HIGH SCORE: <span id="high">0000</span>
+</p>
+
+</footer>
+
+
+
+
+
+<script>
+
+
+let score=0;
+let high=0;
+
+
+function increaseScore(){
+
+score+=100;
+
+document.getElementById("score")
+.innerHTML=score;
+
+
+if(score>high){
+
+high=score;
+
+document.getElementById("high")
+.innerHTML=high;
+
+}
+
+}
+
+
+
+function playGame(game){
+
+alert(
+"LOADING "+game+"...\n\nINSERT COIN TO START!"
+);
+
+increaseScore();
+
+}
+
+
+
+function newGame(){
+
+score=0;
+
+document.getElementById("score")
+.innerHTML="0000";
+
+alert(
+"NEW PLAYER STARTED!"
+);
+
+}
+
+
+
+</script>
+
+
+</body>
+</html>
