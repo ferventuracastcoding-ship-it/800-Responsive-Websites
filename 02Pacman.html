@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Responsive Pac-Man</title>
 
 <style>
@@ -10,65 +11,69 @@
 margin:0;
 padding:0;
 box-sizing:border-box;
-font-family:Arial,sans-serif;
 }
 
 body{
-background:#000;
-display:flex;
-justify-content:center;
-align-items:center;
-flex-direction:column;
-height:100vh;
+background:#111;
+font-family:Arial;
 color:white;
-overflow:hidden;
+display:flex;
+flex-direction:column;
+align-items:center;
 }
 
 h1{
-margin:10px;
+margin:15px;
 color:yellow;
 }
 
-#score{
+#ui{
+display:flex;
+gap:10px;
 margin-bottom:10px;
-font-size:22px;
+flex-wrap:wrap;
+justify-content:center;
+}
+
+button{
+padding:10px 20px;
+font-size:16px;
+cursor:pointer;
+}
+
+#score{
+font-size:20px;
+padding:10px;
 }
 
 #game{
 display:grid;
-grid-template-columns:repeat(20,minmax(15px,4vw));
-grid-template-rows:repeat(20,minmax(15px,4vw));
+grid-template-columns:repeat(15,1fr);
+width:min(95vw,600px);
+aspect-ratio:1;
+background:#000;
 border:4px solid blue;
-background:black;
 }
 
 .cell{
-width:4vw;
-height:4vw;
-max-width:35px;
-max-height:35px;
-min-width:15px;
-min-height:15px;
-position:relative;
+border:1px solid #111;
+display:flex;
+justify-content:center;
+align-items:center;
+font-size:1.5vw;
 }
 
 .wall{
-background:#003cff;
+background:#0022aa;
 }
 
-.food::after{
-content:"";
-width:6px;
-height:6px;
-background:white;
-border-radius:50%;
-position:absolute;
-left:50%;
-top:50%;
-transform:translate(-50%,-50%);
+.dot::after{
+content:"•";
+color:white;
+font-size:14px;
 }
 
-.pacman{
+.player{
 background:yellow;
 border-radius:50%;
 }
@@ -78,165 +83,250 @@ background:red;
 border-radius:50%;
 }
 
-#message{
-margin-top:15px;
-font-size:24px;
-color:lime;
+@media(max-width:600px){
+
+.cell{
+font-size:3vw;
+}
+
 }
 </style>
+
 </head>
 
 <body>
 
 <h1>Pac-Man</h1>
 
-<div id="score">Score: 0</div>
+<div id="ui">
+
+<div id="score">
+Score: 0
+</div>
+
+<button id="start">
+Start
+</button>
+
+<button id="stop">
+Stop
+</button>
+
+</div>
 
 <div id="game"></div>
 
-<div id="message"></div>
-
 <script>
 
-const width=20;
-
-const layout=[
-1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
-1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,1,0,1,
-1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,0,1,0,1,
-1,0,1,0,1,1,1,0,1,1,1,0,1,1,1,1,0,1,0,1,
-1,0,1,0,0,0,1,0,0,0,1,0,0,0,0,1,0,0,0,1,
-1,0,1,1,1,0,1,1,1,0,1,1,1,1,0,1,1,1,0,1,
-1,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,1,
-1,0,1,1,1,1,1,0,1,1,1,1,0,1,1,1,1,1,0,1,
-1,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,1,0,1,
-1,0,1,1,1,0,1,1,1,1,0,1,1,1,1,1,0,1,0,1,
-1,0,0,0,1,0,0,0,0,1,0,0,0,0,0,1,0,0,0,1,
-1,1,1,0,1,1,1,1,0,1,1,1,1,1,0,1,1,1,0,1,
-1,0,0,0,0,0,0,1,0,0,0,0,0,1,0,0,0,0,0,1,
-1,0,1,1,1,1,0,1,1,1,1,1,0,1,1,1,1,1,0,1,
-1,0,0,0,0,1,0,0,0,0,0,1,0,0,0,0,0,1,0,1,
-1,0,1,1,0,1,1,1,1,1,0,1,1,1,1,1,0,1,0,1,
-1,0,0,1,0,0,0,0,0,1,0,0,0,0,0,1,0,0,0,1,
-1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
-1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-];
-
 const game=document.getElementById("game");
-const cells=[];
+
+const rows=15;
+const cols=15;
 
 let score=0;
-let pacman=21;
-let ghost=378;
 
-layout.forEach(value=>{
-const div=document.createElement("div");
-div.classList.add("cell");
+let running=false;
 
-if(value===1)
-div.classList.add("wall");
-else
-div.classList.add("food");
+let player={
+x:1,
+y:1
+};
 
-game.appendChild(div);
-cells.push(div);
-});
+let ghost={
+x:13,
+y:13
+};
 
-cells[pacman].classList.add("pacman");
-cells[ghost].classList.add("ghost");
+let board=[];
 
-function movePacman(dir){
+for(let y=0;y<rows;y++){
 
-let next=pacman+dir;
+board[y]=[];
 
-if(layout[next]===1) return;
+for(let x=0;x<cols;x++){
 
-cells[pacman].classList.remove("pacman");
+if(
+x==0||
+y==0||
+x==cols-1||
+y==rows-1||
+(x%4==0&&y>2&&y<12)
+){
 
-pacman=next;
+board[y][x]=1;
 
-if(cells[pacman].classList.contains("food")){
-cells[pacman].classList.remove("food");
-score++;
-document.getElementById("score").innerHTML="Score: "+score;
+}else{
+
+board[y][x]=0;
+
 }
 
-cells[pacman].classList.add("pacman");
+}
 
-checkGame();
+}
+
+function draw(){
+
+game.innerHTML="";
+
+let dots=0;
+
+for(let y=0;y<rows;y++){
+
+for(let x=0;x<cols;x++){
+
+let cell=document.createElement("div");
+
+cell.className="cell";
+
+if(board[y][x]==1){
+
+cell.classList.add("wall");
+
+}
+
+if(board[y][x]==0){
+
+cell.classList.add("dot");
+
+dots++;
+
+}
+
+if(player.x==x&&player.y==y){
+
+cell.className="cell player";
+
+}
+
+if(ghost.x==x&&ghost.y==y){
+
+cell.className="cell ghost";
+
+}
+
+game.appendChild(cell);
+
+}
+
+}
+
+document.getElementById("score").innerHTML="Score: "+score;
+
+if(dots==0){
+
+alert("YOU WIN!");
+
+running=false;
+
+}
+
+}
+
+draw();
+
+function move(dx,dy){
+
+if(!running)return;
+
+let nx=player.x+dx;
+let ny=player.y+dy;
+
+if(board[ny][nx]!=1){
+
+player.x=nx;
+player.y=ny;
+
+if(board[ny][nx]==0){
+
+board[ny][nx]=2;
+
+score+=10;
+
+}
+
+}
+
+check();
+
+draw();
 
 }
 
 document.addEventListener("keydown",e=>{
 
-switch(e.key){
+if(e.key=="ArrowLeft"||e.key=="a")move(-1,0);
 
-case"ArrowLeft":
-case"a":
-movePacman(-1);
-break;
+if(e.key=="ArrowRight"||e.key=="d")move(1,0);
 
-case"ArrowRight":
-case"d":
-movePacman(1);
-break;
+if(e.key=="ArrowUp"||e.key=="w")move(0,-1);
 
-case"ArrowUp":
-case"w":
-movePacman(-20);
-break;
-
-case"ArrowDown":
-case"s":
-movePacman(20);
-break;
-
-}
+if(e.key=="ArrowDown"||e.key=="s")move(0,1);
 
 });
 
-function moveGhost(){
+function ghostMove(){
 
-const dirs=[-1,1,-20,20];
+if(!running)return;
 
-const dir=dirs[Math.floor(Math.random()*4)];
+const dirs=[
+[1,0],
+[-1,0],
+[0,1],
+[0,-1]
+];
 
-const next=ghost+dir;
+let options=[];
 
-if(layout[next]===1) return;
+for(let d of dirs){
 
-cells[ghost].classList.remove("ghost");
+let nx=ghost.x+d[0];
+let ny=ghost.y+d[1];
 
-ghost=next;
+if(board[ny][nx]!=1){
 
-cells[ghost].classList.add("ghost");
-
-checkGame();
-
-}
-
-function checkGame(){
-
-if(pacman===ghost){
-
-document.getElementById("message").innerHTML="Game Over";
-
-clearInterval(ghostTimer);
-
-}
-
-if(score===layout.filter(x=>x===0).length){
-
-document.getElementById("message").innerHTML="You Win!";
-
-clearInterval(ghostTimer);
+options.push(d);
 
 }
 
 }
 
-const ghostTimer=setInterval(moveGhost,350);
+let r=options[Math.floor(Math.random()*options.length)];
+
+ghost.x+=r[0];
+ghost.y+=r[1];
+
+check();
+
+draw();
+
+}
+
+function check(){
+
+if(player.x==ghost.x&&player.y==ghost.y){
+
+alert("GAME OVER");
+
+running=false;
+
+}
+
+}
+
+let timer=setInterval(ghostMove,400);
+
+document.getElementById("start").onclick=()=>{
+
+running=true;
+
+};
+
+document.getElementById("stop").onclick=()=>{
+
+running=false;
+
+};
 
 </script>
 
