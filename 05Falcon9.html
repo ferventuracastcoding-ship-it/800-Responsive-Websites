@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Falcon 9 Analytics</title>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:"Segoe UI",Arial,sans-serif;
+}
+
+
+body{
+
+background:#f2f2f2;
+color:#1f2937;
+
+}
+
+
+/* HEADER */
+
+header{
+
+background:white;
+padding:50px 20px;
+text-align:center;
+box-shadow:0 5px 20px #ddd;
+
+}
+
+
+header h1{
+
+font-size:3rem;
+color:#008f8c;
+animation:fadeDown 1s ease;
+
+}
+
+
+header p{
+
+margin-top:15px;
+color:#555;
+
+}
+
+
+
+.rocket{
+
+font-size:60px;
+display:inline-block;
+
+animation:float 3s infinite ease-in-out;
+
+}
+
+
+
+/* CONTAINER */
+
+.container{
+
+width:90%;
+max-width:1200px;
+margin:auto;
+
+}
+
+
+
+
+/* CARDS */
+
+
+.dashboard{
+
+display:grid;
+grid-template-columns:
+repeat(auto-fit,minmax(240px,1fr));
+
+gap:25px;
+margin:40px 0;
+
+}
+
+
+
+.card{
+
+background:white;
+
+padding:30px;
+
+border-radius:20px;
+
+border-left:8px solid #008f8c;
+
+box-shadow:
+0 10px 25px rgba(0,0,0,.08);
+
+transition:.3s;
+
+animation:slideUp .8s ease;
+
+}
+
+
+
+.card:hover{
+
+transform:translateY(-10px);
+
+}
+
+
+
+.card h2{
+
+color:#008f8c;
+
+}
+
+
+
+.number{
+
+font-size:45px;
+
+font-weight:bold;
+
+margin-top:15px;
+
+color:#111827;
+
+}
+
+
+
+
+/* CHARTS */
+
+
+.chart{
+
+background:white;
+
+padding:30px;
+
+border-radius:20px;
+
+margin-bottom:35px;
+
+box-shadow:
+0 10px 30px rgba(0,0,0,.08);
+
+}
+
+
+
+.chart h2{
+
+color:#008f8c;
+margin-bottom:20px;
+
+}
+
+
+
+/* MISSIONS */
+
+
+.launches{
+
+display:grid;
+
+grid-template-columns:
+repeat(auto-fit,minmax(280px,1fr));
+
+gap:25px;
+
+}
+
+
+.mission{
+
+background:white;
+
+padding:25px;
+
+border-radius:20px;
+
+box-shadow:
+0 10px 25px #ddd;
+
+transition:.3s;
+
+}
+
+
+.mission:hover{
+
+transform:scale(1.04);
+
+}
+
+
+.success{
+
+color:#008f8c;
+font-weight:bold;
+
+}
+
+
+
+
+footer{
+
+text-align:center;
+padding:30px;
+color:#666;
+
+}
+
+
+
+
+
+/* ANIMATIONS */
+
+
+@keyframes float{
+
+0%,100%{
+transform:translateY(0);
+}
+
+50%{
+transform:translateY(-20px);
+}
+
+}
+
+
+@keyframes slideUp{
+
+from{
+
+opacity:0;
+transform:translateY(50px);
+
+}
+
+to{
+
+opacity:1;
+transform:translateY(0);
+
+}
+
+}
+
+
+
+@keyframes fadeDown{
+
+from{
+
+opacity:0;
+transform:translateY(-50px);
+
+}
+
+to{
+
+opacity:1;
+transform:translateY(0);
+
+}
+
+}
+
+
+
+
+@media(max-width:600px){
+
+header h1{
+
+font-size:2rem;
+
+}
+
+
+.number{
+
+font-size:35px;
+
+}
+
+}
+
+
+
+</style>
+
+</head>
+
+
+<body>
+
+
+
+<header>
+
+<div class="rocket">
+🚀
+</div>
+
+<h1>
+Falcon 9 Launch Analytics
+</h1>
+
+<p>
+SpaceX Mission Data Visualization Dashboard
+</p>
+
+
+</header>
+
+
+
+<div class="container">
+
+
+
+<section class="dashboard">
+
+
+<div class="card">
+
+<h2>Total Launches</h2>
+
+<div class="number counter"
+data-target="400">
+0
+</div>
+
+</div>
+
+
+
+<div class="card">
+
+<h2>Success Rate</h2>
+
+<div class="number counter"
+data-target="98">
+0
+</div>
+
+</div>
+
+
+
+<div class="card">
+
+<h2>Reusable Boosters</h2>
+
+<div class="number counter"
+data-target="280">
+0
+</div>
+
+</div>
+
+
+
+<div class="card">
+
+<h2>Rocket</h2>
+
+<div class="number">
+F9
+</div>
+
+</div>
+
+
+</section>
+
+
+
+
+
+<section class="chart">
+
+<h2>
+Launch History
+</h2>
+
+<canvas id="launchChart"></canvas>
+
+</section>
+
+
+
+
+<section class="chart">
+
+<h2>
+Mission Success
+</h2>
+
+<canvas id="successChart"></canvas>
+
+</section>
+
+
+
+
+
+<h2 style="color:#008f8c;margin-bottom:20px">
+Recent Missions
+</h2>
+
+
+<div class="launches" id="missions"></div>
+
+
+
+</div>
+
+
+
+
+<footer>
+
+Falcon 9 Data Visualization • Teal Edition
+
+</footer>
+
+
+
+
+<script>
+
+
+
+/* DATA */
+
+
+const missions=[
+
+[
+"Starlink Group 10-1",
+2024,
+"Starlink Satellites"
+],
+
+[
+"CRS-30",
+2024,
+"Cargo Dragon"
+],
+
+[
+"GPS III",
+2023,
+"Navigation Satellite"
+],
+
+[
+"Crew Dragon",
+2023,
+"Astronaut Mission"
+]
+
+];
+
+
+
+
+
+/* LOAD ANIMATION */
+
+
+const counters=
+document.querySelectorAll(".counter");
+
+
+counters.forEach(counter=>{
+
+
+let target=
++counter.dataset.target;
+
+
+let value=0;
+
+
+let speed=
+target/100;
+
+
+function update(){
+
+
+value+=speed;
+
+
+if(value<target){
+
+counter.innerHTML=
+Math.floor(value);
+
+requestAnimationFrame(update);
+
+}
+
+else{
+
+counter.innerHTML=target;
+
+}
+
+
+}
+
+
+update();
+
+
+});
+
+
+
+
+
+/* MISSIONS */
+
+
+const box=
+document.getElementById("missions");
+
+
+missions.forEach(m=>{
+
+
+box.innerHTML+=`
+
+<div class="mission">
+
+<h3>${m[0]}</h3>
+
+<p>
+Year:
+${m[1]}
+</p>
+
+
+<p>
+Payload:
+${m[2]}
+</p>
+
+
+<p class="success">
+✓ Successful
+</p>
+
+
+</div>
+
+`;
+
+});
+
+
+
+
+
+
+
+/* CHARTS */
+
+
+new Chart(
+
+document.getElementById("launchChart"),
+
+{
+
+type:"line",
+
+data:{
+
+
+labels:[
+2018,
+2019,
+2020,
+2021,
+2022,
+2023,
+2024
+],
+
+
+datasets:[{
+
+label:"Falcon 9 Launches",
+
+data:[
+21,
+13,
+26,
+31,
+61,
+96,
+130
+],
+
+
+borderColor:"#008f8c",
+
+backgroundColor:
+"rgba(0,143,140,.2)",
+
+fill:true
+
+}]
+
+}
+
+
+}
+
+);
+
+
+
+
+
+
+new Chart(
+
+document.getElementById("successChart"),
+
+{
+
+type:"doughnut",
+
+data:{
+
+
+labels:[
+"Success",
+"Failure"
+],
+
+
+datasets:[{
+
+data:[
+98,
+2
+],
+
+
+backgroundColor:[
+
+"#008f8c",
+
+"#cccccc"
+
+]
+
+
+}]
+
+
+}
+
+
+}
+
+);
+
+
+
+</script>
+
+
+</body>
+
+</html>
