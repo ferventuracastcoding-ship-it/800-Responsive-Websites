@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>The Mars Chronicle</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Georgia,serif;
+}
+
+body{
+
+background:#d8c29b;
+color:#3b2414;
+
+}
+
+
+.book{
+
+width:90%;
+max-width:1100px;
+
+margin:50px auto;
+
+background:#f7e7c6;
+
+border-radius:20px;
+
+box-shadow:
+0 30px 60px rgba(0,0,0,.4);
+
+overflow:hidden;
+
+}
+
+
+/* COVER */
+
+.cover{
+
+min-height:100vh;
+
+display:flex;
+align-items:center;
+justify-content:center;
+
+text-align:center;
+
+background:
+
+linear-gradient(
+rgba(70,30,10,.7),
+rgba(20,10,5,.8)
+),
+
+url("https://images.unsplash.com/photo-1614728894747-a83421e2b9c9")
+center/cover;
+
+
+color:#ffe0a3;
+
+padding:40px;
+
+}
+
+
+.cover h1{
+
+font-size:70px;
+
+letter-spacing:4px;
+
+}
+
+
+.cover p{
+
+font-size:25px;
+
+font-style:italic;
+
+margin-top:30px;
+
+}
+
+
+
+/* NAV */
+
+.menu{
+
+background:#4b2b18;
+
+padding:20px;
+
+text-align:center;
+
+}
+
+
+.menu a{
+
+color:#ffd28a;
+
+text-decoration:none;
+
+margin:15px;
+
+}
+
+
+
+/* PAGES */
+
+.page{
+
+padding:70px;
+
+border-bottom:2px solid #c59b60;
+
+min-height:500px;
+
+}
+
+
+.page h2{
+
+font-size:45px;
+
+color:#9b3d14;
+
+margin-bottom:30px;
+
+}
+
+
+.page p{
+
+font-size:20px;
+
+line-height:2;
+
+}
+
+
+
+/* OLD PAPER */
+
+
+.paper{
+
+background:#ecd3a4;
+
+padding:35px;
+
+border-radius:10px;
+
+box-shadow:
+inset 0 0 40px #b58b52;
+
+}
+
+
+
+
+
+/* IMAGES */
+
+.image{
+
+width:100%;
+
+border-radius:15px;
+
+filter:sepia(50%);
+
+}
+
+
+
+
+
+/* CHAPTER GRID */
+
+.grid{
+
+display:grid;
+
+grid-template-columns:
+repeat(auto-fit,minmax(250px,1fr));
+
+gap:30px;
+
+}
+
+
+.chapter{
+
+background:#f8e6bf;
+
+padding:30px;
+
+border-radius:15px;
+
+box-shadow:
+0 10px 20px #b89968;
+
+transition:.4s;
+
+}
+
+
+.chapter:hover{
+
+transform:rotate(-2deg) scale(1.05);
+
+}
+
+
+.chapter h3{
+
+color:#9b3d14;
+
+}
+
+
+
+
+
+/* OLD BOOK EFFECT */
+
+.bookmark{
+
+position:fixed;
+
+right:20px;
+
+bottom:20px;
+
+background:#9b3d14;
+
+color:white;
+
+padding:15px 25px;
+
+border-radius:30px;
+
+}
+
+
+
+
+
+footer{
+
+background:#3b2414;
+
+color:#ffd28a;
+
+padding:40px;
+
+text-align:center;
+
+}
+
+
+
+
+@media(max-width:700px){
+
+.cover h1{
+
+font-size:40px;
+
+}
+
+.page{
+
+padding:35px;
+
+}
+
+.page h2{
+
+font-size:32px;
+
+}
+
+}
+
+
+
+</style>
+
+</head>
+
+
+<body>
+
+
+
+<div class="book">
+
+
+
+<section class="cover">
+
+<div>
+
+<h1>
+THE MARS CHRONICLE
+</h1>
+
+<p>
+An Ancient Journal of Humanity's First Journey Beyond Earth
+</p>
+
+</div>
+
+</section>
+
+
+
+<div class="menu">
+
+<a href="#origin">
+Origin
+</a>
+
+<a href="#robots">
+Robots
+</a>
+
+<a href="#colony">
+Colony
+</a>
+
+<a href="#future">
+Future
+</a>
+
+</div>
+
+
+
+
+
+<section class="page" id="origin">
+
+
+<h2>
+Chapter I — The Red Planet
+</h2>
+
+
+<div class="paper">
+
+<p>
+
+For centuries humanity looked toward Mars
+and wondered what mysteries waited beyond
+the night sky.
+
+This ancient journal records the expedition
+to the world of deserts, mountains,
+and forgotten oceans.
+
+</p>
+
+</div>
+
+
+</section>
+
+
+
+
+
+
+
+<section class="page" id="robots">
+
+
+<h2>
+Chapter II — The Iron Explorers
+</h2>
+
+
+<div class="grid">
+
+
+<div class="chapter">
+
+<h3>
+🤖 Mechanical Guardians
+</h3>
+
+<p>
+
+Robots crossed the Martian plains,
+mapping the unknown and preparing
+the way for explorers.
+
+</p>
+
+</div>
+
+
+
+<div class="chapter">
+
+<h3>
+🚙 Rover Chronicles
+</h3>
+
+<p>
+
+Machines traveled through valleys,
+collecting the secrets of Mars.
+
+</p>
+
+</div>
+
+
+
+<div class="chapter">
+
+<h3>
+🚁 Sky Machines
+</h3>
+
+<p>
+
+Helicopters discovered places
+never reached before.
+
+</p>
+
+</div>
+
+
+</div>
+
+
+</section>
+
+
+
+
+
+
+
+<section class="page" id="colony">
+
+
+<h2>
+Chapter III — The First Cities
+</h2>
+
+
+<img class="image"
+src="https://images.unsplash.com/photo-1446776811953-b23d57bd21aa">
+
+
+<br><br>
+
+
+<div class="paper">
+
+<p>
+
+The first Mars colonies were built
+inside protective domes.
+
+Scientists, engineers, and explorers
+created a new civilization among
+the stars.
+
+</p>
+
+</div>
+
+
+</section>
+
+
+
+
+
+
+
+
+<section class="page" id="future">
+
+
+<h2>
+Chapter IV — Future Legends
+</h2>
+
+
+<div class="grid">
+
+
+<div class="chapter">
+
+<h3>
+🚀 Warp Drive
+</h3>
+
+<p>
+
+A legendary technology imagined
+for journeys beyond Mars.
+
+</p>
+
+</div>
+
+
+<div class="chapter">
+
+<h3>
+🏠 Colony Domes
+</h3>
+
+<p>
+
+Massive habitats protecting
+future generations.
+
+</p>
+
+</div>
+
+
+<div class="chapter">
+
+<h3>
+🌌 Deep Space
+
+</h3>
+
+<p>
+
+The next chapter of humanity's
+cosmic story.
+
+</p>
+
+</div>
+
+
+</div>
+
+
+</section>
+
+
+
+
+
+
+<footer>
+
+The Mars Chronicle
+
+<br>
+
+Written Among The Stars
+
+</footer>
+
+
+
+</div>
+
+
+<div class="bookmark">
+
+📖 Chapter Saved
+
+</div>
+
+
+
+<script>
+
+
+// Book page animation
+
+const pages=document.querySelectorAll(".page");
+
+
+window.addEventListener("scroll",()=>{
+
+
+pages.forEach(page=>{
+
+
+let top=page.getBoundingClientRect().top;
+
+
+if(top<window.innerHeight-100){
+
+page.style.opacity="1";
+
+page.style.transform="translateY(0)";
+
+
+}
+
+
+});
+
+
+});
+
+
+pages.forEach(page=>{
+
+page.style.opacity=0;
+
+page.style.transform="translateY(50px)";
+
+page.style.transition="1s";
+
+});
+
+
+
+</script>
+
+
+</body>
+</html>
