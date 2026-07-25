@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mars Missions 2030s</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+}
+
+body{
+background:#050505;
+color:white;
+overflow-x:hidden;
+}
+
+html{
+scroll-behavior:smooth;
+}
+
+/* ---------- Stars ---------- */
+
+#stars{
+position:fixed;
+inset:0;
+z-index:-2;
+overflow:hidden;
+}
+
+.star{
+position:absolute;
+width:2px;
+height:2px;
+background:white;
+border-radius:50%;
+animation:twinkle 4s infinite alternate;
+}
+
+@keyframes twinkle{
+from{opacity:.2;transform:scale(.6);}
+to{opacity:1;transform:scale(2);}
+}
+
+/* ---------- Mars ---------- */
+
+.mars{
+position:fixed;
+right:-130px;
+top:100px;
+width:340px;
+height:340px;
+border-radius:50%;
+background:
+radial-gradient(circle at 35% 35%,
+#ffb66c,
+#cf5b00,
+#742300,
+#220000);
+box-shadow:0 0 100px rgba(255,120,0,.5);
+animation:spin 70s linear infinite;
+z-index:-1;
+}
+
+@keyframes spin{
+from{transform:rotate(0deg);}
+to{transform:rotate(360deg);}
+}
+
+/* ---------- Hero ---------- */
+
+header{
+height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+text-align:center;
+padding:20px;
+}
+
+header h1{
+font-size:70px;
+letter-spacing:4px;
+text-transform:uppercase;
+animation:glow 2s infinite alternate;
+}
+
+header p{
+margin:25px 0;
+font-size:20px;
+color:#bbb;
+}
+
+button{
+padding:16px 35px;
+border:none;
+border-radius:30px;
+background:#d94b00;
+color:white;
+cursor:pointer;
+font-size:18px;
+transition:.3s;
+}
+
+button:hover{
+background:#ff7300;
+transform:scale(1.08);
+}
+
+@keyframes glow{
+from{text-shadow:0 0 15px orange;}
+to{text-shadow:0 0 35px red;}
+}
+
+section{
+padding:90px 8%;
+}
+
+h2{
+font-size:42px;
+margin-bottom:40px;
+}
+
+/* ---------- Cards ---------- */
+
+.grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+gap:25px;
+}
+
+.card{
+background:#111;
+padding:25px;
+border-radius:18px;
+border:1px solid #333;
+transition:.35s;
+}
+
+.card:hover{
+transform:translateY(-10px);
+border-color:orange;
+box-shadow:0 0 25px rgba(255,150,0,.4);
+}
+
+.card h3{
+color:orange;
+margin-bottom:15px;
+}
+
+.badge{
+display:inline-block;
+margin-top:20px;
+padding:6px 12px;
+border-radius:20px;
+background:#222;
+color:#ffb347;
+}
+
+/* ---------- Timeline ---------- */
+
+.timeline{
+border-left:3px solid orange;
+padding-left:35px;
+}
+
+.event{
+margin-bottom:40px;
+position:relative;
+}
+
+.event::before{
+content:"";
+position:absolute;
+left:-45px;
+top:6px;
+width:18px;
+height:18px;
+background:orange;
+border-radius:50%;
+}
+
+/* ---------- Dashboard ---------- */
+
+.dashboard{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+gap:20px;
+}
+
+.metric{
+background:#111;
+padding:35px;
+border-radius:18px;
+text-align:center;
+}
+
+.metric h1{
+font-size:55px;
+color:orange;
+}
+
+/* ---------- NEW Gallery ---------- */
+
+.gallery{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+gap:20px;
+}
+
+.photo{
+height:220px;
+border-radius:18px;
+overflow:hidden;
+position:relative;
+cursor:pointer;
+transition:.4s;
+background:#111;
+}
+
+.photo::before{
+content:"";
+position:absolute;
+inset:0;
+background:linear-gradient(135deg,#552200,#cc5500,#ff8c42);
+transition:.4s;
+}
+
+.photo:nth-child(2)::before{
+background:linear-gradient(135deg,#2b0a00,#ff5500,#ffcc88);
+}
+
+.photo:nth-child(3)::before{
+background:linear-gradient(135deg,#401000,#d35400,#ff9966);
+}
+
+.photo:nth-child(4)::before{
+background:linear-gradient(135deg,#5c2d00,#ff6600,#ffd27a);
+}
+
+.photo:nth-child(5)::before{
+background:linear-gradient(135deg,#330000,#ff3300,#ffaa55);
+}
+
+.photo:nth-child(6)::before{
+background:linear-gradient(135deg,#220000,#aa3300,#ff8844);
+}
+
+.photo:hover{
+transform:scale(1.05);
+}
+
+.label{
+position:absolute;
+bottom:15px;
+left:15px;
+font-size:20px;
+font-weight:bold;
+text-shadow:0 0 10px black;
+}
+
+footer{
+padding:50px;
+text-align:center;
+color:#888;
+}
+
+@media(max-width:700px){
+
+header h1{
+font-size:45px;
+}
+
+h2{
+font-size:32px;
+}
+
+}
+
+</style>
+</head>
+
+<body>
+
+<div id="stars"></div>
+<div class="mars"></div>
+
+<header>
+
+<div>
+
+<h1>Mars Missions 2030s</h1>
+
+<p>
+A fictional archive of imagined expeditions to Mars during the 2030s.
+</p>
+
+<button onclick="document.getElementById('missions').scrollIntoView({behavior:'smooth'})">
+Explore Missions
+</button>
+
+</div>
+
+</header>
+
+<section id="missions">
+
+<h2>🚀 Mission Archive</h2>
+
+<div class="grid">
+
+<div class="card">
+<h3>Ares Dusk • 2031</h3>
+<p>First fictional crew lands in Valles Marineris.</p>
+<span class="badge">Completed</span>
+</div>
+
+<div class="card">
+<h3>Olympus Base • 2033</h3>
+<p>Robots construct a permanent research station.</p>
+<span class="badge">Operational</span>
+</div>
+
+<div class="card">
+<h3>Phoenix Colony • 2035</h3>
+<p>Greenhouses begin producing food for explorers.</p>
+<span class="badge">Growing</span>
+</div>
+
+<div class="card">
+<h3>Red Horizon • 2038</h3>
+<p>Mining robots search for underground ice reserves.</p>
+<span class="badge">Exploration</span>
+</div>
+
+</div>
+
+</section>
+
+<section>
+
+<h2>📅 Timeline</h2>
+
+<div class="timeline">
+
+<div class="event">
+<h3>2031</h3>
+<p>Ares Dusk lands successfully.</p>
+</div>
+
+<div class="event">
+<h3>2033</h3>
+<p>Olympus Base opens its laboratories.</p>
+</div>
+
+<div class="event">
+<h3>2035</h3>
+<p>Phoenix Colony harvests its first crops.</p>
+</div>
+
+<div class="event">
+<h3>2038</h3>
+<p>Red Horizon discovers a fictional ice deposit.</p>
+</div>
+
+</div>
+
+</section>
+
+<section>
+
+<h2>📊 Mission Dashboard</h2>
+
+<div class="dashboard">
+
+<div class="metric">
+<h1 id="crew">0</h1>
+<p>Crew</p>
+</div>
+
+<div class="metric">
+<h1 id="bases">0</h1>
+<p>Bases</p>
+</div>
+
+<div class="metric">
+<h1 id="robots">0</h1>
+<p>Robots</p>
+</div>
+
+<div class="metric">
+<h1 id="missionsCount">0</h1>
+<p>Missions</p>
+</div>
+
+</div>
+
+</section>
+
+<!-- NEW SECTION -->
+
+<section>
+
+<h2>🖼️ Mars Gallery</h2>
+
+<div class="gallery">
+
+<div class="photo">
+<div class="label">Olympus Mons</div>
+</div>
+
+<div class="photo">
+<div class="label">Mars Habitat</div>
+</div>
+
+<div class="photo">
+<div class="label">Research Rover</div>
+</div>
+
+<div class="photo">
+<div class="label">Greenhouse Dome</div>
+</div>
+
+<div class="photo">
+<div class="label">Cargo Lander</div>
+</div>
+
+<div class="photo">
+<div class="label">Ice Mining Site</div>
+</div>
+
+</div>
+
+</section>
+
+<footer>
+
+Fictional Mars Missions 2030s • HTML • CSS • JavaScript Demo
+
+</footer>
+
+<script>
+
+// Starfield
+
+const stars=document.getElementById("stars");
+
+for(let i=0;i<220;i++){
+
+let s=document.createElement("div");
+
+s.className="star";
+
+s.style.left=Math.random()*100+"%";
+
+s.style.top=Math.random()*100+"%";
+
+s.style.animationDelay=Math.random()*4+"s";
+
+stars.appendChild(s);
+
+}
+
+// Animated Counters
+
+function counter(id,target){
+
+let n=0;
+
+let el=document.getElementById(id);
+
+let timer=setInterval(()=>{
+
+n++;
+
+el.textContent=n;
+
+if(n>=target) clearInterval(timer);
+
+},25);
+
+}
+
+counter("crew",48);
+counter("bases",7);
+counter("robots",162);
+counter("missionsCount",12);
+
+</script>
+
+</body>
+</html>
