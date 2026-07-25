@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Nexus</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Poppins,sans-serif;
+}
+
+body{
+
+background:#050816;
+color:white;
+overflow-x:hidden;
+
+}
+
+/* Animated Background */
+
+body::before{
+
+content:"";
+position:fixed;
+width:600px;
+height:600px;
+background:#4f46e5;
+filter:blur(180px);
+top:-150px;
+left:-150px;
+z-index:-2;
+animation:move1 10s infinite alternate;
+
+}
+
+body::after{
+
+content:"";
+position:fixed;
+width:500px;
+height:500px;
+background:#00d9ff;
+filter:blur(170px);
+bottom:-100px;
+right:-100px;
+z-index:-2;
+animation:move2 9s infinite alternate;
+
+}
+
+@keyframes move1{
+
+to{
+transform:translate(180px,120px);
+}
+
+}
+
+@keyframes move2{
+
+to{
+transform:translate(-120px,-100px);
+}
+
+}
+
+/* Navigation */
+
+nav{
+
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:20px 8%;
+
+}
+
+.logo{
+
+font-size:30px;
+font-weight:700;
+color:#00e0ff;
+
+}
+
+nav ul{
+
+display:flex;
+gap:25px;
+list-style:none;
+
+}
+
+nav a{
+
+color:white;
+text-decoration:none;
+
+}
+
+/* Hero */
+
+.hero{
+
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+align-items:center;
+padding:80px 8%;
+gap:40px;
+
+}
+
+.hero h1{
+
+font-size:60px;
+line-height:1.1;
+
+}
+
+.hero span{
+
+color:#00e0ff;
+
+}
+
+.hero p{
+
+margin:20px 0;
+opacity:.8;
+line-height:1.8;
+
+}
+
+button{
+
+padding:16px 35px;
+background:#00d9ff;
+border:none;
+border-radius:40px;
+font-size:18px;
+cursor:pointer;
+transition:.3s;
+
+}
+
+button:hover{
+
+transform:translateY(-6px);
+
+}
+
+/* Glass Card */
+
+.card{
+
+background:rgba(255,255,255,.08);
+backdrop-filter:blur(18px);
+border:1px solid rgba(255,255,255,.15);
+padding:25px;
+border-radius:25px;
+box-shadow:0 20px 50px rgba(0,0,0,.3);
+
+}
+
+/* AI Chat */
+
+.chat{
+
+display:flex;
+flex-direction:column;
+gap:15px;
+
+}
+
+.msg{
+
+padding:15px;
+border-radius:15px;
+max-width:85%;
+
+}
+
+.ai{
+
+background:#4f46e5;
+
+}
+
+.user{
+
+background:#00bcd4;
+align-self:flex-end;
+
+}
+
+/* Stats */
+
+.stats{
+
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+gap:25px;
+padding:40px 8%;
+
+}
+
+.stat{
+
+text-align:center;
+
+}
+
+.stat h2{
+
+font-size:42px;
+color:#00e0ff;
+
+}
+
+/* Features */
+
+.features{
+
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+gap:25px;
+padding:70px 8%;
+
+}
+
+.feature{
+
+transition:.4s;
+
+}
+
+.feature:hover{
+
+transform:translateY(-10px);
+
+}
+
+.feature h3{
+
+margin-bottom:15px;
+
+}
+
+footer{
+
+padding:40px;
+text-align:center;
+opacity:.6;
+
+}
+
+@media(max-width:768px){
+
+.hero h1{
+
+font-size:42px;
+
+}
+
+nav{
+
+flex-direction:column;
+gap:15px;
+
+}
+
+}
+
+</style>
+</head>
+
+<body>
+
+<nav>
+
+<div class="logo">AI Nexus</div>
+
+<ul>
+
+<li><a href="#">Home</a></li>
+<li><a href="#">Models</a></li>
+<li><a href="#">Pricing</a></li>
+<li><a href="#">Contact</a></li>
+
+</ul>
+
+</nav>
+
+<section class="hero">
+
+<div>
+
+<h1>Build with <span>Artificial Intelligence</span></h1>
+
+<p>
+Create applications using advanced AI models for coding,
+writing, design, and automation.
+</p>
+
+<button>Start Building</button>
+
+</div>
+
+<div class="card">
+
+<h2>AI Assistant</h2>
+
+<br>
+
+<div class="chat">
+
+<div class="msg user">
+Generate a JavaScript dashboard.
+</div>
+
+<div class="msg ai">
+Creating responsive dashboard with charts,
+animations, and dark mode...
+</div>
+
+<div class="msg user">
+Add AI analytics.
+</div>
+
+<div class="msg ai">
+Done! Predictive charts and insights added.
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+<section class="stats">
+
+<div class="card stat">
+
+<h2 id="models">0</h2>
+
+<p>AI Models</p>
+
+</div>
+
+<div class="card stat">
+
+<h2 id="users">0</h2>
+
+<p>Developers</p>
+
+</div>
+
+<div class="card stat">
+
+<h2 id="tokens">0</h2>
+
+<p>Requests</p>
+
+</div>
+
+</section>
+
+<section class="features">
+
+<div class="card feature">
+
+<h3>🤖 AI Coding</h3>
+
+<p>Generate HTML, CSS, JavaScript, Python, PHP, Java, and C++ instantly.</p>
+
+</div>
+
+<div class="card feature">
+
+<h3>🧠 Smart Chat</h3>
+
+<p>Ask questions, summarize documents, and automate tasks.</p>
+
+</div>
+
+<div class="card feature">
+
+<h3>📈 Analytics</h3>
+
+<p>Interactive dashboards with charts and predictions.</p>
+
+</div>
+
+<div class="card feature">
+
+<h3>🎨 AI Design</h3>
+
+<p>Create logos, graphics, illustrations, and UI prototypes.</p>
+
+</div>
+
+</section>
+
+<footer>
+
+© 2026 AI Nexus
+
+</footer>
+
+<script>
+
+function animate(id,target){
+
+let value=0;
+
+const speed=Math.ceil(target/100);
+
+const interval=setInterval(()=>{
+
+value+=speed;
+
+if(value>=target){
+
+value=target;
+clearInterval(interval);
+
+}
+
+document.getElementById(id).textContent=value.toLocaleString();
+
+},20);
+
+}
+
+animate("models",240);
+animate("users",50000);
+animate("tokens",1000000);
+
+</script>
+
+</body>
+</html>p9
