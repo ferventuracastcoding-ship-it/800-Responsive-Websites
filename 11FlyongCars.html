@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>SkyDrive - Future Flying Cars</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, sans-serif;
+}
+
+body{
+    background:#050816;
+    color:white;
+}
+
+
+/* HEADER */
+
+header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:25px 8%;
+    background:#02030a;
+    border-bottom:1px solid #1b2550;
+}
+
+.logo{
+    font-size:30px;
+    font-weight:bold;
+    color:#00eaff;
+    text-shadow:0 0 15px cyan;
+}
+
+nav a{
+    color:white;
+    margin-left:25px;
+    text-decoration:none;
+}
+
+
+/* HERO */
+
+.hero{
+
+height:90vh;
+
+background:
+linear-gradient(rgba(0,0,0,.4),rgba(0,0,0,.8)),
+url("https://images.unsplash.com/photo-1519501025264-65ba15a82390");
+
+background-size:cover;
+background-position:center;
+
+display:flex;
+align-items:center;
+padding:8%;
+
+}
+
+
+.hero h1{
+
+font-size:70px;
+color:#00eaff;
+text-shadow:0 0 25px cyan;
+
+}
+
+
+.hero p{
+
+font-size:22px;
+max-width:600px;
+margin:25px 0;
+
+}
+
+
+button{
+
+padding:15px 35px;
+border:none;
+border-radius:30px;
+background:#00eaff;
+cursor:pointer;
+font-weight:bold;
+
+}
+
+
+
+/* SECTIONS */
+
+section{
+
+padding:70px 8%;
+
+}
+
+
+.title{
+
+text-align:center;
+font-size:45px;
+margin-bottom:40px;
+color:#00eaff;
+
+}
+
+
+
+/* FLYING CARS */
+
+.sky{
+
+height:300px;
+position:relative;
+overflow:hidden;
+
+}
+
+
+.car{
+
+position:absolute;
+font-size:70px;
+animation:fly 8s infinite linear;
+
+}
+
+
+.car2{
+top:120px;
+animation-duration:12s;
+}
+
+
+.car3{
+top:200px;
+animation-duration:15s;
+}
+
+
+
+@keyframes fly{
+
+from{
+left:-150px;
+}
+
+to{
+left:110%;
+}
+
+}
+
+
+
+
+/* CARDS */
+
+
+.cars{
+
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+gap:30px;
+
+}
+
+
+.card{
+
+background:#10162f;
+padding:30px;
+border-radius:20px;
+border:1px solid #263d75;
+transition:.4s;
+
+}
+
+
+.card:hover{
+
+transform:translateY(-15px);
+box-shadow:0 0 30px cyan;
+
+}
+
+
+.card h2{
+
+color:#00eaff;
+margin-bottom:15px;
+
+}
+
+
+.icon{
+
+font-size:60px;
+
+}
+
+
+
+/* CITY GRID */
+
+.city{
+
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+gap:20px;
+
+}
+
+
+.box{
+
+background:#121936;
+padding:25px;
+border-radius:15px;
+
+}
+
+
+
+/* FOOTER */
+
+
+footer{
+
+background:#02030a;
+padding:40px;
+text-align:center;
+
+}
+
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<header>
+
+<div class="logo">
+🚘 SkyDrive
+</div>
+
+<nav>
+<a href="#">Home</a>
+<a href="#cars">Cars</a>
+<a href="#future">Future</a>
+</nav>
+
+</header>
+
+
+
+<div class="hero">
+
+<div>
+
+<h1>
+The Future Is Flying
+</h1>
+
+<p>
+Experience the next generation of transportation:
+autonomous flying cars connecting futuristic cities above the clouds.
+</p>
+
+<button>
+Start Flight
+</button>
+
+</div>
+
+</div>
+
+
+
+
+<section>
+
+<h2 class="title">
+Air Traffic Of Tomorrow
+</h2>
+
+
+<div class="sky">
+
+<div class="car">🚗</div>
+<div class="car car2">🚙</div>
+<div class="car car3">🛸</div>
+
+</div>
+
+
+</section>
+
+
+
+
+<section id="cars">
+
+<h2 class="title">
+Future Flying Vehicles
+</h2>
+
+
+<div class="cars">
+
+
+<div class="card">
+
+<div class="icon">
+🚘
+</div>
+
+<h2>
+Aero One
+</h2>
+
+<p>
+Electric vertical takeoff vehicle with AI navigation.
+</p>
+
+</div>
+
+
+
+<div class="card">
+
+<div class="icon">
+🛸
+</div>
+
+<h2>
+Quantum Flyer
+</h2>
+
+<p>
+Advanced propulsion system for high-speed travel.
+</p>
+
+</div>
+
+
+
+<div class="card">
+
+<div class="icon">
+🚁
+</div>
+
+<h2>
+Sky Taxi
+</h2>
+
+<p>
+Autonomous passenger transportation between cities.
+</p>
+
+</div>
+
+
+</div>
+
+</section>
+
+
+
+
+<section id="future">
+
+<h2 class="title">
+Future Cities
+</h2>
+
+
+<div class="city">
+
+<div class="box">
+🌆
+<h3>Vertical Cities</h3>
+<p>
+Buildings designed with landing platforms.
+</p>
+</div>
+
+
+<div class="box">
+🤖
+<h3>AI Traffic Control</h3>
+<p>
+Smart systems managing millions of flights.
+</p>
+</div>
+
+
+<div class="box">
+⚡
+<h3>Clean Energy</h3>
+<p>
+Battery and fusion-powered transportation.
+</p>
+</div>
+
+
+<div class="box">
+🌎
+<h3>Global Mobility</h3>
+<p>
+Travel across cities in minutes.
+</p>
+</div>
+
+
+</div>
+
+</section>
+
+
+
+
+<footer>
+
+<h2>SkyDrive 2050</h2>
+
+<p>
+Building the future above the clouds.
+</p>
+
+</footer>
+
+
+</body>
+</html>
