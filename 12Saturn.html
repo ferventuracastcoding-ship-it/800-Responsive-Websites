@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Saturn Odyssey | Titan & Dragonfly</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;900&family=Poppins:wght@300;600&display=swap" rel="stylesheet">
+
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
+
+body{
+
+font-family:Poppins,sans-serif;
+background:#03030b;
+color:white;
+
+}
+
+
+/* NAV */
+
+nav{
+
+position:absolute;
+top:0;
+width:100%;
+padding:25px 8%;
+display:flex;
+justify-content:space-between;
+z-index:5;
+
+}
+
+
+.logo{
+
+font-family:Orbitron;
+font-size:28px;
+
+}
+
+
+nav a{
+
+color:white;
+text-decoration:none;
+margin:15px;
+
+}
+
+
+
+/* HERO */
+
+
+.hero{
+
+height:100vh;
+
+display:flex;
+justify-content:center;
+align-items:center;
+
+text-align:center;
+
+
+background:
+
+linear-gradient(
+rgba(0,0,0,.35),
+rgba(0,0,0,.9)
+),
+
+url("https://images.unsplash.com/photo-1614728894747-a83421e2b9c9")
+
+center/cover;
+
+}
+
+
+.hero h1{
+
+font-family:Orbitron;
+
+font-size:clamp(50px,9vw,110px);
+
+
+background:
+linear-gradient(#fff2bd,#d19b42);
+
+-webkit-background-clip:text;
+
+color:transparent;
+
+}
+
+
+.hero p{
+
+font-size:22px;
+max-width:700px;
+margin:25px;
+
+}
+
+
+
+.button{
+
+background:#d69e2e;
+color:white;
+
+padding:15px 40px;
+
+border-radius:40px;
+
+text-decoration:none;
+
+font-weight:bold;
+
+}
+
+
+
+/* SECTIONS */
+
+
+section{
+
+padding:90px 8%;
+
+}
+
+
+.title{
+
+font-family:Orbitron;
+
+font-size:45px;
+
+text-align:center;
+
+margin-bottom:50px;
+
+}
+
+
+
+/* SATURN */
+
+
+.saturn-box{
+
+height:500px;
+
+display:flex;
+
+justify-content:center;
+
+align-items:center;
+
+position:relative;
+
+}
+
+
+
+.planet{
+
+height:230px;
+width:230px;
+
+border-radius:50%;
+
+background:
+
+radial-gradient(circle at 30% 30%,
+#fff0b3,
+#b88940,
+#57320d);
+
+
+box-shadow:
+0 0 80px #d8aa55;
+
+}
+
+
+
+.rings{
+
+position:absolute;
+
+width:520px;
+height:130px;
+
+border-radius:50%;
+
+border:35px solid rgba(220,190,120,.5);
+
+transform:rotate(-15deg);
+
+animation:ring 12s infinite linear;
+
+}
+
+
+
+@keyframes ring{
+
+to{
+
+transform:rotate(345deg);
+
+}
+
+}
+
+
+
+/* CARDS */
+
+
+.cards{
+
+display:grid;
+
+grid-template-columns:
+repeat(auto-fit,minmax(280px,1fr));
+
+gap:30px;
+
+}
+
+
+.card{
+
+background:#111122;
+
+padding:30px;
+
+border-radius:20px;
+
+border:1px solid #333;
+
+}
+
+
+.card h2{
+
+color:#ffd166;
+
+font-family:Orbitron;
+
+}
+
+
+
+
+
+/* TITAN */
+
+
+.titan{
+
+display:flex;
+
+align-items:center;
+
+gap:40px;
+
+flex-wrap:wrap;
+
+background:
+
+linear-gradient(135deg,#25180c,#080808);
+
+padding:50px;
+
+border-radius:30px;
+
+}
+
+
+
+.titan img{
+
+width:350px;
+
+height:350px;
+
+border-radius:50%;
+
+object-fit:cover;
+
+box-shadow:
+
+0 0 50px orange;
+
+}
+
+
+
+
+
+/* DRAGONFLY */
+
+
+.dragonfly{
+
+background:
+
+linear-gradient(
+135deg,
+#17100a,
+#3b260f
+);
+
+border-radius:30px;
+
+padding:60px;
+
+text-align:center;
+
+}
+
+
+
+.robot{
+
+margin:40px auto;
+
+width:280px;
+
+height:160px;
+
+background:
+
+linear-gradient(
+#555,
+#111
+);
+
+border-radius:30px;
+
+position:relative;
+
+box-shadow:
+
+0 0 40px orange;
+
+}
+
+
+
+/* ROTOR BLADES */
+
+
+.robot:before{
+
+content:"";
+
+position:absolute;
+
+top:-45px;
+
+left:-40px;
+
+width:360px;
+
+height:8px;
+
+background:#aaa;
+
+box-shadow:
+
+0 0 10px white;
+
+transform:rotate(-10deg);
+
+}
+
+
+
+.robot:after{
+
+content:"";
+
+position:absolute;
+
+bottom:-30px;
+
+left:40px;
+
+width:200px;
+
+height:15px;
+
+background:#222;
+
+border-radius:20px;
+
+}
+
+
+
+.wheel{
+
+position:absolute;
+
+bottom:20px;
+
+width:40px;
+height:40px;
+
+background:#111;
+
+border-radius:50%;
+
+}
+
+
+.w1{
+left:30px;
+}
+
+.w2{
+right:30px;
+}
+
+
+
+
+.mission-grid{
+
+display:grid;
+
+grid-template-columns:
+repeat(auto-fit,minmax(200px,1fr));
+
+gap:20px;
+
+}
+
+
+
+.mission{
+
+background:#111;
+
+padding:20px;
+
+border-radius:20px;
+
+}
+
+
+
+footer{
+
+background:black;
+
+padding:30px;
+
+text-align:center;
+
+color:#aaa;
+
+}
+
+
+
+
+
+@media(max-width:700px){
+
+nav{
+
+flex-direction:column;
+text-align:center;
+
+}
+
+
+.rings{
+
+width:350px;
+
+}
+
+
+.titan img{
+
+width:250px;
+height:250px;
+
+}
+
+
+.title{
+
+font-size:32px;
+
+}
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+
+<nav>
+
+<div class="logo">
+SATURN ODYSSEY
+</div>
+
+
+<div>
+
+<a href="#">Home</a>
+<a href="#titan">Titan</a>
+<a href="#dragonfly">Dragonfly</a>
+
+</div>
+
+</nav>
+
+
+
+
+<header class="hero">
+
+
+<div>
+
+<h1>
+SATURN
+</h1>
+
+<p>
+The ringed giant. A world of storms, ice, moons, and exploration.
+</p>
+
+
+<a class="button" href="#explore">
+Begin Mission
+</a>
+
+
+</div>
+
+
+</header>
+
+
+
+
+
+
+
+<section id="explore">
+
+
+<h2 class="title">
+The Ringed Planet
+</h2>
+
+
+<div class="saturn-box">
+
+<div class="rings"></div>
+
+<div class="planet"></div>
+
+</div>
+
+
+</section>
+
+
+
+
+
+
+
+<section>
+
+
+<h2 class="title">
+Saturn's Rings
+</h2>
+
+
+<div class="cards">
+
+
+<div class="card">
+
+<h2>
+Ice Worlds
+</h2>
+
+<p>
+The rings contain billions of pieces of water ice and rock.
+</p>
+
+</div>
+
+
+
+<div class="card">
+
+<h2>
+Moon Gravity
+</h2>
+
+<p>
+Saturn's moons help shape and maintain the ring structure.
+</p>
+
+</div>
+
+
+
+<div class="card">
+
+<h2>
+Cosmic Mystery
+</h2>
+
+<p>
+Scientists continue studying how the rings formed.
+</p>
+
+</div>
+
+
+</div>
+
+</section>
+
+
+
+
+
+
+
+<section id="titan">
+
+
+<div class="titan">
+
+
+<img src="https://images.unsplash.com/photo-1614728263952-84ea256f9679">
+
+
+<div>
+
+<h2 class="title">
+Titan Moon
+</h2>
+
+
+<p>
+
+Titan is Saturn's largest moon. It has a thick atmosphere,
+methane lakes, mountains, and an environment unlike
+any other moon in the Solar System.
+
+</p>
+
+
+</div>
+
+
+</div>
+
+
+</section>
+
+
+
+
+
+
+
+<section id="dragonfly">
+
+
+<div class="dragonfly">
+
+
+<h2 class="title">
+NASA Dragonfly Mission
+</h2>
+
+
+<p>
+
+Dragonfly is a revolutionary rotorcraft designed to explore
+Titan's surface. Instead of wheels, this robotic explorer
+will fly through Titan's atmosphere and study different regions.
+
+</p>
+
+
+
+
+<div class="robot">
+
+<div class="wheel w1"></div>
+
+<div class="wheel w2"></div>
+
+</div>
+
+
+
+
+<div class="mission-grid">
+
+
+<div class="mission">
+
+<h3>
+🚁 Flight
+</h3>
+
+<p>
+Dragonfly will fly between locations across Titan.
+</p>
+
+</div>
+
+
+
+<div class="mission">
+
+<h3>
+🔬 Science
+</h3>
+
+<p>
+It will analyze chemistry and search for clues about Titan's past.
+</p>
+
+</div>
+
+
+
+<div class="mission">
+
+<h3>
+🌕 Discovery
+</h3>
+
+<p>
+The mission will reveal one of the most fascinating worlds beyond Earth.
+</p>
+
+</div>
+
+
+
+</div>
+
+
+</div>
+
+
+</section>
+
+
+
+
+
+<footer>
+
+SATURN ODYSSEY © 2026
+
+<br>
+
+Explore Saturn • Discover Titan • Journey Beyond
+
+</footer>
+
+
+</body>
+</html>
