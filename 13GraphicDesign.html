@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>PixelForge Studio</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;900&family=Poppins:wght@300;400;700&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
+body{
+font-family:Poppins,sans-serif;
+background:#090910;
+color:white;
+}
+
+
+/* NAV */
+
+nav{
+position:absolute;
+top:0;
+width:100%;
+padding:25px 8%;
+display:flex;
+justify-content:space-between;
+z-index:10;
+}
+
+.logo{
+font-family:Orbitron;
+font-size:28px;
+}
+
+nav a{
+color:white;
+text-decoration:none;
+margin:15px;
+}
+
+
+/* HERO */
+
+.hero{
+
+height:100vh;
+display:flex;
+align-items:center;
+justify-content:center;
+text-align:center;
+padding:30px;
+
+background:
+linear-gradient(
+rgba(0,0,0,.5),
+rgba(0,0,0,.85)
+),
+url("https://images.unsplash.com/photo-1558655146-d09347e92766")
+center/cover;
+
+}
+
+
+.hero h1{
+
+font-family:Orbitron;
+font-size:clamp(45px,8vw,90px);
+
+background:
+linear-gradient(90deg,#ff00cc,#00ffff);
+
+-webkit-background-clip:text;
+color:transparent;
+
+}
+
+
+.hero p{
+
+max-width:700px;
+margin:25px auto;
+font-size:20px;
+
+}
+
+
+.btn{
+
+padding:15px 40px;
+border-radius:50px;
+background:#ff00cc;
+color:white;
+text-decoration:none;
+font-weight:bold;
+
+}
+
+
+/* ABOUT */
+
+
+.about{
+
+display:flex;
+align-items:center;
+justify-content:center;
+gap:60px;
+flex-wrap:wrap;
+background:#11111a;
+
+}
+
+
+.profile{
+
+width:280px;
+height:280px;
+border-radius:50%;
+overflow:hidden;
+
+border:8px solid #00ffff;
+
+box-shadow:
+0 0 30px #00ffff;
+
+animation:pulse 3s infinite;
+
+}
+
+
+.profile img{
+
+width:100%;
+height:100%;
+object-fit:cover;
+
+}
+
+
+@keyframes pulse{
+
+50%{
+
+box-shadow:
+0 0 60px #ff00cc;
+
+}
+
+}
+
+
+.about-text{
+
+max-width:550px;
+
+}
+
+
+.about-text h2{
+
+font-family:Orbitron;
+font-size:45px;
+margin-bottom:20px;
+
+}
+
+
+.skills span{
+
+display:inline-block;
+padding:10px 20px;
+margin:8px;
+
+background:#222;
+border-radius:30px;
+color:#00ffff;
+
+}
+
+
+/* TITLES */
+
+
+.title{
+
+text-align:center;
+font-family:Orbitron;
+font-size:45px;
+margin-bottom:50px;
+
+}
+
+
+/* SERVICES */
+
+
+section{
+
+padding:80px 8%;
+
+}
+
+
+.services{
+
+display:grid;
+grid-template-columns:
+repeat(auto-fit,minmax(250px,1fr));
+
+gap:25px;
+
+}
+
+
+.card{
+
+background:#151520;
+padding:30px;
+border-radius:20px;
+transition:.4s;
+
+}
+
+
+.card:hover{
+
+transform:translateY(-15px);
+box-shadow:0 0 30px #ff00cc;
+
+}
+
+
+/* PORTFOLIO */
+
+
+.gallery{
+
+display:grid;
+grid-template-columns:
+repeat(auto-fit,minmax(250px,1fr));
+gap:25px;
+
+}
+
+
+.project{
+
+height:300px;
+overflow:hidden;
+border-radius:20px;
+position:relative;
+
+}
+
+
+.project img{
+
+width:100%;
+height:100%;
+object-fit:cover;
+
+transition:.5s;
+
+}
+
+
+.project:hover img{
+
+transform:scale(1.2);
+
+}
+
+
+.project h3{
+
+position:absolute;
+bottom:20px;
+left:20px;
+
+}
+
+
+/* BANNER */
+
+
+.banner{
+
+background:
+linear-gradient(135deg,#ff0066,#6600ff);
+
+padding:70px;
+border-radius:30px;
+text-align:center;
+
+}
+
+
+.banner h2{
+
+font-family:Orbitron;
+font-size:45px;
+
+}
+
+
+
+/* CONTACT */
+
+
+.contact{
+
+text-align:center;
+
+}
+
+
+input,textarea{
+
+width:90%;
+max-width:500px;
+padding:15px;
+margin:10px;
+border-radius:10px;
+border:none;
+
+}
+
+
+button{
+
+padding:15px 40px;
+border-radius:30px;
+border:none;
+background:#00ffff;
+font-weight:bold;
+
+}
+
+
+/* MOBILE */
+
+
+@media(max-width:700px){
+
+nav{
+
+flex-direction:column;
+align-items:center;
+
+}
+
+
+.about-text{
+
+text-align:center;
+
+}
+
+
+.about-text h2{
+
+font-size:32px;
+
+}
+
+
+.banner h2{
+
+font-size:30px;
+
+}
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<nav>
+
+<div class="logo">
+Graphic Design
+</div>
+
+<div>
+<a href="#about">About</a>
+<a href="#work">Work</a>
+<a href="#contact">Contact</a>
+</div>
+
+</nav>
+
+
+
+<header class="hero">
+
+<div>
+
+<h1>
+Create Beyond Limits
+</h1>
+
+<p>
+Futuristic graphic design studio creating powerful brands,
+digital artwork, and unforgettable visual experiences.
+</p>
+
+<a class="btn" href="#work">
+Explore Designs
+</a>
+
+</div>
+
+</header>
+
+
+
+<!-- ABOUT SECTION -->
+
+<section class="about" id="about">
+
+
+<div class="profile">
+
+<img src="https://images.unsplash.com/photo-1524504388940-b1c1722653e1">
+
+</div>
+
+
+
+<div class="about-text">
+
+<h2>
+About The Designer
+</h2>
+
+<p>
+
+I am a creative graphic designer specializing in branding,
+digital art, UI design, and futuristic visual concepts.
+My mission is transforming ideas into powerful designs
+that connect with people.
+
+</p>
+
+
+<div class="skills">
+
+<span>Photoshop</span>
+<span>Illustrator</span>
+<span>Branding</span>
+<span>UI Design</span>
+<span>3D Art</span>
+
+</div>
+
+</div>
+
+
+</section>
+
+
+
+
+
+<section>
+
+<h2 class="title">
+Creative Services
+</h2>
+
+
+<div class="services">
+
+<div class="card">
+<h3>Brand Identity</h3>
+<p>Logos, typography, and complete visual systems.</p>
+</div>
+
+<div class="card">
+<h3>Digital Art</h3>
+<p>Posters, illustrations, and futuristic concepts.</p>
+</div>
+
+<div class="card">
+<h3>Web Design</h3>
+<p>Modern responsive websites and interfaces.</p>
+</div>
+
+
+</div>
+
+</section>
+
+
+
+
+<section id="work">
+
+<h2 class="title">
+Featured Work
+</h2>
+
+
+<div class="gallery">
+
+<div class="project">
+<img src="https://images.unsplash.com/photo-1545235617-9465d2a55698">
+<h3>Cyber Branding</h3>
+</div>
+
+
+<div class="project">
+<img src="https://images.unsplash.com/photo-1561070791-36c11767b26a">
+<h3>Poster Design</h3>
+</div>
+
+
+<div class="project">
+<img src="https://images.unsplash.com/photo-1561070791-2526d30994b5">
+<h3>Creative Studio</h3>
+</div>
+
+</div>
+
+</section>
+
+
+
+
+<section>
+
+<div class="banner">
+
+<h2>
+Design The Future
+</h2>
+
+<p>
+Where creativity meets technology.
+</p>
+
+</div>
+
+</section>
+
+
+
+
+<section class="contact" id="contact">
+
+<h2 class="title">
+Contact
+</h2>
+
+<input placeholder="Name">
+
+<input placeholder="Email">
+
+<textarea placeholder="Project Details"></textarea>
+
+<br>
+
+<button>
+Send Message
+</button>
+
+
+</section>
+
+
+</body>
+</html>
