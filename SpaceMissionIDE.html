@@ -1,0 +1,955 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Space Mission IDE</title>
+
+<style>
+
+*{
+box-sizing:border-box;
+font-family:Tahoma,Arial,sans-serif;
+}
+
+body{
+
+margin:0;
+
+min-height:100vh;
+
+background:#777;
+
+display:flex;
+
+justify-content:center;
+
+align-items:flex-start;
+
+padding-top:30px;
+
+}
+
+
+/* JAVA FRAME */
+
+.frame{
+
+width:1250px;
+
+min-height:850px;
+
+background:#d6d3ce;
+
+border:3px solid #333;
+
+box-shadow:
+inset 2px 2px white,
+10px 10px 30px black;
+
+display:flex;
+
+flex-direction:column;
+
+}
+
+
+
+/* HEADER */
+
+
+.title{
+
+background:
+linear-gradient(#316ac5,#003399);
+
+color:white;
+
+padding:8px 12px;
+
+font-weight:bold;
+
+display:flex;
+
+justify-content:space-between;
+
+}
+
+
+.win button{
+
+width:28px;
+
+height:22px;
+
+background:#ddd;
+
+border:2px outset white;
+
+}
+
+
+
+
+
+/* MENU */
+
+
+.menubar{
+
+display:flex;
+
+background:#d6d3ce;
+
+border-bottom:2px solid #777;
+
+padding:5px;
+
+}
+
+
+.menu{
+
+padding:6px 15px;
+
+cursor:pointer;
+
+}
+
+
+.menu:hover{
+
+background:#316ac5;
+
+color:white;
+
+}
+
+
+
+/* TOOLBAR */
+
+
+.toolbar{
+
+background:#eee;
+
+padding:10px;
+
+border-bottom:2px solid #999;
+
+}
+
+
+.tool{
+
+background:#e8e8e8;
+
+border:3px outset white;
+
+padding:8px 15px;
+
+margin-right:8px;
+
+cursor:pointer;
+
+}
+
+
+.tool:active{
+
+border:3px inset gray;
+
+}
+
+
+
+
+
+.container{
+
+display:flex;
+
+flex:1;
+
+}
+
+
+
+
+
+/* EXPLORER */
+
+
+.explorer{
+
+width:280px;
+
+background:#eee;
+
+border:3px inset #aaa;
+
+padding:15px;
+
+}
+
+
+.explorer h3{
+
+color:#003399;
+
+}
+
+
+.explorer li{
+
+list-style:none;
+
+padding:8px;
+
+}
+
+
+.explorer li:hover{
+
+background:#316ac5;
+
+color:white;
+
+}
+
+
+
+
+
+/* CONTENT */
+
+
+.content{
+
+flex:1;
+
+padding:15px;
+
+overflow:auto;
+
+}
+
+
+
+.panel{
+
+background:#eee;
+
+border:3px groove white;
+
+padding:15px;
+
+margin-bottom:15px;
+
+}
+
+
+
+
+/* CARDS */
+
+
+.cards{
+
+display:grid;
+
+grid-template-columns:
+repeat(auto-fit,minmax(160px,1fr));
+
+gap:15px;
+
+}
+
+
+.card{
+
+background:#ddd;
+
+border:3px outset white;
+
+padding:20px;
+
+text-align:center;
+
+}
+
+
+.card h1{
+
+color:#003399;
+
+}
+
+
+
+
+/* TABLE */
+
+
+table{
+
+width:100%;
+
+border-collapse:collapse;
+
+background:white;
+
+}
+
+
+th{
+
+background:#316ac5;
+
+color:white;
+
+}
+
+
+td,th{
+
+padding:10px;
+
+border:1px solid #777;
+
+}
+
+
+.status{
+
+padding:6px 12px;
+
+border-radius:5px;
+
+}
+
+
+.green{
+
+background:#8cff8c;
+
+}
+
+
+.yellow{
+
+background:#ffff99;
+
+}
+
+
+.blue{
+
+background:#aaaaff;
+
+}
+
+
+
+/* CONSOLE */
+
+
+.console{
+
+background:black;
+
+color:#00ff00;
+
+padding:15px;
+
+font-family:Consolas;
+
+border:3px inset gray;
+
+}
+
+
+
+
+
+/* ABANDONED SECTION */
+
+
+.abandoned{
+
+background:
+
+linear-gradient(
+135deg,
+#111,
+#292929
+);
+
+
+color:#ddd;
+
+border:
+
+3px solid #555;
+
+
+box-shadow:
+
+inset 0 0 30px black;
+
+}
+
+
+
+.abandoned h2{
+
+color:#ff4444;
+
+}
+
+
+
+.warning{
+
+color:#ff5555;
+
+font-weight:bold;
+
+}
+
+
+
+.lost{
+
+display:grid;
+
+grid-template-columns:
+
+repeat(auto-fit,minmax(220px,1fr));
+
+gap:15px;
+
+}
+
+
+
+.lost-card{
+
+background:#1b1b1b;
+
+border:
+
+1px solid #555;
+
+padding:20px;
+
+border-radius:10px;
+
+}
+
+
+.lost-card h3{
+
+color:#ff9800;
+
+}
+
+
+
+
+
+.footer{
+
+background:#d6d3ce;
+
+border-top:2px solid #777;
+
+padding:8px;
+
+}
+
+
+
+
+@media(max-width:900px){
+
+
+.container{
+
+flex-direction:column;
+
+}
+
+
+.explorer{
+
+width:100%;
+
+}
+
+
+.frame{
+
+width:95%;
+
+}
+
+
+}
+
+
+</style>
+
+</head>
+
+
+
+<body>
+
+
+<div class="frame">
+
+
+
+<div class="title">
+
+<div>
+☕ Eclipse Space Mission IDE - Archive Mode
+</div>
+
+
+<div class="win">
+
+<button>_</button>
+
+<button>□</button>
+
+<button>X</button>
+
+</div>
+
+
+</div>
+
+
+
+
+<div class="menubar">
+
+<div class="menu">File</div>
+
+<div class="menu">Edit</div>
+
+<div class="menu">View</div>
+
+<div class="menu">Project</div>
+
+<div class="menu">Run</div>
+
+<div class="menu">Debug</div>
+
+<div class="menu">Help</div>
+
+</div>
+
+
+
+
+<div class="toolbar">
+
+<button class="tool">
+📄 New
+</button>
+
+<button class="tool">
+💾 Save
+</button>
+
+<button class="tool">
+▶ Run
+</button>
+
+<button class="tool">
+🚀 Launch
+</button>
+
+<button class="tool">
+🗃 Archive
+</button>
+
+
+</div>
+
+
+
+
+
+<div class="container">
+
+
+
+<div class="explorer">
+
+
+<h3>
+Project Explorer
+</h3>
+
+
+<ul>
+
+<li>📁 Space Mission Project</li>
+
+<li> └ 🚀 Starship Fleet</li>
+
+<li> └ 🤖 Robot Systems</li>
+
+<li> └ 🛰 ISS Control</li>
+
+<li> └ 🌙 Moon Orbit</li>
+
+<li> └ ⚛ Quantum Research</li>
+
+<li> └ 🧠 AI Core</li>
+
+<li> └ ⚠ Abandoned Archive</li>
+
+
+</ul>
+
+
+</div>
+
+
+
+
+
+<div class="content">
+
+
+
+<div class="panel">
+
+
+<h2>
+Mission Control Dashboard
+</h2>
+
+
+<div class="cards">
+
+
+<div class="card">
+
+<h1>25</h1>
+
+Starships
+
+</div>
+
+
+<div class="card">
+
+<h1>80</h1>
+
+Robots
+
+</div>
+
+
+<div class="card">
+
+<h1>99%</h1>
+
+ISS Health
+
+</div>
+
+
+<div class="card">
+
+<h1>AI-X</h1>
+
+System
+
+</div>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+<div class="panel">
+
+
+<h2>
+Mission.java Editor
+</h2>
+
+
+<input placeholder="Mission Name">
+
+
+<select>
+
+<option>Starship Launch</option>
+
+<option>Robot Exploration</option>
+
+<option>ISS Research</option>
+
+<option>Moon Orbit</option>
+
+<option>Quantum Experiment</option>
+
+<option>AI Training</option>
+
+</select>
+
+
+<input placeholder="Commander">
+
+
+<button class="tool">
+
+Register Mission
+
+</button>
+
+
+</div>
+
+
+
+
+
+<div class="panel">
+
+
+<h2>
+Mission JTable Database
+</h2>
+
+
+<table>
+
+
+<tr>
+
+<th>System</th>
+
+<th>Department</th>
+
+<th>Status</th>
+
+</tr>
+
+
+
+<tr>
+
+<td>🚀 Starship Explorer</td>
+
+<td>Launch Division</td>
+
+<td>
+<span class="status yellow">
+READY
+</span>
+</td>
+
+</tr>
+
+
+
+<tr>
+
+<td>🤖 Autonomous Robots</td>
+
+<td>Robotics Lab</td>
+
+<td>
+<span class="status green">
+ACTIVE
+</span>
+</td>
+
+</tr>
+
+
+
+<tr>
+
+<td>⚛ Quantum AI Engine</td>
+
+<td>Research Lab</td>
+
+<td>
+<span class="status blue">
+RUNNING
+</span>
+</td>
+
+</tr>
+
+
+</table>
+
+
+</div>
+
+
+
+
+
+
+
+<!-- ABANDONED AREA -->
+
+
+<div class="panel abandoned">
+
+
+<h2>
+⚠ Abandoned Space Projects Archive
+</h2>
+
+
+<p class="warning">
+
+WARNING: These missions have been removed from active development.
+
+</p>
+
+
+
+<div class="lost">
+
+
+
+<div class="lost-card">
+
+<h3>
+🚀 Project Eclipse-01
+</h3>
+
+<p>
+
+Prototype spacecraft lost after deep-space communication failure.
+
+</p>
+
+</div>
+
+
+
+<div class="lost-card">
+
+<h3>
+🤖 Robot Colony X
+</h3>
+
+<p>
+
+Autonomous Mars robots abandoned after AI navigation error.
+
+</p>
+
+</div>
+
+
+
+
+<div class="lost-card">
+
+<h3>
+🌙 Lunar Base Zero
+</h3>
+
+<p>
+
+Cancelled moon colony research facility.
+
+</p>
+
+</div>
+
+
+
+
+<div class="lost-card">
+
+<h3>
+⚛ Quantum Drive Test
+</h3>
+
+<p>
+
+Experimental propulsion system archived.
+
+</p>
+
+</div>
+
+
+</div>
+
+
+
+</div>
+
+
+
+
+
+
+<div class="console">
+
+Java Console<br>
+
+> JVM Initialized...<br>
+
+> Loading SpaceMission.java...<br>
+
+> Starship Module Loaded...<br>
+
+> AI Core Connected...<br>
+
+> Archive Database Opened...<br>
+
+> Abandoned Projects Found...
+
+</div>
+
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+<div class="footer">
+
+Ready | Eclipse Java Swing Space Mission Control | Archive Mode
+
+</div>
+
+
+</div>
+
+
+</body>
+
+</html>
