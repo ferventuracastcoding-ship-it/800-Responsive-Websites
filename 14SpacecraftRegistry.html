@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Spacecraft Registry</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Tahoma,Arial,sans-serif;
+}
+
+body{
+    background:#004f6e;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+}
+
+/* Window */
+
+.window{
+    width:1100px;
+    height:700px;
+    background:#d4d0c8;
+    border:2px solid #fff;
+    display:flex;
+    flex-direction:column;
+    box-shadow:12px 12px 25px rgba(0,0,0,.5);
+}
+
+/* Title Bar */
+
+.titlebar{
+    background:linear-gradient(#003399,#0066cc);
+    color:white;
+    padding:8px 12px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    font-weight:bold;
+}
+
+.controls button{
+    width:26px;
+    height:24px;
+}
+
+/* Menu */
+
+.menu{
+    background:#ece9d8;
+    padding:8px;
+    border-bottom:1px solid gray;
+}
+
+.menu span{
+    margin-right:20px;
+    cursor:pointer;
+}
+
+/* Toolbar */
+
+.toolbar{
+    background:#efefef;
+    padding:8px;
+    border-bottom:1px solid gray;
+}
+
+.toolbar button{
+    margin-right:8px;
+    padding:6px 12px;
+}
+
+/* Main */
+
+.workspace{
+    flex:1;
+    display:flex;
+}
+
+/* Left */
+
+.sidebar{
+    width:260px;
+    background:#f4f4f4;
+    border-right:1px solid gray;
+    padding:15px;
+}
+
+.sidebar ul{
+    margin-top:10px;
+    padding-left:20px;
+}
+
+/* Right */
+
+.main{
+    flex:1;
+    padding:20px;
+    overflow:auto;
+}
+
+input,
+select,
+textarea{
+
+    width:100%;
+    padding:10px;
+    margin:10px 0;
+}
+
+button.register{
+
+    padding:12px;
+    width:100%;
+    background:#0b7dda;
+    color:white;
+    border:none;
+    cursor:pointer;
+}
+
+table{
+
+    width:100%;
+    margin-top:20px;
+    border-collapse:collapse;
+}
+
+th,td{
+
+    border:1px solid gray;
+    padding:10px;
+    text-align:left;
+}
+
+th{
+    background:#d9edf7;
+}
+
+.status{
+
+    padding:8px;
+    background:#ece9d8;
+    border-top:1px solid gray;
+    font-size:14px;
+}
+
+@media(max-width:900px){
+
+.workspace{
+flex-direction:column;
+}
+
+.sidebar{
+width:100%;
+border-right:none;
+border-bottom:1px solid gray;
+}
+
+.window{
+width:98%;
+height:auto;
+}
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="window">
+
+<div class="titlebar">
+
+<div>Spacecraft Registry System</div>
+
+<div class="controls">
+<button>—</button>
+<button>□</button>
+<button>✕</button>
+</div>
+
+</div>
+
+<div class="menu">
+
+<span>File</span>
+<span>Registry</span>
+<span>Launches</span>
+<span>Reports</span>
+<span>Help</span>
+
+</div>
+
+<div class="toolbar">
+
+<button>New</button>
+<button>Save</button>
+<button>Launch</button>
+<button>Search</button>
+
+</div>
+
+<div class="workspace">
+
+<div class="sidebar">
+
+<h3>Mission Types</h3>
+
+<ul>
+
+<li>🌍 Earth Orbit</li>
+<li>🌙 Moon Mission</li>
+<li>☄️ Asteroid Mining</li>
+<li>🔴 Mars Orbit</li>
+<li>🛰 Deep Space</li>
+<li>✨ Warp Drive Test</li>
+
+</ul>
+
+</div>
+
+<div class="main">
+
+<h2>Register Spacecraft</h2>
+
+<input id="craft" placeholder="Spacecraft Name">
+
+<input id="captain" placeholder="Commander">
+
+<select id="destination">
+
+<option>Earth Orbit</option>
+<option>Moon</option>
+<option>Asteroid Mining</option>
+<option>Mars Orbit</option>
+<option>Deep Space</option>
+<option>Warp Drive Test</option>
+
+</select>
+
+<textarea id="notes" rows="4"
+placeholder="Mission Notes"></textarea>
+
+<button class="register" onclick="registerCraft()">
+
+Register Spacecraft
+
+</button>
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>Spacecraft</th>
+<th>Commander</th>
+<th>Destination</th>
+
+</tr>
+
+</thead>
+
+<tbody id="registry">
+
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+
+<div class="status" id="status">
+
+Ready - Awaiting Registration
+
+</div>
+
+</div>
+
+<script>
+
+function registerCraft(){
+
+let craft=document.getElementById("craft").value;
+let captain=document.getElementById("captain").value;
+let destination=document.getElementById("destination").value;
+
+if(craft==="" || captain===""){
+
+alert("Please complete all required fields.");
+return;
+
+}
+
+let row=`
+<tr>
+<td>${craft}</td>
+<td>${captain}</td>
+<td>${destination}</td>
+</tr>
+`;
+
+document.getElementById("registry").innerHTML+=row;
+
+document.getElementById("status").textContent=
+"Registered spacecraft: "+craft+" → "+destination;
+
+document.getElementById("craft").value="";
+document.getElementById("captain").value="";
+document.getElementById("notes").value="";
+
+}
+
+</script>
+
+</body>
+</html>
