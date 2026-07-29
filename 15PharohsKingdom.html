@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Ancient Egypt Adventure</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+
+body{
+margin:0;
+background:#080808;
+color:white;
+text-align:center;
+font-family:Georgia;
+}
+
+h1{
+color:#FFD700;
+}
+
+canvas{
+border:4px solid #FFD700;
+background:#d89b3c;
+max-width:95%;
+}
+
+button{
+padding:12px;
+margin:5px;
+font-size:18px;
+background:#FFD700;
+border:none;
+border-radius:8px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h1>𓂀 Pharaoh's Lost Kingdom</h1>
+
+<p id="status">
+Explore Egypt and find the Golden Scarab!
+</p>
+
+<canvas id="game" width="800" height="450"></canvas>
+
+<br>
+
+<button onclick="move(-1)">⬅ Move</button>
+<button onclick="move(1)">Move ➡</button>
+<button onclick="search()">🔍 Search</button>
+
+
+<script>
+
+const canvas=document.getElementById("game");
+const ctx=canvas.getContext("2d");
+
+
+let player={
+x:100,
+y:350,
+gold:0
+};
+
+
+let treasures=[
+{x:250,y:300},
+{x:450,y:250},
+{x:650,y:330}
+];
+
+
+let scarab={
+x:720,
+y:150,
+found:false
+};
+
+
+let scorpions=[
+{x:350,y:360},
+{x:550,y:340}
+];
+
+
+let night=false;
+
+
+function draw(){
+
+ctx.clearRect(0,0,800,450);
+
+
+// desert
+
+if(night)
+ctx.fillStyle="#11152b";
+else
+ctx.fillStyle="#d99a3c";
+
+ctx.fillRect(0,0,800,450);
+
+
+// sun/moon
+
+ctx.font="70px Arial";
+
+if(night)
+ctx.fillText("🌙",700,70);
+else
+ctx.fillText("☀️",700,70);
+
+
+// pyramid
+
+ctx.fillStyle="#e8c06a";
+
+ctx.beginPath();
+ctx.moveTo(350,300);
+ctx.lineTo(500,100);
+ctx.lineTo(650,300);
+ctx.closePath();
+ctx.fill();
+
+
+// temple
+
+ctx.fillStyle="#b88b42";
+ctx.fillRect(50,180,130,170);
+
+ctx.fillStyle="black";
+ctx.fillRect(80,230,25,120);
+ctx.fillRect(130,230,25,120);
+
+
+// treasures
+
+ctx.font="35px Arial";
+
+treasures.forEach(t=>{
+ctx.fillText("💎",t.x,t.y);
+});
+
+
+// scorpions
+
+scorpions.forEach(s=>{
+ctx.fillText("🦂",s.x,s.y);
+});
+
+
+// scarab
+
+if(!scarab.found)
+ctx.fillText("🪲",scarab.x,scarab.y);
+
+
+// player
+
+ctx.font="45px Arial";
+ctx.fillText("👑",player.x,player.y);
+
+
+requestAnimationFrame(draw);
+
+}
+
+
+
+function move(dir){
+
+player.x+=dir*25;
+
+
+if(player.x>780)
+player.x=780;
+
+if(player.x<0)
+player.x=0;
+
+
+
+treasures.forEach((t,i)=>{
+
+if(Math.abs(player.x-t.x)<40){
+
+treasures.splice(i,1);
+
+player.gold++;
+
+document.getElementById("status").innerHTML=
+"💎 Treasure found! Gold: "+player.gold;
+
+}
+
+});
+
+
+if(Math.abs(player.x-scarab.x)<40){
+
+scarab.found=true;
+
+document.getElementById("status").innerHTML=
+"🏆 You found the Golden Scarab! Egypt is saved!";
+
+}
+
+
+}
+
+
+
+function search(){
+
+night=!night;
+
+
+document.getElementById("status").innerHTML=
+night?
+"🌙 The desert becomes mysterious..."
+:
+"☀️ The Egyptian sun rises.";
+
+}
+
+
+
+draw();
+
+</script>
+
+</body>
+</html>
