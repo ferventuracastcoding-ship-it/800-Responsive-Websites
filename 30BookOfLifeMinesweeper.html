@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<title>Book of Life Minesweeper</title>
+
+<style>
+
+body{
+background:#111;
+color:white;
+font-family:Arial;
+text-align:center;
+}
+
+
+h1{
+color:#ffd700;
+}
+
+
+#instructions{
+
+background:#222;
+border:2px solid #ffd700;
+border-radius:10px;
+
+padding:15px;
+margin:20px auto;
+
+max-width:600px;
+
+text-align:left;
+
+}
+
+
+#stats{
+
+display:flex;
+justify-content:center;
+gap:25px;
+
+font-size:20px;
+
+}
+
+
+#board{
+
+display:grid;
+justify-content:center;
+gap:3px;
+
+margin:20px;
+
+}
+
+
+.cell{
+
+width:40px;
+height:40px;
+
+background:#333;
+
+border:1px solid #777;
+
+display:flex;
+align-items:center;
+justify-content:center;
+
+font-size:20px;
+
+cursor:pointer;
+
+}
+
+
+.cell:hover{
+
+background:#555;
+
+}
+
+
+.open{
+
+background:#222;
+
+}
+
+
+.mine{
+
+background:#990000;
+
+}
+
+
+
+button,select{
+
+padding:10px;
+font-size:16px;
+
+}
+
+
+#message{
+
+color:#00ff99;
+
+}
+
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<h1>📖 Book of Life Minesweeper</h1>
+
+
+
+<div id="instructions">
+
+
+<h2>🎮 How To Play</h2>
+
+
+<p>
+The Book of Life is a Minesweeper-style puzzle.
+Each hidden page contains either wisdom or a hidden trial.
+</p>
+
+
+<h3>🎯 Goal</h3>
+
+<ul>
+
+<li>
+Reveal all safe pages.
+</li>
+
+<li>
+Avoid hidden ⚡ Trials.
+</li>
+
+<li>
+Complete the entire Book of Life to win.
+</li>
+
+</ul>
+
+
+
+<h3>📖 Game Rules</h3>
+
+<ul>
+
+<li>
+📖 = Safe page discovered
+</li>
+
+
+<li>
+Numbers show how many nearby trials exist.
+</li>
+
+
+<li>
+⚡ = Hidden trial. Discovering one ends the journey.
+</li>
+
+
+</ul>
+
+
+
+<h3>🏆 Scoring</h3>
+
+
+<ul>
+
+<li>
+Safe page: +10 points
+</li>
+
+<li>
+Trial discovered: -50 points
+</li>
+
+<li>
+Complete the book: +500 bonus
+</li>
+
+</ul>
+
+
+
+<h3>💡 Strategy Tips</h3>
+
+<ul>
+
+<li>
+Use numbers to predict where trials are located.
+</li>
+
+<li>
+Open empty areas to reveal multiple pages.
+</li>
+
+<li>
+Plan carefully instead of clicking randomly.
+</li>
+
+</ul>
+
+
+
+</div>
+
+
+
+
+
+<div id="stats">
+
+
+<div>
+Score:
+<span id="score">
+0
+</span>
+</div>
+
+
+<div>
+Trials:
+<span id="mineCount">
+0
+</span>
+</div>
+
+
+<div>
+Time:
+<span id="time">
+0
+</span>
+</div>
+
+
+</div>
+
+
+
+
+
+<select id="difficulty">
+
+
+<option value="easy">
+Easy Book
+</option>
+
+
+<option value="medium">
+Medium Book
+</option>
+
+
+<option value="hard">
+Hard Book
+</option>
+
+
+</select>
+
+
+
+<button onclick="newGame()">
+📖 New Book
+</button>
+
+
+
+
+<h2 id="message"></h2>
+
+
+<div id="board"></div>
+
+
+
+
+<script>
+
+
+let size;
+
+let mines;
+
+
+let grid=[];
+
+let opened=[];
+
+
+let score=0;
+
+let time=0;
+
+let timer;
+
+
+
+const board=
+document.getElementById("board");
+
+
+
+
+
+function settings(){
+
+
+let level=
+difficulty.value;
+
+
+
+if(level==="easy"){
+
+size=8;
+mines=8;
+
+}
+
+
+if(level==="medium"){
+
+size=12;
+mines=20;
+
+}
+
+
+if(level==="hard"){
+
+size=16;
+mines=45;
+
+}
+
+
+}
+
+
+
+
+
+
+
+function newGame(){
+
+
+clearInterval(timer);
+
+
+settings();
+
+
+grid=[];
+
+opened=[];
+
+
+score=0;
+
+time=0;
+
+
+message.innerHTML="";
+
+
+scoreDisplay();
+
+
+
+createGrid();
+
+placeMines();
+
+calculateNumbers();
+
+
+draw();
+
+
+
+timer=setInterval(()=>{
+
+
+time++;
+
+
+document.getElementById(
+"time"
+).innerHTML=time;
+
+
+},1000);
+
+
+}
+
+
+
+
+
+function createGrid(){
+
+
+
+for(let r=0;r<size;r++){
+
+
+grid[r]=[];
+
+opened[r]=[];
+
+
+
+for(let c=0;c<size;c++){
+
+
+grid[r][c]=0;
+
+opened[r][c]=false;
+
+
+}
+
+
+
+}
+
+
+}
+
+
+
+
+
+
+function placeMines(){
+
+
+
+let count=0;
+
+
+while(count<mines){
+
+
+
+let r=
+Math.floor(Math.random()*size);
+
+
+let c=
+Math.floor(Math.random()*size);
+
+
+
+if(grid[r][c]!=="M"){
+
+
+grid[r][c]="M";
+
+count++;
+
+
+}
+
+
+}
+
+
+
+}
+
+
+
+
+
+
+function calculateNumbers(){
+
+
+
+for(let r=0;r<size;r++){
+
+
+for(let c=0;c<size;c++){
+
+
+
+if(grid[r][c]!=="M"){
+
+
+grid[r][c]=countNearby(r,c);
+
+
+}
+
+
+
+}
+
+
+
+}
+
+
+
+}
+
+
+
+
+
+
+function countNearby(r,c){
+
+
+let total=0;
+
+
+
+for(let x=-1;x<=1;x++){
+
+
+for(let y=-1;y<=1;y++){
+
+
+
+let nr=r+x;
+
+let nc=c+y;
+
+
+
+if(
+nr>=0 &&
+nc>=0 &&
+nr<size &&
+nc<size
+){
+
+
+if(grid[nr][nc]==="M")
+
+total++;
+
+
+}
+
+
+
+}
+
+
+
+}
+
+
+
+return total;
+
+
+}
+
+
+
+
+
+
+
+
+function openCell(r,c){
+
+
+
+if(opened[r][c])
+return;
+
+
+
+if(
+r<0 ||
+c<0 ||
+r>=size ||
+c>=size
+)
+return;
+
+
+
+opened[r][c]=true;
+
+
+
+if(grid[r][c]==="M"){
+
+
+message.innerHTML=
+"⚡ A hidden trial was found";
+
+
+showMines();
+
+return;
+
+
+}
+
+
+
+score+=10;
+
+
+
+if(grid[r][c]===0){
+
+
+
+for(let x=-1;x<=1;x++){
+
+
+for(let y=-1;y<=1;y++){
+
+
+openCell(
+r+x,
+c+y
+);
+
+
+}
+
+
+
+}
+
+
+
+}
+
+
+
+scoreDisplay();
+
+draw();
+
+checkWin();
+
+
+
+}
+
+
+
+
+
+
+
+function checkWin(){
+
+
+let openedCount=0;
+
+
+for(let r=0;r<size;r++){
+
+
+for(let c=0;c<size;c++){
+
+
+if(opened[r][c])
+
+openedCount++;
+
+
+}
+
+
+}
+
+
+
+if(
+openedCount===
+size*size-mines
+){
+
+
+score+=500;
+
+
+scoreDisplay();
+
+
+message.innerHTML=
+"🏆 The Book of Life is Complete!";
+
+
+clearInterval(timer);
+
+
+}
+
+
+
+}
+
+
+
+
+
+function showMines(){
+
+
+
+for(let r=0;r<size;r++){
+
+
+for(let c=0;c<size;c++){
+
+
+if(grid[r][c]==="M")
+
+opened[r][c]=true;
+
+
+}
+
+
+
+}
+
+
+draw();
+
+
+}
+
+
+
+
+
+
+
+function scoreDisplay(){
+
+
+document.getElementById(
+"score"
+).innerHTML=score;
+
+
+document.getElementById(
+"mineCount"
+).innerHTML=mines;
+
+
+}
+
+
+
+
+
+
+
+function draw(){
+
+
+
+board.style.gridTemplateColumns=
+`repeat(${size},40px)`;
+
+
+let html="";
+
+
+
+for(let r=0;r<size;r++){
+
+
+for(let c=0;c<size;c++){
+
+
+
+let value="";
+
+let cls="cell";
+
+
+
+if(opened[r][c]){
+
+
+cls+=" open";
+
+
+if(grid[r][c]==="M"){
+
+cls+=" mine";
+
+value="⚡";
+
+
+}
+
+else{
+
+
+value=
+grid[r][c]===0
+?
+"📖"
+:
+grid[r][c];
+
+
+}
+
+
+}
+
+
+
+
+html+=`
+
+<div class="${cls}"
+
+onclick="openCell(${r},${c})">
+
+${value}
+
+</div>
+
+`;
+
+
+
+}
+
+
+
+}
+
+
+
+board.innerHTML=html;
+
+
+}
+
+
+
+
+newGame();
+
+
+</script>
+
+
+</body>
+</html>
