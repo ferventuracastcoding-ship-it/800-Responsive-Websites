@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Moon Ocean Finished Jigsaw</title>
+
+<style>
+
+body{
+margin:0;
+background:#07111f;
+color:white;
+font-family:Georgia,serif;
+text-align:center;
+}
+
+h1{
+color:#f4d58d;
+}
+
+.container{
+max-width:600px;
+margin:auto;
+}
+
+canvas{
+width:95vw;
+max-width:500px;
+height:auto;
+border:7px solid #7a4c20;
+box-shadow:0 0 25px black;
+touch-action:none;
+}
+
+button{
+
+padding:12px 18px;
+margin:6px;
+font-size:16px;
+border-radius:10px;
+border:none;
+background:#d8b36a;
+cursor:pointer;
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+<div class="container">
+
+<h1>🌙 Moon Ocean Ancient Puzzle</h1>
+
+<p>
+Restore the lost painting by arranging the fragments.
+</p>
+
+<canvas id="canvas" width="500" height="500"></canvas>
+
+<br>
+
+<button onclick="shuffle()">Shuffle</button>
+
+<button onclick="finished()">Finished Version</button>
+
+<button onclick="resetGame()">Reset Puzzle</button>
+
+<h2 id="status">
+Moves: 0
+</h2>
+
+</div>
+
+
+<script>
+
+
+const canvas=document.getElementById("canvas");
+const ctx=canvas.getContext("2d");
+
+
+const SIZE=5;
+const TILE=100;
+
+
+let moves=0;
+let selected=-1;
+
+
+let pieces=[];
+
+
+
+// Artwork canvas
+
+let painting=document.createElement("canvas");
+
+painting.width=500;
+painting.height=500;
+
+
+let art=painting.getContext("2d");
+
+
+
+// Sky
+
+let sky=art.createLinearGradient(0,0,0,300);
+
+sky.addColorStop(0,"#10152f");
+
+sky.addColorStop(1,"#71536a");
+
+
+art.fillStyle=sky;
+
+art.fillRect(0,0,500,500);
+
+
+
+// Moon
+
+art.beginPath();
+
+art.arc(380,100,55,0,Math.PI*2);
+
+art.fillStyle="#ffe8a0";
+
+art.fill();
+
+
+
+// Ocean
+
+let ocean=art.createLinearGradient(0,250,0,500);
+
+ocean.addColorStop(0,"#17445d");
+
+ocean.addColorStop(1,"#031622");
+
+
+art.fillStyle=ocean;
+
+art.fillRect(0,250,500,250);
+
+
+
+// Reflection
+
+for(let i=0;i<25;i++){
+
+art.fillStyle="rgba(255,230,150,.2)";
+
+art.fillRect(
+370-Math.random()*20,
+260+i*8,
+30,
+5
+);
+
+}
+
+
+
+// Waves
+
+art.strokeStyle="#b9d6df";
+
+
+for(let y=300;y<500;y+=25){
+
+art.beginPath();
+
+for(let x=0;x<500;x+=20){
+
+art.lineTo(
+x,
+y+Math.sin(x/25)*4
+);
+
+}
+
+art.stroke();
+
+}
+
+
+
+// Ship
+
+art.fillStyle="#321b10";
+
+art.beginPath();
+
+art.moveTo(100,390);
+art.lineTo(300,390);
+art.lineTo(250,430);
+art.lineTo(150,430);
+
+art.closePath();
+
+art.fill();
+
+
+art.fillRect(195,260,8,130);
+
+
+art.fillStyle="#fff";
+
+art.beginPath();
+
+art.moveTo(203,270);
+art.lineTo(280,370);
+art.lineTo(203,370);
+
+art.fill();
+
+
+
+
+// Create pieces
+
+function createPieces(){
+
+pieces=[];
+
+
+for(let r=0;r<SIZE;r++){
+
+for(let c=0;c<SIZE;c++){
+
+
+pieces.push({
+
+id:r*SIZE+c,
+
+sx:c*TILE,
+
+sy:r*TILE,
+
+rotation:0
+
+});
+
+
+}
+
+}
+
+}
+
+
+
+
+function draw(){
+
+
+ctx.clearRect(0,0,500,500);
+
+
+
+pieces.forEach((p,i)=>{
+
+
+let x=i%SIZE*TILE;
+
+let y=Math.floor(i/SIZE)*TILE;
+
+
+
+ctx.save();
+
+
+ctx.translate(
+x+50,
+y+50
+);
+
+
+ctx.rotate(
+p.rotation*Math.PI/180
+);
+
+
+
+ctx.drawImage(
+painting,
+p.sx,
+p.sy,
+TILE,
+TILE,
+-50,
+-50,
+TILE,
+TILE
+);
+
+
+ctx.restore();
+
+
+ctx.strokeStyle="#3b210c";
+
+ctx.strokeRect(
+x,
+y,
+TILE,
+TILE
+);
+
+
+
+if(i===selected){
+
+ctx.strokeStyle="yellow";
+
+ctx.lineWidth=5;
+
+ctx.strokeRect(
+x,
+y,
+TILE,
+TILE
+);
+
+}
+
+
+});
+
+
+document.getElementById("status")
+.innerHTML="Moves: "+moves;
+
+
+}
+
+
+
+
+function clickTile(x,y){
+
+
+let rect=canvas.getBoundingClientRect();
+
+
+let scale=500/rect.width;
+
+
+x=(x-rect.left)*scale;
+
+y=(y-rect.top)*scale;
+
+
+let col=Math.floor(x/TILE);
+
+let row=Math.floor(y/TILE);
+
+
+let index=row*SIZE+col;
+
+
+
+if(selected==-1){
+
+selected=index;
+
+}
+
+else{
+
+
+if(selected==index){
+
+
+pieces[index].rotation+=90;
+
+
+if(pieces[index].rotation>=360)
+
+pieces[index].rotation=0;
+
+
+}
+
+else{
+
+
+let temp=pieces[selected];
+
+pieces[selected]=pieces[index];
+
+pieces[index]=temp;
+
+
+}
+
+
+moves++;
+
+selected=-1;
+
+}
+
+
+draw();
+
+
+}
+
+
+
+canvas.addEventListener(
+"click",
+e=>clickTile(
+e.clientX,
+e.clientY
+)
+);
+
+
+
+canvas.addEventListener(
+"touchstart",
+e=>{
+
+let t=e.touches[0];
+
+clickTile(
+t.clientX,
+t.clientY
+);
+
+e.preventDefault();
+
+},
+{passive:false}
+);
+
+
+
+
+
+function shuffle(){
+
+
+for(let i=0;i<150;i++){
+
+let a=Math.floor(Math.random()*pieces.length);
+
+let b=Math.floor(Math.random()*pieces.length);
+
+
+[
+pieces[a],
+pieces[b]
+]=
+[
+pieces[b],
+pieces[a]
+];
+
+
+}
+
+
+
+pieces.forEach(p=>{
+
+p.rotation=
+Math.floor(Math.random()*4)*90;
+
+});
+
+
+moves=0;
+
+selected=-1;
+
+draw();
+
+}
+
+
+
+
+// Show finished painting
+
+function finished(){
+
+ctx.clearRect(0,0,500,500);
+
+ctx.drawImage(
+painting,
+0,
+0
+);
+
+
+document.getElementById("status")
+.innerHTML=
+"🏆 Finished Version";
+
+}
+
+
+
+
+function resetGame(){
+
+createPieces();
+
+shuffle();
+
+}
+
+
+
+
+createPieces();
+
+shuffle();
+
+draw();
+
+
+</script>
+
+</body>
+</html>
