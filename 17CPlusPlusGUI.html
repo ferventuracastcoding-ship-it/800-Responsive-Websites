@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<title>C++ Linux GUI Project</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+}
+
+
+body{
+
+background:#020617;
+color:white;
+
+}
+
+
+/* HERO */
+
+.hero{
+
+height:100vh;
+
+display:flex;
+justify-content:center;
+align-items:center;
+text-align:center;
+
+background:
+
+linear-gradient(
+rgba(0,0,0,.7),
+rgba(2,6,23,.95)
+),
+
+url("https://images.unsplash.com/photo-1517336714731-489689fd1ca8");
+
+background-size:cover;
+
+}
+
+
+.hero h1{
+
+font-size:70px;
+
+color:#facc15;
+
+text-shadow:
+0 0 30px #facc15;
+
+}
+
+
+.hero p{
+
+font-size:22px;
+
+max-width:750px;
+
+margin:25px auto;
+
+color:#cbd5e1;
+
+}
+
+
+
+
+section{
+
+padding:80px 10%;
+
+}
+
+
+
+.title{
+
+text-align:center;
+
+font-size:45px;
+
+color:#facc15;
+
+margin-bottom:50px;
+
+}
+
+
+
+/* CARDS */
+
+
+.grid{
+
+display:grid;
+
+grid-template-columns:
+repeat(auto-fit,minmax(280px,1fr));
+
+gap:30px;
+
+}
+
+
+.card{
+
+background:#111827;
+
+border:1px solid #334155;
+
+border-radius:20px;
+
+padding:30px;
+
+transition:.3s;
+
+}
+
+
+.card:hover{
+
+transform:translateY(-10px);
+
+box-shadow:
+0 0 30px #facc15;
+
+}
+
+
+.card h2{
+
+color:#facc15;
+
+margin-bottom:15px;
+
+}
+
+
+
+
+/* TERMINAL */
+
+
+.terminal{
+
+background:#000;
+
+border:2px solid #22c55e;
+
+padding:30px;
+
+border-radius:15px;
+
+font-family:monospace;
+
+color:#22c55e;
+
+line-height:1.8;
+
+}
+
+
+
+/* LINUX WINDOW */
+
+
+.window{
+
+background:#1e293b;
+
+border-radius:15px;
+
+overflow:hidden;
+
+}
+
+
+.top{
+
+background:#334155;
+
+padding:15px;
+
+color:#facc15;
+
+}
+
+
+.screen{
+
+padding:30px;
+
+font-family:monospace;
+
+color:#38bdf8;
+
+}
+
+
+
+
+footer{
+
+background:black;
+
+padding:40px;
+
+text-align:center;
+
+}
+
+
+
+
+
+@media(max-width:700px){
+
+.hero h1{
+
+font-size:40px;
+
+}
+
+
+.title{
+
+font-size:32px;
+
+}
+
+
+section{
+
+padding:50px 5%;
+
+}
+
+}
+
+</style>
+
+</head>
+
+
+
+<body>
+
+
+
+
+<header class="hero">
+
+<div>
+
+<h1>
+C++ Linux GUI Project
+</h1>
+
+
+<p>
+
+Building a custom Linux desktop application
+using C++, graphical interfaces,
+and system programming.
+
+</p>
+
+
+</div>
+
+</header>
+
+
+
+
+
+
+
+
+<section>
+
+
+<h2 class="title">
+🐧 Project Overview
+</h2>
+
+
+<div class="card">
+
+
+<p>
+
+This project creates a Linux-based GUI application
+using C++ that interacts with the operating system,
+manages files, displays system information,
+and provides a user-friendly interface.
+
+</p>
+
+
+</div>
+
+
+</section>
+
+
+
+
+
+
+
+
+<section>
+
+
+<h2 class="title">
+🖥️ Linux Desktop Interface
+</h2>
+
+
+<div class="window">
+
+
+<div class="top">
+
+Linux GUI Explorer
+
+</div>
+
+
+<div class="screen">
+
+
+&gt; user@linux:~$ system_info
+
+<br>
+
+CPU: 8 Core Processor
+
+<br>
+
+Memory: 32 GB RAM
+
+<br>
+
+Kernel: Linux 6.x
+
+<br>
+
+Status: Running...
+
+<br><br>
+
+&gt; Application Loaded
+
+
+</div>
+
+
+</div>
+
+
+</section>
+
+
+
+
+
+
+
+
+<section>
+
+
+<h2 class="title">
+⚙️ Core Features
+</h2>
+
+
+
+<div class="grid">
+
+
+
+<div class="card">
+
+<h2>
+File Manager
+</h2>
+
+<p>
+
+Browse directories,
+create files,
+and manage storage.
+
+</p>
+
+</div>
+
+
+
+<div class="card">
+
+<h2>
+System Monitor
+</h2>
+
+<p>
+
+Display CPU usage,
+memory,
+and running processes.
+
+</p>
+
+</div>
+
+
+
+
+<div class="card">
+
+<h2>
+GUI Controls
+</h2>
+
+<p>
+
+Buttons, menus,
+windows, and custom widgets.
+
+</p>
+
+</div>
+
+
+
+
+<div class="card">
+
+<h2>
+Terminal Integration
+</h2>
+
+<p>
+
+Execute Linux commands
+inside the application.
+
+</p>
+
+</div>
+
+
+</div>
+
+
+</section>
+
+
+
+
+
+
+
+
+<section>
+
+
+<h2 class="title">
+💻 C++ Technologies
+</h2>
+
+
+<div class="grid">
+
+
+<div class="card">
+
+<h2>
+C++ Programming
+</h2>
+
+<p>
+
+Object-oriented programming,
+classes, memory management,
+and system design.
+
+</p>
+
+</div>
+
+
+
+<div class="card">
+
+<h2>
+GUI Frameworks
+</h2>
+
+<p>
+
+Qt, GTK,
+or custom graphics libraries.
+
+</p>
+
+</div>
+
+
+
+
+<div class="card">
+
+<h2>
+Linux APIs
+</h2>
+
+<p>
+
+Processes, files,
+threads, and system calls.
+
+</p>
+
+</div>
+
+
+
+<div class="card">
+
+<h2>
+Data Structures
+</h2>
+
+<p>
+
+Trees, queues,
+hash tables,
+and file indexing.
+
+</p>
+
+</div>
+
+
+
+</div>
+
+</section>
+
+
+
+
+
+
+
+
+<section>
+
+
+<h2 class="title">
+🚀 Future Improvements
+</h2>
+
+
+<div class="grid">
+
+
+<div class="card">
+
+<h2>
+Custom Linux Desktop
+</h2>
+
+<p>
+
+Create a complete desktop
+environment written in C++.
+
+</p>
+
+</div>
+
+
+
+<div class="card">
+
+<h2>
+AI Assistant
+</h2>
+
+<p>
+
+Add an intelligent Linux
+command assistant.
+
+</p>
+
+</div>
+
+
+
+
+<div class="card">
+
+<h2>
+Security Tools
+</h2>
+
+<p>
+
+Add encryption,
+permissions,
+and monitoring.
+
+</p>
+
+</div>
+
+
+
+</div>
+
+
+</section>
+
+
+
+
+
+
+
+<section>
+
+
+<h2 class="title">
+Terminal Demo
+</h2>
+
+
+<div class="terminal">
+
+
+$ g++ linux_gui.cpp -o app
+
+<br>
+
+$ ./app
+
+<br>
+
+Starting Linux GUI...
+
+<br>
+
+Loading C++ modules...
+
+<br>
+
+System Ready ✓
+
+
+</div>
+
+
+</section>
+
+
+
+
+
+
+<footer>
+
+C++ Linux GUI Project © 2026
+
+<br>
+
+"Building software close to the machine."
+
+</footer>
+
+
+
+</body>
+</html>
