@@ -1,0 +1,1626 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>20 JavaScript Nested For Loops</title>
+
+<style>
+
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+body{
+    background:#050b14;
+    color:#e5e7eb;
+    font-family:Arial,sans-serif;
+    padding:30px 15px;
+}
+
+.container{
+    max-width:1300px;
+    margin:auto;
+}
+
+header{
+    background:#0c1625;
+    border:1px solid #263b56;
+    padding:55px 20px;
+    text-align:center;
+    margin-bottom:30px;
+}
+
+header h1{
+    color:#38bdf8;
+    font-family:Consolas,monospace;
+    font-size:clamp(35px,6vw,65px);
+}
+
+header p{
+    color:#94a3b8;
+    margin-top:15px;
+    font-size:18px;
+}
+
+.badge{
+    display:inline-block;
+    margin-top:20px;
+    padding:8px 18px;
+    border:1px solid #38bdf8;
+    color:#38bdf8;
+    font-family:Consolas,monospace;
+}
+
+.grid{
+    display:grid;
+    grid-template-columns:
+        repeat(auto-fit,minmax(350px,1fr));
+    gap:25px;
+}
+
+.card{
+    background:#0c1625;
+    border:1px solid #263b56;
+    padding:22px;
+}
+
+.card h2{
+    color:#facc15;
+    font-family:Consolas,monospace;
+    margin-bottom:10px;
+}
+
+.description{
+    color:#94a3b8;
+    line-height:1.5;
+    min-height:45px;
+}
+
+.code-title,
+.output-title{
+    margin-top:18px;
+    margin-bottom:8px;
+    color:#64748b;
+    font-family:Consolas,monospace;
+    font-size:12px;
+    text-transform:uppercase;
+}
+
+.code{
+    background:#020617;
+    color:#86efac;
+    border:1px solid #1e293b;
+    padding:15px;
+    min-height:120px;
+    overflow:auto;
+    white-space:pre;
+    font-family:Consolas,monospace;
+    font-size:12px;
+}
+
+.output{
+    background:#000;
+    border:1px solid #334155;
+    min-height:190px;
+    padding:15px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    overflow:auto;
+}
+
+.output pre{
+    font-family:Consolas,monospace;
+    line-height:1.05;
+    font-size:13px;
+}
+
+/* Pattern colors */
+
+.mars{color:#ef4444}
+.falcon{color:#e2e8f0}
+.diamond{color:#67e8f9}
+.slanted{color:#facc15}
+.kite{color:#c084fc}
+.stars{color:#fde047}
+.pyramid{color:#fb923c}
+.box-pattern{color:#4ade80}
+.wave{color:#60a5fa}
+.hourglass{color:#f472b6}
+
+.tree{color:#22c55e}
+.butterfly{color:#f472b6}
+.xpattern{color:#f97316}
+.checker{color:#a78bfa}
+.spiral{color:#22d3ee}
+.triangle{color:#fbbf24}
+.hollow{color:#fb7185}
+.flame{color:#ff7a18}
+.galaxy{color:#c4b5fd}
+.dna{color:#38bdf8}
+
+footer{
+    text-align:center;
+    padding:45px 10px 20px;
+    color:#64748b;
+    font-family:Consolas,monospace;
+}
+
+@media(max-width:600px){
+
+    body{
+        padding:15px 8px;
+    }
+
+    .grid{
+        grid-template-columns:1fr;
+    }
+
+    .output pre{
+        font-size:10px;
+    }
+
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<header>
+
+<h1>20 JavaScript Nested For Loops</h1>
+
+<p>
+A visual programming laboratory built entirely with JavaScript loops
+</p>
+
+<div class="badge">
+20 LOOP ALGORITHMS
+</div>
+
+</header>
+
+
+<div class="grid">
+
+
+<!-- =================================================
+01 MARS
+================================================= -->
+
+<div class="card">
+
+<h2>01. Mars</h2>
+
+<p class="description">
+A circular Mars planet generated from a 2D coordinate grid.
+</p>
+
+<div class="code-title">JavaScript</div>
+
+<div class="code">for(let y=0;y&lt;15;y++){
+
+    for(let x=0;x&lt;29;x++){
+
+        let dx=x-14;
+        let dy=(y-7)*1.8;
+
+        let distance=
+            Math.sqrt(dx*dx+dy*dy);
+
+        if(distance&lt;13){
+            result+="●";
+        }
+    }
+}</div>
+
+<div class="output mars">
+<pre id="mars"></pre>
+</div>
+
+</div>
+
+
+
+<!-- =================================================
+02 FALCON
+================================================= -->
+
+<div class="card">
+
+<h2>02. Falcon 9 Rocket</h2>
+
+<p class="description">
+A rocket constructed by scanning rows and columns.
+</p>
+
+<div class="code-title">JavaScript</div>
+
+<div class="code">for(let row=0;row&lt;15;row++){
+
+    for(let col=0;col&lt;25;col++){
+
+        // Find rocket parts
+
+    }
+}</div>
+
+<div class="output falcon">
+<pre id="falcon"></pre>
+</div>
+
+</div>
+
+
+
+<!-- =================================================
+03 DIAMOND
+================================================= -->
+
+<div class="card">
+
+<h2>03. Diamond</h2>
+
+<p class="description">
+A symmetrical diamond using nested loops.
+</p>
+
+<div class="code-title">JavaScript</div>
+
+<div class="code">for(let i=1;i&lt;=7;i++){
+
+    for(let j=0;j&lt;7-i;j++)
+        result+=" ";
+
+    for(let j=0;j&lt;2*i-1;j++)
+        result+="◆";
+}</div>
+
+<div class="output diamond">
+<pre id="diamond"></pre>
+</div>
+
+</div>
+
+
+
+<!-- =================================================
+04 SLANTED
+================================================= -->
+
+<div class="card">
+
+<h2>04. Slanted Pattern</h2>
+
+<p class="description">
+A diagonal block pattern created with increasing indentation.
+</p>
+
+<div class="code-title">JavaScript</div>
+
+<div class="code">for(let row=0;row&lt;10;row++){
+
+    for(let space=0;space&lt;row;space++)
+        result+="  ";
+
+    for(let x=0;x&lt;5;x++)
+        result+="##";
+}</div>
+
+<div class="output slanted">
+<pre id="slanted"></pre>
+</div>
+
+</div>
+
+
+
+<!-- =================================================
+05 KITE
+================================================= -->
+
+<div class="card">
+
+<h2>05. Kite</h2>
+
+<p class="description">
+Two mirrored triangles create a kite shape.
+</p>
+
+<div class="code-title">JavaScript</div>
+
+<div class="code">for(let i=1;i&lt;=6;i++){
+
+    for(let j=0;j&lt;6-i;j++)
+        result+=" ";
+
+    for(let j=0;j&lt;2*i-1;j++)
+        result+="◇";
+}</div>
+
+<div class="output kite">
+<pre id="kite"></pre>
+</div>
+
+</div>
+
+
+
+<!-- =================================================
+06 STARS
+================================================= -->
+
+<div class="card">
+
+<h2>06. Star Field</h2>
+
+<p class="description">
+A pseudo-random galaxy generated by scanning a grid.
+</p>
+
+<div class="code-title">JavaScript</div>
+
+<div class="code">for(let row=0;row&lt;12;row++){
+
+    for(let col=0;col&lt;30;col++){
+
+        let value=
+            (row*17+col*31)%19;
+    }
+}</div>
+
+<div class="output stars">
+<pre id="stars"></pre>
+</div>
+
+</div>
+
+
+
+<!-- =================================================
+07 PYRAMID
+================================================= -->
+
+<div class="card">
+
+<h2>07. Pyramid</h2>
+
+<p class="description">
+A centered pyramid generated from spaces and symbols.
+</p>
+
+<div class="code-title">JavaScript</div>
+
+<div class="code">for(let i=1;i&lt;=8;i++){
+
+    for(let j=0;j&lt;8-i;j++)
+        result+=" ";
+
+    for(let j=0;j&lt;2*i-1;j++)
+        result+="▲";
+}</div>
+
+<div class="output pyramid">
+<pre id="pyramid"></pre>
+</div>
+
+</div>
+
+
+
+<!-- =================================================
+08 BOX
+================================================= -->
+
+<div class="card">
+
+<h2>08. Hollow Box</h2>
+
+<p class="description">
+The loops detect the four edges of a rectangle.
+</p>
+
+<div class="code-title">JavaScript</div>
+
+<div class="code">for(let row=0;row&lt;10;row++){
+
+    for(let col=0;col&lt;22;col++){
+
+        if(row===0 ||
+           row===9 ||
+           col===0 ||
+           col===21){
+
+            result+="█";
+        }
+    }
+}</div>
+
+<div class="output box-pattern">
+<pre id="box"></pre>
+</div>
+
+</div>
+
+
+
+<!-- =================================================
+09 WAVE
+================================================= -->
+
+<div class="card">
+
+<h2>09. Wave</h2>
+
+<p class="description">
+A sine wave calculated while scanning a 2D grid.
+</p>
+
+<div class="code-title">JavaScript</div>
+
+<div class="code">for(let row=0;row&lt;8;row++){
+
+    for(let col=0;col&lt;35;col++){
+
+        let wave=
+            Math.floor(
+                3+Math.sin(col*.45)*3
+            );
+    }
+}</div>
+
+<div class="output wave">
+<pre id="wave"></pre>
+</div>
+
+</div>
+
+
+
+<!-- =================================================
+10 HOURGLASS
+================================================= -->
+
+<div class="card">
+
+<h2>10. Hourglass</h2>
+
+<p class="description">
+Two inverted triangles form an hourglass.
+</p>
+
+<div class="code-title">JavaScript</div>
+
+<div class="code">for(let i=0;i&lt;7;i++){
+
+    for(let j=0;j&lt;i;j++)
+        result+=" ";
+
+    for(let j=0;j&lt;13-2*i;j++)
+        result+="◆";
+}</div>
+
+<div class="output hourglass">
+<pre id="hourglass"></pre>
+</div>
+
+</div>
+
+
+
+<!-- =================================================
+11 CHRISTMAS TREE
+================================================= -->
+
+<div class="card">
+
+<h2>11. Christmas Tree</h2>
+
+<p class="description">
+A layered tree built with nested loops.
+</p>
+
+<div class="code-title">JavaScript</div>
+
+<div class="code">for(let row=1;row&lt;=8;row++){
+
+    for(let space=0;space&lt;8-row;space++)
+        result+=" ";
+
+    for(let star=0;star&lt;2*row-1;star++)
+        result+="*";
+}</div>
+
+<div class="output tree">
+<pre id="tree"></pre>
+</div>
+
+</div>
+
+
+
+<!-- =================================================
+12 BUTTERFLY
+================================================= -->
+
+<div class="card">
+
+<h2>12. Butterfly</h2>
+
+<p class="description">
+Two mirrored wings created using loop symmetry.
+</p>
+
+<div class="code-title">JavaScript</div>
+
+<div class="code">for(let i=1;i&lt;=6;i++){
+
+    for(let j=0;j&lt;i;j++)
+        result+="*";
+
+    for(let j=0;j&lt;12-2*i;j++)
+        result+=" ";
+
+    for(let j=0;j&lt;i;j++)
+        result+="*";
+}</div>
+
+<div class="output butterfly">
+<pre id="butterfly"></pre>
+</div>
+
+</div>
+
+
+
+<!-- =================================================
+13 X PATTERN
+================================================= -->
+
+<div class="card">
+
+<h2>13. X Pattern</h2>
+
+<p class="description">
+Two diagonal lines intersect to create an X.
+</p>
+
+<div class="code-title">JavaScript</div>
+
+<div class="code">for(let row=0;row&lt;11;row++){
+
+    for(let col=0;col&lt;11;col++){
+
+        if(row===col ||
+           row+col===10){
+
+            result+="X";
+        }
+    }
+}</div>
+
+<div class="output xpattern">
+<pre id="xpattern"></pre>
+</div>
+
+</div>
+
+
+
+<!-- =================================================
+14 CHECKERBOARD
+================================================= -->
+
+<div class="card">
+
+<h2>14. Checkerboard</h2>
+
+<p class="description">
+Alternating cells demonstrate coordinate logic.
+</p>
+
+<div class="code-title">JavaScript</div>
+
+<div class="code">for(let row=0;row&lt;8;row++){
+
+    for(let col=0;col&lt;16;col++){
+
+        if((row+col)%2===0)
+            result+="██";
+        else
+            result+="  ";
+    }
+}</div>
+
+<div class="output checker">
+<pre id="checker"></pre>
+</div>
+
+</div>
+
+
+
+<!-- =================================================
+15 SPIRAL
+================================================= -->
+
+<div class="card">
+
+<h2>15. Spiral</h2>
+
+<p class="description">
+A spiral-like pattern generated using distance and angles.
+</p>
+
+<div class="code-title">JavaScript</div>
+
+<div class="code">for(let row=0;row&lt;17;row++){
+
+    for(let col=0;col&lt;17;col++){
+
+        let dx=col-8;
+        let dy=row-8;
+
+        let d=Math.sqrt(dx*dx+dy*dy);
+
+        if(Math.floor(d)%2===0)
+            result+="•";
+    }
+}</div>
+
+<div class="output spiral">
+<pre id="spiral"></pre>
+</div>
+
+</div>
+
+
+
+<!-- =================================================
+16 TRIANGLE
+================================================= -->
+
+<div class="card">
+
+<h2>16. Right Triangle</h2>
+
+<p class="description">
+A simple triangular pattern controlled by row length.
+</p>
+
+<div class="code-title">JavaScript</div>
+
+<div class="code">for(let row=1;row&lt;=10;row++){
+
+    for(let col=1;col&lt;=row;col++){
+
+        result+="◆";
+
+    }
+}</div>
+
+<div class="output triangle">
+<pre id="triangle"></pre>
+</div>
+
+</div>
+
+
+
+<!-- =================================================
+17 HOLLOW DIAMOND
+================================================= -->
+
+<div class="card">
+
+<h2>17. Hollow Diamond</h2>
+
+<p class="description">
+Only the edges of the diamond are rendered.
+</p>
+
+<div class="code-title">JavaScript</div>
+
+<div class="code">for(let row=0;row&lt;13;row++){
+
+    for(let col=0;col&lt;25;col++){
+
+        // Detect diamond edges
+
+    }
+}</div>
+
+<div class="output hollow">
+<pre id="hollow"></pre>
+</div>
+
+</div>
+
+
+
+<!-- =================================================
+18 ROCKET FLAME
+================================================= -->
+
+<div class="card">
+
+<h2>18. Rocket Flame</h2>
+
+<p class="description">
+A flame pattern built from expanding and contracting rows.
+</p>
+
+<div class="code-title">JavaScript</div>
+
+<div class="code">for(let row=0;row&lt;10;row++){
+
+    for(let col=0;col&lt;20;col++){
+
+        // Create flame shape
+
+    }
+}</div>
+
+<div class="output flame">
+<pre id="flame"></pre>
+</div>
+
+</div>
+
+
+
+<!-- =================================================
+19 GALAXY
+================================================= -->
+
+<div class="card">
+
+<h2>19. Galaxy</h2>
+
+<p class="description">
+A rotating-looking galaxy pattern generated with
+nested coordinate loops.
+</p>
+
+<div class="code-title">JavaScript</div>
+
+<div class="code">for(let row=0;row&lt;17;row++){
+
+    for(let col=0;col&lt;35;col++){
+
+        let dx=col-17;
+        let dy=row-8;
+
+        // Calculate galaxy arms
+
+    }
+}</div>
+
+<div class="output galaxy">
+<pre id="galaxy"></pre>
+</div>
+
+</div>
+
+
+
+<!-- =================================================
+20 DNA
+================================================= -->
+
+<div class="card">
+
+<h2>20. DNA Helix</h2>
+
+<p class="description">
+A double-helix visualization generated from
+two mathematical curves.
+</p>
+
+<div class="code-title">JavaScript</div>
+
+<div class="code">for(let row=0;row&lt;20;row++){
+
+    for(let col=0;col&lt;35;col++){
+
+        // Calculate two helix positions
+
+    }
+}</div>
+
+<div class="output dna">
+<pre id="dna"></pre>
+</div>
+
+</div>
+
+
+</div>
+
+
+<footer>
+
+JavaScript Nested Loop Laboratory
+<br><br>
+20 Patterns • 2D Loops • Algorithms • Geometry • Space
+
+</footer>
+
+</div>
+
+
+
+<script>
+
+/* =====================================================
+   01 MARS
+===================================================== */
+
+function createMars(){
+
+    let result="";
+
+    for(let y=0;y<15;y++){
+
+        for(let x=0;x<29;x++){
+
+            let dx=x-14;
+            let dy=(y-7)*1.8;
+
+            let distance=
+                Math.sqrt(dx*dx+dy*dy);
+
+            if(distance<13){
+
+                if(
+                    (x+y)%7===0 ||
+                    (x*3+y)%13===0
+                ){
+                    result+="·";
+                }else{
+                    result+="●";
+                }
+
+            }else{
+                result+=" ";
+            }
+        }
+
+        result+="\n";
+    }
+
+    document.getElementById("mars").textContent=result;
+}
+
+
+
+/* =====================================================
+   02 FALCON 9
+===================================================== */
+
+function createFalcon(){
+
+    let result="";
+
+    for(let row=0;row<15;row++){
+
+        for(let col=0;col<25;col++){
+
+            let char=" ";
+
+            if(row===0 && col===12)
+                char="▲";
+
+            else if(
+                row===1 &&
+                col>=11 &&
+                col<=13
+            )
+                char="▲";
+
+            else if(
+                row>=2 &&
+                row<=11 &&
+                col>=9 &&
+                col<=15
+            )
+                char="█";
+
+            else if(
+                row>=4 &&
+                row<=7 &&
+                col===10
+            )
+                char="░";
+
+            else if(
+                row>=4 &&
+                row<=7 &&
+                col===14
+            )
+                char="░";
+
+            else if(
+                row===12 &&
+                col>=8 &&
+                col<=16
+            )
+                char="█";
+
+            else if(
+                row===13 &&
+                col>=9 &&
+                col<=15
+            )
+                char="🔥";
+
+            else if(
+                row===14 &&
+                col>=10 &&
+                col<=14
+            )
+                char="🔥";
+
+            result+=char;
+        }
+
+        result+="\n";
+    }
+
+    document.getElementById("falcon").textContent=result;
+}
+
+
+
+/* =====================================================
+   03 DIAMOND
+===================================================== */
+
+function createDiamond(){
+
+    let result="";
+
+    for(let i=1;i<=7;i++){
+
+        for(let j=0;j<7-i;j++)
+            result+=" ";
+
+        for(let j=0;j<2*i-1;j++)
+            result+="◆";
+
+        result+="\n";
+    }
+
+    for(let i=6;i>=1;i--){
+
+        for(let j=0;j<7-i;j++)
+            result+=" ";
+
+        for(let j=0;j<2*i-1;j++)
+            result+="◆";
+
+        result+="\n";
+    }
+
+    document.getElementById("diamond").textContent=result;
+}
+
+
+
+/* =====================================================
+   04 SLANTED
+===================================================== */
+
+function createSlanted(){
+
+    let result="";
+
+    for(let row=0;row<10;row++){
+
+        for(let space=0;space<row;space++)
+            result+="  ";
+
+        for(let x=0;x<5;x++)
+            result+="##";
+
+        result+="\n";
+    }
+
+    document.getElementById("slanted").textContent=result;
+}
+
+
+
+/* =====================================================
+   05 KITE
+===================================================== */
+
+function createKite(){
+
+    let result="";
+
+    for(let i=1;i<=6;i++){
+
+        for(let j=0;j<6-i;j++)
+            result+=" ";
+
+        for(let j=0;j<2*i-1;j++)
+            result+="◇";
+
+        result+="\n";
+    }
+
+    for(let i=5;i>=1;i--){
+
+        for(let j=0;j<6-i;j++)
+            result+=" ";
+
+        for(let j=0;j<2*i-1;j++)
+            result+="◇";
+
+        result+="\n";
+    }
+
+    for(let i=0;i<4;i++)
+        result+="     │\n";
+
+    document.getElementById("kite").textContent=result;
+}
+
+
+
+/* =====================================================
+   06 STAR FIELD
+===================================================== */
+
+function createStars(){
+
+    let result="";
+
+    for(let row=0;row<12;row++){
+
+        for(let col=0;col<30;col++){
+
+            let value=
+                (row*17+col*31)%19;
+
+            if(value===0)
+                result+="✦";
+            else if(value===1)
+                result+="·";
+            else
+                result+=" ";
+        }
+
+        result+="\n";
+    }
+
+    document.getElementById("stars").textContent=result;
+}
+
+
+
+/* =====================================================
+   07 PYRAMID
+===================================================== */
+
+function createPyramid(){
+
+    let result="";
+
+    for(let i=1;i<=8;i++){
+
+        for(let j=0;j<8-i;j++)
+            result+=" ";
+
+        for(let j=0;j<2*i-1;j++)
+            result+="▲";
+
+        result+="\n";
+    }
+
+    document.getElementById("pyramid").textContent=result;
+}
+
+
+
+/* =====================================================
+   08 BOX
+===================================================== */
+
+function createBox(){
+
+    let result="";
+
+    for(let row=0;row<10;row++){
+
+        for(let col=0;col<22;col++){
+
+            if(
+                row===0 ||
+                row===9 ||
+                col===0 ||
+                col===21
+            )
+                result+="█";
+            else
+                result+=" ";
+        }
+
+        result+="\n";
+    }
+
+    document.getElementById("box").textContent=result;
+}
+
+
+
+/* =====================================================
+   09 WAVE
+===================================================== */
+
+function createWave(){
+
+    let result="";
+
+    for(let row=0;row<8;row++){
+
+        for(let col=0;col<35;col++){
+
+            let wave=
+                Math.floor(
+                    3+Math.sin(col*.45)*3
+                );
+
+            if(row===wave)
+                result+="≈";
+            else
+                result+=" ";
+        }
+
+        result+="\n";
+    }
+
+    document.getElementById("wave").textContent=result;
+}
+
+
+
+/* =====================================================
+   10 HOURGLASS
+===================================================== */
+
+function createHourglass(){
+
+    let result="";
+
+    for(let i=0;i<7;i++){
+
+        for(let j=0;j<i;j++)
+            result+=" ";
+
+        for(let j=0;j<13-2*i;j++)
+            result+="◆";
+
+        result+="\n";
+    }
+
+    for(let i=5;i>=0;i--){
+
+        for(let j=0;j<i;j++)
+            result+=" ";
+
+        for(let j=0;j<13-2*i;j++)
+            result+="◆";
+
+        result+="\n";
+    }
+
+    document.getElementById("hourglass").textContent=result;
+}
+
+
+
+/* =====================================================
+   11 CHRISTMAS TREE
+===================================================== */
+
+function createTree(){
+
+    let result="";
+
+    for(let row=1;row<=8;row++){
+
+        for(let space=0;space<8-row;space++)
+            result+=" ";
+
+        for(let star=0;star<2*row-1;star++)
+            result+="*";
+
+        result+="\n";
+    }
+
+    for(let i=0;i<3;i++){
+
+        for(let j=0;j<6;j++)
+            result+=" ";
+
+        result+="||\n";
+    }
+
+    document.getElementById("tree").textContent=result;
+}
+
+
+
+/* =====================================================
+   12 BUTTERFLY
+===================================================== */
+
+function createButterfly(){
+
+    let result="";
+
+    for(let i=1;i<=6;i++){
+
+        for(let j=0;j<i;j++)
+            result+="*";
+
+        for(let j=0;j<12-2*i;j++)
+            result+=" ";
+
+        for(let j=0;j<i;j++)
+            result+="*";
+
+        result+="\n";
+    }
+
+    for(let i=6;i>=1;i--){
+
+        for(let j=0;j<i;j++)
+            result+="*";
+
+        for(let j=0;j<12-2*i;j++)
+            result+=" ";
+
+        for(let j=0;j<i;j++)
+            result+="*";
+
+        result+="\n";
+    }
+
+    document.getElementById("butterfly").textContent=result;
+}
+
+
+
+/* =====================================================
+   13 X PATTERN
+===================================================== */
+
+function createX(){
+
+    let result="";
+
+    for(let row=0;row<11;row++){
+
+        for(let col=0;col<11;col++){
+
+            if(
+                row===col ||
+                row+col===10
+            )
+                result+="X";
+            else
+                result+=" ";
+        }
+
+        result+="\n";
+    }
+
+    document.getElementById("xpattern").textContent=result;
+}
+
+
+
+/* =====================================================
+   14 CHECKERBOARD
+===================================================== */
+
+function createChecker(){
+
+    let result="";
+
+    for(let row=0;row<8;row++){
+
+        for(let col=0;col<16;col++){
+
+            if((row+col)%2===0)
+                result+="██";
+            else
+                result+="  ";
+        }
+
+        result+="\n";
+    }
+
+    document.getElementById("checker").textContent=result;
+}
+
+
+
+/* =====================================================
+   15 SPIRAL
+===================================================== */
+
+function createSpiral(){
+
+    let result="";
+
+    for(let row=0;row<17;row++){
+
+        for(let col=0;col<25;col++){
+
+            let dx=col-12;
+            let dy=row-8;
+
+            let distance=
+                Math.sqrt(dx*dx+dy*dy);
+
+            let angle=
+                Math.atan2(dy,dx);
+
+            let spiral=
+                Math.sin(distance*1.7-angle*4);
+
+            if(Math.abs(spiral)<0.18)
+                result+="•";
+            else
+                result+=" ";
+        }
+
+        result+="\n";
+    }
+
+    document.getElementById("spiral").textContent=result;
+}
+
+
+
+/* =====================================================
+   16 TRIANGLE
+===================================================== */
+
+function createTriangle(){
+
+    let result="";
+
+    for(let row=1;row<=10;row++){
+
+        for(let col=1;col<=row;col++){
+
+            result+="◆";
+        }
+
+        result+="\n";
+    }
+
+    document.getElementById("triangle").textContent=result;
+}
+
+
+
+/* =====================================================
+   17 HOLLOW DIAMOND
+===================================================== */
+
+function createHollowDiamond(){
+
+    let result="";
+
+    const centerX=12;
+    const centerY=6;
+
+    for(let row=0;row<13;row++){
+
+        for(let col=0;col<25;col++){
+
+            let distance=
+                Math.abs(col-centerX)+
+                Math.abs(row-centerY);
+
+            if(distance===6)
+                result+="◆";
+            else
+                result+=" ";
+        }
+
+        result+="\n";
+    }
+
+    document.getElementById("hollow").textContent=result;
+}
+
+
+
+/* =====================================================
+   18 ROCKET FLAME
+===================================================== */
+
+function createFlame(){
+
+    let result="";
+
+    for(let row=0;row<12;row++){
+
+        for(let col=0;col<21;col++){
+
+            let center=Math.abs(col-10);
+
+            let width=
+                Math.floor(row*.8)+1;
+
+            if(center<=width)
+                result+="🔥";
+            else
+                result+=" ";
+        }
+
+        result+="\n";
+    }
+
+    document.getElementById("flame").textContent=result;
+}
+
+
+
+/* =====================================================
+   19 GALAXY
+===================================================== */
+
+function createGalaxy(){
+
+    let result="";
+
+    for(let row=0;row<17;row++){
+
+        for(let col=0;col<35;col++){
+
+            let dx=col-17;
+            let dy=(row-8)*1.8;
+
+            let radius=
+                Math.sqrt(dx*dx+dy*dy);
+
+            let angle=
+                Math.atan2(dy,dx);
+
+            let arm=
+                Math.sin(
+                    angle*4-radius*.7
+                );
+
+            if(
+                radius<15 &&
+                Math.abs(arm)<0.35
+            ){
+
+                result+="✦";
+
+            }else if(
+                radius<3
+            ){
+
+                result+="●";
+
+            }else{
+
+                result+=" ";
+            }
+        }
+
+        result+="\n";
+    }
+
+    document.getElementById("galaxy").textContent=result;
+}
+
+
+
+/* =====================================================
+   20 DNA HELIX
+===================================================== */
+
+function createDNA(){
+
+    let result="";
+
+    const height=20;
+    const width=35;
+
+    for(let row=0;row<height;row++){
+
+        let position=
+            Math.floor(
+                10+
+                Math.sin(row*.55)*8
+            );
+
+        let position2=
+            Math.floor(
+                10+
+                Math.sin(row*.55+Math.PI)*8
+            );
+
+        for(let col=0;col<width;col++){
+
+            if(
+                col===position ||
+                col===position2
+            ){
+
+                result+="●";
+
+            }
+
+            else if(
+                col>Math.min(position,position2) &&
+                col<Math.max(position,position2) &&
+                col%3===0
+            ){
+
+                result+="─";
+
+            }
+
+            else{
+
+                result+=" ";
+            }
+        }
+
+        result+="\n";
+    }
+
+    document.getElementById("dna").textContent=result;
+}
+
+
+
+/* =====================================================
+   RUN ALL 20 PATTERNS
+===================================================== */
+
+createMars();
+createFalcon();
+createDiamond();
+createSlanted();
+createKite();
+createStars();
+createPyramid();
+createBox();
+createWave();
+createHourglass();
+
+createTree();
+createButterfly();
+createX();
+createChecker();
+createSpiral();
+createTriangle();
+createHollowDiamond();
+createFlame();
+createGalaxy();
+createDNA();
+
+</script>
+
+</body>
+</html>
