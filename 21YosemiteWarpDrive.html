@@ -1,0 +1,1757 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Yosemite × Warp Drive Station</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+html{
+    scroll-behavior:smooth;
+}
+
+body{
+    font-family:
+        Inter,
+        Arial,
+        Helvetica,
+        sans-serif;
+
+    background:#f2f2f2;
+    color:#18221b;
+    overflow-x:hidden;
+}
+
+/* =========================
+   NAVIGATION
+========================= */
+
+nav{
+    position:fixed;
+    top:0;
+    left:0;
+
+    width:100%;
+
+    z-index:1000;
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    padding:18px 6%;
+
+    background:rgba(242,242,242,.92);
+
+    backdrop-filter:blur(14px);
+
+    border-bottom:1px solid #d0d5d1;
+}
+
+.logo{
+    font-size:18px;
+    font-weight:900;
+
+    letter-spacing:4px;
+
+    color:#17351e;
+}
+
+.logo span{
+    color:#527e5a;
+}
+
+.nav-links{
+    display:flex;
+    gap:28px;
+}
+
+.nav-links a{
+    color:#435048;
+
+    text-decoration:none;
+
+    font-size:11px;
+
+    font-weight:bold;
+
+    text-transform:uppercase;
+
+    letter-spacing:1.5px;
+}
+
+.nav-links a:hover{
+    color:#1d6330;
+}
+
+
+/* =========================
+   HERO
+========================= */
+
+.hero{
+
+    min-height:100vh;
+
+    position:relative;
+
+    display:flex;
+    align-items:center;
+
+    padding:
+        130px 7%
+        80px;
+
+    color:white;
+
+    background:
+        linear-gradient(
+            90deg,
+            rgba(8,23,12,.88),
+            rgba(8,23,12,.45),
+            rgba(8,23,12,.12)
+        ),
+        url("https://images.unsplash.com/photo-1509316785289-025f5b846b35?auto=format&fit=crop&w=2000&q=85")
+        center/cover;
+}
+
+.hero-content{
+    position:relative;
+    z-index:3;
+
+    max-width:850px;
+}
+
+.eyebrow{
+    color:#b9e0bd;
+
+    font-size:11px;
+
+    font-weight:bold;
+
+    letter-spacing:4px;
+}
+
+.hero h1{
+
+    margin:
+        22px 0;
+
+    font-size:
+        clamp(52px,8vw,110px);
+
+    line-height:.86;
+
+    letter-spacing:-5px;
+}
+
+.hero h1 span{
+    color:#b8e2bd;
+}
+
+.hero p{
+
+    max-width:680px;
+
+    color:#e0e8e1;
+
+    font-size:18px;
+
+    line-height:1.8;
+}
+
+.buttons{
+
+    display:flex;
+
+    gap:14px;
+
+    flex-wrap:wrap;
+
+    margin-top:35px;
+}
+
+.btn{
+
+    display:inline-block;
+
+    padding:
+        14px 24px;
+
+    border:1px solid #9bc4a0;
+
+    color:#ffffff;
+
+    background:
+        rgba(16,45,23,.7);
+
+    text-decoration:none;
+
+    font-weight:bold;
+
+    transition:.25s;
+}
+
+.btn:hover{
+
+    background:#d5ead8;
+
+    color:#19321f;
+
+    transform:
+        translateY(-3px);
+}
+
+.btn.primary{
+
+    background:#c9e1cc;
+
+    color:#18321d;
+
+    border-color:#c9e1cc;
+}
+
+
+/* =========================
+   YOSEMITE GALLERY
+========================= */
+
+.section{
+
+    padding:
+        110px 7%;
+}
+
+.section-header{
+
+    max-width:850px;
+
+    margin-bottom:55px;
+}
+
+.section-header small{
+
+    color:#527e5a;
+
+    font-size:11px;
+
+    letter-spacing:4px;
+
+    font-weight:bold;
+}
+
+.section-header h2{
+
+    margin:
+        10px 0;
+
+    font-size:
+        clamp(40px,6vw,75px);
+
+    color:#19301e;
+}
+
+.section-header p{
+
+    color:#68736b;
+
+    line-height:1.8;
+}
+
+
+/* =========================
+   YOSEMITE
+========================= */
+
+.yosemite{
+
+    background:#f2f2f2;
+}
+
+.yosemite-gallery{
+
+    display:grid;
+
+    grid-template-columns:
+        1.4fr .8fr;
+
+    gap:20px;
+}
+
+.photo-large{
+
+    min-height:560px;
+
+    position:relative;
+
+    overflow:hidden;
+
+    background:
+        url("https://images.unsplash.com/photo-1544966503-7cc5ac882d5f?auto=format&fit=crop&w=1400&q=85")
+        center/cover;
+}
+
+.photo-small{
+
+    min-height:270px;
+
+    position:relative;
+
+    overflow:hidden;
+}
+
+.photo-small.one{
+
+    background:
+        url("https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=1000&q=85")
+        center/cover;
+}
+
+.photo-small.two{
+
+    background:
+        url("https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=1000&q=85")
+        center/cover;
+
+    filter:
+        saturate(.8)
+        brightness(.9);
+}
+
+.photo-stack{
+
+    display:grid;
+
+    grid-template-rows:
+        1fr 1fr;
+
+    gap:20px;
+}
+
+.photo-label{
+
+    position:absolute;
+
+    left:25px;
+    bottom:25px;
+
+    padding:
+        10px 14px;
+
+    background:
+        rgba(242,242,242,.9);
+
+    color:#19301e;
+
+    font-size:11px;
+
+    font-weight:bold;
+
+    letter-spacing:2px;
+}
+
+
+/* =========================
+   ABOUT CARDS
+========================= */
+
+.about-grid{
+
+    display:grid;
+
+    grid-template-columns:
+        repeat(3,1fr);
+
+    gap:18px;
+
+    margin-top:25px;
+}
+
+.about-card{
+
+    padding:30px;
+
+    background:white;
+
+    border:1px solid #d7ddd8;
+
+    transition:.25s;
+}
+
+.about-card:hover{
+
+    transform:
+        translateY(-5px);
+
+    border-color:#9dbba2;
+}
+
+.about-card h3{
+
+    color:#274b2e;
+
+    margin-bottom:10px;
+}
+
+.about-card p{
+
+    color:#69756d;
+
+    line-height:1.7;
+
+    font-size:14px;
+}
+
+
+/* =========================
+   WARP STATION
+========================= */
+
+.station{
+
+    background:#e8ece9;
+}
+
+.station-grid{
+
+    display:grid;
+
+    grid-template-columns:
+        1fr 1fr;
+
+    gap:70px;
+
+    align-items:center;
+}
+
+.station-visual{
+
+    min-height:520px;
+
+    position:relative;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    overflow:hidden;
+
+    background:
+        radial-gradient(
+            circle,
+            #ffffff,
+            #dce6de
+        );
+
+    border:
+        1px solid #bdcabe;
+}
+
+.station-ring{
+
+    position:absolute;
+
+    width:330px;
+    height:330px;
+
+    border:
+        2px solid #426e4b;
+
+    border-radius:50%;
+
+    transform:
+        rotateX(65deg);
+
+    animation:
+        spin 10s linear infinite;
+}
+
+.station-ring.two{
+
+    width:250px;
+    height:250px;
+
+    border-color:#8bab91;
+
+    transform:
+        rotateX(65deg)
+        rotateZ(35deg);
+
+    animation-duration:7s;
+}
+
+.station-ring.three{
+
+    width:420px;
+    height:420px;
+
+    border:
+        1px solid #b4c6b7;
+
+    transform:
+        rotateX(65deg)
+        rotateZ(-25deg);
+
+    animation-duration:14s;
+}
+
+.station-core{
+
+    width:95px;
+    height:95px;
+
+    border-radius:50%;
+
+    background:
+        radial-gradient(
+            circle,
+            white 0%,
+            #b8dcbc 25%,
+            #4f895b 60%,
+            #21452a 100%
+        );
+
+    box-shadow:
+        0 0 50px #78a97e;
+
+    animation:
+        pulse 2s ease-in-out infinite;
+}
+
+@keyframes spin{
+
+    to{
+        transform:
+            rotateX(65deg)
+            rotateZ(360deg);
+    }
+
+}
+
+@keyframes pulse{
+
+    50%{
+        transform:scale(1.1);
+    }
+
+}
+
+.station-info h2{
+
+    font-size:
+        clamp(40px,5vw,70px);
+
+    line-height:.95;
+
+    color:#1b3421;
+}
+
+.station-info p{
+
+    margin:
+        25px 0;
+
+    color:#657168;
+
+    line-height:1.8;
+}
+
+.station-stats{
+
+    display:grid;
+
+    grid-template-columns:
+        1fr 1fr;
+
+    gap:14px;
+}
+
+.stat{
+
+    padding:20px;
+
+    background:#f8f9f8;
+
+    border:1px solid #cdd6cf;
+}
+
+.stat strong{
+
+    display:block;
+
+    color:#386641;
+
+    font-size:28px;
+}
+
+
+/* =========================
+   DESTINATIONS
+========================= */
+
+.destinations{
+
+    background:#ffffff;
+}
+
+.destination-grid{
+
+    display:grid;
+
+    grid-template-columns:
+        repeat(4,1fr);
+
+    gap:16px;
+}
+
+.destination{
+
+    min-height:240px;
+
+    padding:25px;
+
+    display:flex;
+
+    flex-direction:column;
+
+    justify-content:flex-end;
+
+    position:relative;
+
+    overflow:hidden;
+
+    background:#f2f2f2;
+
+    border:1px solid #d5dcd6;
+
+    transition:.3s;
+}
+
+.destination:hover{
+
+    transform:
+        translateY(-7px);
+
+    background:#eaf1eb;
+
+    border-color:#8fb398;
+}
+
+.destination::before{
+
+    content:"";
+
+    position:absolute;
+
+    width:110px;
+    height:110px;
+
+    border-radius:50%;
+
+    right:-35px;
+    top:-35px;
+
+    background:#6e9e7622;
+}
+
+.destination-icon{
+
+    font-size:35px;
+
+    margin-bottom:auto;
+}
+
+.destination h3{
+
+    font-size:22px;
+
+    color:#233d29;
+}
+
+.destination p{
+
+    color:#728078;
+
+    margin-top:5px;
+
+    font-size:12px;
+}
+
+.distance{
+
+    margin-top:15px;
+
+    color:#4f8158;
+
+    font-size:9px;
+
+    letter-spacing:2px;
+
+    font-weight:bold;
+}
+
+
+/* =========================
+   WARP ROUTE
+========================= */
+
+.route{
+
+    padding:
+        110px 7%;
+
+    text-align:center;
+
+    background:#edf0ee;
+}
+
+.route-map{
+
+    max-width:1050px;
+
+    height:230px;
+
+    margin:
+        50px auto;
+
+    position:relative;
+
+    border-top:
+        1px solid #aebcaf;
+
+    border-bottom:
+        1px solid #aebcaf;
+}
+
+.route-line{
+
+    position:absolute;
+
+    top:50%;
+
+    left:4%;
+    right:4%;
+
+    height:2px;
+
+    background:
+        linear-gradient(
+            90deg,
+            #4e7955,
+            #b1cbb5,
+            #4e7955
+        );
+}
+
+.route-point{
+
+    position:absolute;
+
+    top:calc(50% - 11px);
+
+    width:22px;
+    height:22px;
+
+    border-radius:50%;
+
+    background:#527e59;
+
+    border:
+        5px solid #edf0ee;
+}
+
+.route-point span{
+
+    position:absolute;
+
+    top:32px;
+    left:50%;
+
+    transform:
+        translateX(-50%);
+
+    white-space:nowrap;
+
+    color:#536158;
+
+    font-size:9px;
+
+    letter-spacing:1px;
+}
+
+.p1{left:4%}
+.p2{left:18%}
+.p3{left:32%}
+.p4{left:46%}
+.p5{left:60%}
+.p6{left:74%}
+.p7{left:88%}
+
+
+/* =========================
+   CONSOLE
+========================= */
+
+.control{
+
+    background:#18231b;
+
+    color:white;
+}
+
+.control .section-header h2{
+
+    color:#eef4ef;
+}
+
+.control .section-header p{
+
+    color:#aebbb1;
+}
+
+.console{
+
+    max-width:1050px;
+
+    margin:auto;
+
+    padding:30px;
+
+    background:#0d150f;
+
+    border:
+        1px solid #55735b;
+
+    color:#a9d7ad;
+
+    font-family:
+        "Courier New",
+        monospace;
+
+    line-height:2;
+
+    overflow:auto;
+}
+
+.console .bright{
+
+    color:#e0f5e2;
+}
+
+.console .green{
+
+    color:#79d284;
+}
+
+
+/* =========================
+   FINAL CTA
+========================= */
+
+.cta{
+
+    min-height:520px;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    text-align:center;
+
+    padding:
+        80px 7%;
+
+    background:
+
+        linear-gradient(
+            rgba(20,50,27,.72),
+            rgba(20,50,27,.72)
+        ),
+
+        url("https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=1800&q=85")
+        center/cover;
+
+    color:white;
+}
+
+.cta h2{
+
+    font-size:
+        clamp(45px,7vw,90px);
+
+    line-height:.9;
+}
+
+.cta p{
+
+    max-width:700px;
+
+    margin:
+        25px auto;
+
+    color:#e0e9e2;
+
+    font-size:18px;
+
+    line-height:1.7;
+}
+
+
+/* =========================
+   FOOTER
+========================= */
+
+footer{
+
+    padding:
+        45px 7%;
+
+    display:flex;
+
+    justify-content:space-between;
+
+    flex-wrap:wrap;
+
+    gap:20px;
+
+    background:#f2f2f2;
+
+    border-top:
+        1px solid #d2d8d3;
+
+    color:#718078;
+
+    font-size:10px;
+
+    letter-spacing:2px;
+}
+
+footer strong{
+
+    color:#315d39;
+}
+
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media(max-width:1000px){
+
+    .destination-grid{
+
+        grid-template-columns:
+            repeat(2,1fr);
+    }
+
+}
+
+@media(max-width:800px){
+
+    .nav-links{
+
+        display:none;
+    }
+
+    .yosemite-gallery{
+
+        grid-template-columns:1fr;
+    }
+
+    .photo-large{
+
+        min-height:400px;
+    }
+
+    .station-grid{
+
+        grid-template-columns:1fr;
+    }
+
+    .about-grid{
+
+        grid-template-columns:1fr;
+    }
+
+}
+
+@media(max-width:550px){
+
+    .section{
+
+        padding:
+            80px 5%;
+    }
+
+    .destination-grid{
+
+        grid-template-columns:1fr;
+    }
+
+    .station-stats{
+
+        grid-template-columns:1fr;
+    }
+
+    .station-visual{
+
+        min-height:350px;
+    }
+
+    .station-ring{
+
+        width:230px;
+        height:230px;
+    }
+
+    .station-ring.two{
+
+        width:180px;
+        height:180px;
+    }
+
+    .station-ring.three{
+
+        width:280px;
+        height:280px;
+    }
+
+    .route-point span{
+
+        display:none;
+    }
+
+}
+
+</style>
+</head>
+
+
+<body>
+
+
+<!-- NAVIGATION -->
+
+<nav>
+
+<div class="logo">
+YOSEMITE <span>×</span> WARP
+</div>
+
+<div class="nav-links">
+
+<a href="#yosemite">Yosemite</a>
+<a href="#station">Station</a>
+<a href="#destinations">Destinations</a>
+<a href="#control">Control</a>
+
+</div>
+
+</nav>
+
+
+<!-- HERO -->
+
+<section class="hero">
+
+<div class="hero-content">
+
+<div class="eyebrow">
+YOSEMITE NATIONAL PARK × DEEP SPACE
+</div>
+
+<h1>
+FROM<br>
+<span>YOSEMITE</span><br>
+TO THE STARS
+</h1>
+
+<p>
+A futuristic gateway where the grandeur of
+Yosemite meets an imagined next generation
+of deep-space transportation.
+</p>
+
+<div class="buttons">
+
+<a href="#station" class="btn primary">
+Explore Warp Station
+</a>
+
+<a href="#destinations" class="btn">
+View Destinations
+</a>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- YOSEMITE -->
+
+<section class="section yosemite" id="yosemite">
+
+<div class="section-header">
+
+<small>01 // YOSEMITE NATIONAL PARK</small>
+
+<h2>
+Granite. Forest. Sky.
+</h2>
+
+<p>
+Yosemite National Park is known for its dramatic
+granite cliffs, waterfalls, giant sequoias, forests
+and spectacular valley landscapes.
+</p>
+
+</div>
+
+
+<div class="yosemite-gallery">
+
+<div class="photo-large">
+
+<div class="photo-label">
+YOSEMITE VALLEY
+</div>
+
+</div>
+
+
+<div class="photo-stack">
+
+<div class="photo-small one">
+
+<div class="photo-label">
+EL CAPITAN
+</div>
+
+</div>
+
+<div class="photo-small two">
+
+<div class="photo-label">
+SIERRA NEVADA
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+
+<div class="about-grid">
+
+<div class="about-card">
+
+<h3>
+El Capitan
+</h3>
+
+<p>
+One of Yosemite Valley's most recognizable
+granite formations, rising dramatically above
+the valley floor.
+</p>
+
+</div>
+
+
+<div class="about-card">
+
+<h3>
+Half Dome
+</h3>
+
+<p>
+An iconic granite landmark whose distinctive
+shape dominates many views across Yosemite.
+</p>
+
+</div>
+
+
+<div class="about-card">
+
+<h3>
+Yosemite Valley
+</h3>
+
+<p>
+A spectacular valley surrounded by enormous
+granite walls, forests, rivers and waterfalls.
+</p>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- WARP STATION -->
+
+<section class="section station" id="station">
+
+<div class="station-grid">
+
+
+<div class="station-visual">
+
+<div class="station-ring"></div>
+
+<div class="station-ring two"></div>
+
+<div class="station-ring three"></div>
+
+<div class="station-core"></div>
+
+</div>
+
+
+<div class="station-info">
+
+<div class="eyebrow">
+FICTIONAL DEEP SPACE CONCEPT
+</div>
+
+<h2>
+WARP DRIVE
+STATION
+</h2>
+
+<p>
+The Yosemite Warp Drive Station is a fictional
+future transportation hub connecting Earth with
+the Solar System and nearby stellar systems.
+</p>
+
+<div class="station-stats">
+
+<div class="stat">
+<strong>11</strong>
+Destinations
+</div>
+
+<div class="stat">
+<strong>24/7</strong>
+Mission Control
+</div>
+
+<div class="stat">
+<strong>WD-X</strong>
+Warp Core
+</div>
+
+<div class="stat">
+<strong>∞</strong>
+Research
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- DESTINATIONS -->
+
+<section class="section destinations" id="destinations">
+
+<div class="section-header">
+
+<small>02 // DESTINATION NETWORK</small>
+
+<h2>
+Choose Your World
+</h2>
+
+<p>
+Select a destination from Earth's orbital
+neighborhood to fictional interstellar missions.
+</p>
+
+</div>
+
+
+<div class="destination-grid">
+
+
+<div class="destination">
+
+<div class="destination-icon">🌍</div>
+
+<h3>Earth Orbit</h3>
+
+<p>Orbital Gateway</p>
+
+<div class="distance">
+LOCAL ORBIT
+</div>
+
+</div>
+
+
+<div class="destination">
+
+<div class="destination-icon">🌙</div>
+
+<h3>Moon</h3>
+
+<p>Lunar Research</p>
+
+<div class="distance">
+LUNAR
+</div>
+
+</div>
+
+
+<div class="destination">
+
+<div class="destination-icon">🔴</div>
+
+<h3>Mars</h3>
+
+<p>Red Planet Expedition</p>
+
+<div class="distance">
+MARTIAN
+</div>
+
+</div>
+
+
+<div class="destination">
+
+<div class="destination-icon">🟠</div>
+
+<h3>Jupiter</h3>
+
+<p>Gas Giant Research</p>
+
+<div class="distance">
+JOVIAN
+</div>
+
+</div>
+
+
+<div class="destination">
+
+<div class="destination-icon">🪐</div>
+
+<h3>Saturn</h3>
+
+<p>Ring System Mission</p>
+
+<div class="distance">
+SATURNIAN
+</div>
+
+</div>
+
+
+<div class="destination">
+
+<div class="destination-icon">🔵</div>
+
+<h3>Uranus</h3>
+
+<p>Ice Giant Observatory</p>
+
+<div class="distance">
+OUTER SYSTEM
+</div>
+
+</div>
+
+
+<div class="destination">
+
+<div class="destination-icon">🌊</div>
+
+<h3>Neptune</h3>
+
+<p>Deep Blue Frontier</p>
+
+<div class="distance">
+OUTER SYSTEM
+</div>
+
+</div>
+
+
+<div class="destination">
+
+<div class="destination-icon">❄️</div>
+
+<h3>Pluto</h3>
+
+<p>Kuiper Belt Expedition</p>
+
+<div class="distance">
+KUIPER BELT
+</div>
+
+</div>
+
+
+<div class="destination">
+
+<div class="destination-icon">⭐</div>
+
+<h3>Alpha Centauri</h3>
+
+<p>Nearby Star System</p>
+
+<div class="distance">
+INTERSTELLAR
+</div>
+
+</div>
+
+
+<div class="destination">
+
+<div class="destination-icon">✨</div>
+
+<h3>Luyten b</h3>
+
+<p>Exoplanet Mission</p>
+
+<div class="distance">
+INTERSTELLAR
+</div>
+
+</div>
+
+
+<div class="destination">
+
+<div class="destination-icon">🌎</div>
+
+<h3>TRAPPIST-1e</h3>
+
+<p>Exoplanet Research</p>
+
+<div class="distance">
+INTERSTELLAR
+</div>
+
+</div>
+
+
+</div>
+
+</section>
+
+
+<!-- ROUTE -->
+
+<section class="route">
+
+<div class="section-header" style="margin:auto">
+
+<small>03 // WARP NETWORK</small>
+
+<h2>
+The Journey
+</h2>
+
+<p>
+A conceptual route from Yosemite to the
+farthest destinations in the network.
+</p>
+
+</div>
+
+
+<div class="route-map">
+
+<div class="route-line"></div>
+
+<div class="route-point p1">
+<span>YOSEMITE</span>
+</div>
+
+<div class="route-point p2">
+<span>MOON</span>
+</div>
+
+<div class="route-point p3">
+<span>MARS</span>
+</div>
+
+<div class="route-point p4">
+<span>JUPITER</span>
+</div>
+
+<div class="route-point p5">
+<span>SATURN</span>
+</div>
+
+<div class="route-point p6">
+<span>PLUTO</span>
+</div>
+
+<div class="route-point p7">
+<span>STARS</span>
+</div>
+
+</div>
+
+</section>
+
+
+<!-- CONTROL -->
+
+<section class="section control" id="control">
+
+<div class="section-header">
+
+<small>04 // MISSION CONTROL</small>
+
+<h2>
+Warp Terminal
+</h2>
+
+<p>
+Fictional station diagnostics and navigation
+interface.
+</p>
+
+</div>
+
+
+<div class="console">
+
+<div>
+&gt; <span class="bright">
+YOSEMITE WARP STATION INITIALIZED
+</span>
+</div>
+
+<div>
+&gt; LOCATION:
+<span class="green">
+YOSEMITE, EARTH
+</span>
+</div>
+
+<div>
+&gt; WARP CORE:
+<span class="green">
+WD-X ONLINE
+</span>
+</div>
+
+<br>
+
+<div>
+&gt; EARTH ORBIT ........
+<span class="green">READY</span>
+</div>
+
+<div>
+&gt; MOON ................
+<span class="green">READY</span>
+</div>
+
+<div>
+&gt; MARS ................
+<span class="green">READY</span>
+</div>
+
+<div>
+&gt; JUPITER .............
+<span class="green">READY</span>
+</div>
+
+<div>
+&gt; SATURN ..............
+<span class="green">READY</span>
+</div>
+
+<div>
+&gt; URANUS ..............
+<span class="green">READY</span>
+</div>
+
+<div>
+&gt; NEPTUNE .............
+<span class="green">READY</span>
+</div>
+
+<div>
+&gt; PLUTO ...............
+<span class="green">READY</span>
+</div>
+
+<div>
+&gt; ALPHA CENTAURI ......
+<span class="green">CALIBRATING</span>
+</div>
+
+<div>
+&gt; LUYTEN B ............
+<span class="green">CALIBRATING</span>
+</div>
+
+<div>
+&gt; TRAPPIST-1E .........
+<span class="green">CALIBRATING</span>
+</div>
+
+<br>
+
+<div>
+&gt; <span class="bright">
+WARP DRIVE READY_
+</span>
+</div>
+
+</div>
+
+</section>
+
+
+<!-- FINAL -->
+
+<section class="cta">
+
+<div>
+
+<div class="eyebrow">
+EARTH → SOLAR SYSTEM → BEYOND
+</div>
+
+<h2>
+THE JOURNEY
+BEGINS HERE
+</h2>
+
+<p>
+From the granite cliffs of Yosemite to
+worlds orbiting distant stars, imagine
+a transportation network built around
+the greatest adventure of all:
+exploration.
+</p>
+
+<a href="#destinations" class="btn primary">
+Select Destination
+</a>
+
+</div>
+
+</section>
+
+
+<!-- FOOTER -->
+
+<footer>
+
+<div>
+<strong>YOSEMITE × WARP DRIVE</strong><br>
+FICTIONAL FUTURE EXPLORATION CONCEPT
+</div>
+
+<div>
+EARTH · SOLAR SYSTEM · INTERSTELLAR
+</div>
+
+</footer>
+
+
+<script>
+
+/* Destination interaction */
+
+const destinations =
+document.querySelectorAll(".destination");
+
+destinations.forEach(card => {
+
+    card.addEventListener("click", () => {
+
+        const name =
+            card.querySelector("h3").textContent;
+
+        alert(
+            "DESTINATION SELECTED\\n\\n" +
+            name +
+            "\\n\\nWarp navigation system ready."
+        );
+
+    });
+
+});
+
+
+/* Warp core pulse */
+
+const core =
+document.querySelector(".station-core");
+
+setInterval(() => {
+
+    core.style.boxShadow =
+        "0 0 " +
+        (35 + Math.random()*40) +
+        "px #78a97e";
+
+},500);
+
+
+/* Mission console clock */
+
+const consoleBox =
+    document.querySelector(".console");
+
+setInterval(() => {
+
+    let clock =
+        document.querySelector(".live-clock");
+
+    if(!clock){
+
+        clock =
+            document.createElement("div");
+
+        clock.className =
+            "live-clock";
+
+        consoleBox.appendChild(clock);
+
+    }
+
+    clock.innerHTML =
+        "&gt; STATION TIME: " +
+        new Date().toLocaleTimeString();
+
+},1000);
+
+</script>
+
+</body>
+</html>
