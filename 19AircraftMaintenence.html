@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aircraft Maintenance Tracker</title>
+
+<style>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background: #0b1220;
+    color: #e5e7eb;
+}
+
+header {
+    background: #111827;
+    border-bottom: 1px solid #263244;
+    padding: 18px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    font-size: 22px;
+    font-weight: bold;
+}
+
+.logo span {
+    color: #38bdf8;
+}
+
+.header-status {
+    background: #064e3b;
+    color: #6ee7b7;
+    padding: 8px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+}
+
+.container {
+    max-width: 1400px;
+    margin: auto;
+    padding: 30px;
+}
+
+.hero {
+    margin-bottom: 30px;
+}
+
+.hero h1 {
+    font-size: 34px;
+    margin-bottom: 8px;
+}
+
+.hero p {
+    color: #94a3b8;
+}
+
+/* DASHBOARD */
+
+.stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18px;
+    margin-bottom: 30px;
+}
+
+.card {
+    background: #111827;
+    border: 1px solid #263244;
+    border-radius: 12px;
+    padding: 22px;
+}
+
+.stat-title {
+    color: #94a3b8;
+    font-size: 14px;
+}
+
+.stat-number {
+    font-size: 30px;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+.blue {
+    color: #38bdf8;
+}
+
+.green {
+    color: #34d399;
+}
+
+.yellow {
+    color: #fbbf24;
+}
+
+.red {
+    color: #f87171;
+}
+
+/* CONTROLS */
+
+.controls {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+input,
+select {
+    background: #0f172a;
+    color: white;
+    border: 1px solid #334155;
+    border-radius: 8px;
+    padding: 12px;
+    outline: none;
+}
+
+.search {
+    flex: 1;
+}
+
+button {
+    border: none;
+    border-radius: 8px;
+    padding: 12px 18px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.add-btn {
+    background: #0284c7;
+    color: white;
+}
+
+.add-btn:hover {
+    background: #0369a1;
+}
+
+/* TABLE */
+
+.table-card {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th,
+td {
+    padding: 15px;
+    text-align: left;
+    border-bottom: 1px solid #263244;
+}
+
+th {
+    color: #94a3b8;
+    font-size: 13px;
+    text-transform: uppercase;
+}
+
+tr:hover {
+    background: #172033;
+}
+
+.status {
+    display: inline-block;
+    padding: 6px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.operational {
+    background: #064e3b;
+    color: #6ee7b7;
+}
+
+.due {
+    background: #78350f;
+    color: #fcd34d;
+}
+
+.grounded {
+    background: #7f1d1d;
+    color: #fecaca;
+}
+
+.inspection {
+    background: #1e3a8a;
+    color: #93c5fd;
+}
+
+/* MAINTENANCE */
+
+.section-title {
+    margin: 35px 0 15px;
+}
+
+.maintenance-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+}
+
+.maintenance-card {
+    background: #111827;
+    border: 1px solid #263244;
+    border-radius: 12px;
+    padding: 20px;
+}
+
+.maintenance-card h3 {
+    margin-bottom: 10px;
+}
+
+.maintenance-card p {
+    color: #94a3b8;
+    margin: 7px 0;
+}
+
+.progress {
+    height: 8px;
+    background: #1e293b;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-top: 12px;
+}
+
+.progress-bar {
+    height: 100%;
+    background: #38bdf8;
+}
+
+/* MODAL */
+
+.modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.7);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.modal-content {
+    background: #111827;
+    width: 100%;
+    max-width: 500px;
+    border-radius: 14px;
+    padding: 25px;
+    border: 1px solid #334155;
+}
+
+.modal-content h2 {
+    margin-bottom: 20px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 6px;
+    color: #94a3b8;
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+}
+
+.modal-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.save-btn {
+    background: #059669;
+    color: white;
+}
+
+.cancel-btn {
+    background: #374151;
+    color: white;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 900px) {
+    .stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .maintenance-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 600px) {
+    header {
+        padding: 15px;
+    }
+
+    .container {
+        padding: 18px;
+    }
+
+    .stats {
+        grid-template-columns: 1fr;
+    }
+
+    .controls {
+        flex-direction: column;
+    }
+
+    .hero h1 {
+        font-size: 27px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <div class="logo">
+        ✈ Aero<span>Track</span>
+    </div>
+
+    <div class="header-status">
+        ● Maintenance System Online
+    </div>
+</header>
+
+<main class="container">
+
+    <section class="hero">
+        <h1>Aircraft Maintenance Tracker</h1>
+        <p>
+            Monitor aircraft health, inspections, flight hours,
+            maintenance schedules, and operational status.
+        </p>
+    </section>
+
+    <!-- DASHBOARD -->
+
+    <section class="stats">
+
+        <div class="card">
+            <div class="stat-title">Total Aircraft</div>
+            <div class="stat-number blue" id="totalAircraft">6</div>
+        </div>
+
+        <div class="card">
+            <div class="stat-title">Operational</div>
+            <div class="stat-number green" id="operationalCount">3</div>
+        </div>
+
+        <div class="card">
+            <div class="stat-title">Maintenance Due</div>
+            <div class="stat-number yellow" id="dueCount">2</div>
+        </div>
+
+        <div class="card">
+            <div class="stat-title">Grounded</div>
+            <div class="stat-number red" id="groundedCount">1</div>
+        </div>
+
+    </section>
+
+    <!-- SEARCH -->
+
+    <section class="controls">
+
+        <input
+            type="text"
+            id="searchInput"
+            class="search"
+            placeholder="Search by tail number or aircraft model..."
+        >
+
+        <select id="statusFilter">
+            <option value="All">All Statuses</option>
+            <option value="Operational">Operational</option>
+            <option value="Maintenance Due">Maintenance Due</option>
+            <option value="Grounded">Grounded</option>
+            <option value="Inspection Required">
+                Inspection Required
+            </option>
+        </select>
+
+        <button class="add-btn" onclick="openModal()">
+            + Add Aircraft
+        </button>
+
+    </section>
+
+    <!-- AIRCRAFT TABLE -->
+
+    <section class="card table-card">
+
+        <table>
+
+            <thead>
+                <tr>
+                    <th>Tail Number</th>
+                    <th>Aircraft</th>
+                    <th>Flight Hours</th>
+                    <th>Status</th>
+                    <th>Last Maintenance</th>
+                    <th>Next Inspection</th>
+                </tr>
+            </thead>
+
+            <tbody id="aircraftTable"></tbody>
+
+        </table>
+
+    </section>
+
+    <!-- MAINTENANCE -->
+
+    <h2 class="section-title">Maintenance Schedule</h2>
+
+    <section class="maintenance-grid">
+
+        <div class="maintenance-card">
+            <h3>🔧 Engine Inspection</h3>
+            <p>Aircraft: N123AB</p>
+            <p>Engine: CFM56-7B</p>
+            <p>Due in: 42 flight hours</p>
+
+            <div class="progress">
+                <div class="progress-bar" style="width:82%"></div>
+            </div>
+        </div>
+
+        <div class="maintenance-card">
+            <h3>🛠 Landing Gear</h3>
+            <p>Aircraft: N456CD</p>
+            <p>Component: Main Gear</p>
+            <p>Due in: 18 flight hours</p>
+
+            <div class="progress">
+                <div class="progress-bar" style="width:91%"></div>
+            </div>
+        </div>
+
+        <div class="maintenance-card">
+            <h3>🔍 Annual Inspection</h3>
+            <p>Aircraft: N789EF</p>
+            <p>Inspection Type: Annual</p>
+            <p>Due in: 14 days</p>
+
+            <div class="progress">
+                <div class="progress-bar" style="width:72%"></div>
+            </div>
+        </div>
+
+    </section>
+
+</main>
+
+<!-- MODAL -->
+
+<div class="modal" id="modal">
+
+    <div class="modal-content">
+
+        <h2>Add Aircraft</h2>
+
+        <div class="form-group">
+            <label>Tail Number</label>
+            <input id="tailNumber" placeholder="N123AB">
+        </div>
+
+        <div class="form-group">
+            <label>Aircraft Model</label>
+            <input id="aircraftModel" placeholder="Boeing 737">
+        </div>
+
+        <div class="form-group">
+            <label>Flight Hours</label>
+            <input id="flightHours" type="number" placeholder="2500">
+        </div>
+
+        <div class="form-group">
+            <label>Status</label>
+
+            <select id="aircraftStatus">
+                <option>Operational</option>
+                <option>Maintenance Due</option>
+                <option>Grounded</option>
+                <option>Inspection Required</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>Next Inspection</label>
+            <input id="nextInspection" type="date">
+        </div>
+
+        <div class="modal-buttons">
+
+            <button class="save-btn" onclick="addAircraft()">
+                Save Aircraft
+            </button>
+
+            <button class="cancel-btn" onclick="closeModal()">
+                Cancel
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+let aircraft = [
+
+    {
+        tail: "N123AB",
+        model: "Boeing 737-800",
+        hours: 8421,
+        status: "Operational",
+        maintenance: "2026-07-20",
+        inspection: "2026-10-20"
+    },
+
+    {
+        tail: "N456CD",
+        model: "Airbus A320",
+        hours: 12450,
+        status: "Maintenance Due",
+        maintenance: "2026-06-15",
+        inspection: "2026-08-20"
+    },
+
+    {
+        tail: "N789EF",
+        model: "Boeing 787-9",
+        hours: 5360,
+        status: "Operational",
+        maintenance: "2026-07-28",
+        inspection: "2026-11-10"
+    },
+
+    {
+        tail: "N222GH",
+        model: "Airbus A350",
+        hours: 7230,
+        status: "Inspection Required",
+        maintenance: "2026-05-12",
+        inspection: "2026-08-15"
+    },
+
+    {
+        tail: "N333JK",
+        model: "Boeing 777-300ER",
+        hours: 15980,
+        status: "Grounded",
+        maintenance: "2026-04-05",
+        inspection: "2026-08-12"
+    },
+
+    {
+        tail: "N555LM",
+        model: "Embraer E190",
+        hours: 4610,
+        status: "Operational",
+        maintenance: "2026-07-30",
+        inspection: "2026-12-05"
+    }
+
+];
+
+function renderAircraft() {
+
+    const table =
+        document.getElementById("aircraftTable");
+
+    const search =
+        document
+        .getElementById("searchInput")
+        .value
+        .toLowerCase();
+
+    const filter =
+        document
+        .getElementById("statusFilter")
+        .value;
+
+    table.innerHTML = "";
+
+    const filtered = aircraft.filter(a => {
+
+        const matchesSearch =
+            a.tail.toLowerCase().includes(search) ||
+            a.model.toLowerCase().includes(search);
+
+        const matchesStatus =
+            filter === "All" ||
+            a.status === filter;
+
+        return matchesSearch && matchesStatus;
+    });
+
+    filtered.forEach(a => {
+
+        const row = document.createElement("tr");
+
+        let statusClass = "";
+
+        if (a.status === "Operational") {
+            statusClass = "operational";
+        }
+
+        if (a.status === "Maintenance Due") {
+            statusClass = "due";
+        }
+
+        if (a.status === "Grounded") {
+            statusClass = "grounded";
+        }
+
+        if (a.status === "Inspection Required") {
+            statusClass = "inspection";
+        }
+
+        row.innerHTML = `
+            <td><strong>${a.tail}</strong></td>
+
+            <td>${a.model}</td>
+
+            <td>${Number(a.hours).toLocaleString()} hrs</td>
+
+            <td>
+                <span class="status ${statusClass}">
+                    ${a.status}
+                </span>
+            </td>
+
+            <td>${a.maintenance}</td>
+
+            <td>${a.inspection}</td>
+        `;
+
+        table.appendChild(row);
+
+    });
+
+    updateStats();
+
+}
+
+function updateStats() {
+
+    document.getElementById("totalAircraft")
+        .textContent = aircraft.length;
+
+    document.getElementById("operationalCount")
+        .textContent =
+        aircraft.filter(
+            a => a.status === "Operational"
+        ).length;
+
+    document.getElementById("dueCount")
+        .textContent =
+        aircraft.filter(
+            a => a.status === "Maintenance Due"
+        ).length;
+
+    document.getElementById("groundedCount")
+        .textContent =
+        aircraft.filter(
+            a => a.status === "Grounded"
+        ).length;
+}
+
+function openModal() {
+    document.getElementById("modal").style.display = "flex";
+}
+
+function closeModal() {
+    document.getElementById("modal").style.display = "none";
+}
+
+function addAircraft() {
+
+    const tail =
+        document.getElementById("tailNumber").value;
+
+    const model =
+        document.getElementById("aircraftModel").value;
+
+    const hours =
+        document.getElementById("flightHours").value;
+
+    const status =
+        document.getElementById("aircraftStatus").value;
+
+    const inspection =
+        document.getElementById("nextInspection").value;
+
+    if (!tail || !model || !hours || !inspection) {
+        alert("Please complete all fields.");
+        return;
+    }
+
+    aircraft.push({
+
+        tail: tail.toUpperCase(),
+
+        model: model,
+
+        hours: Number(hours),
+
+        status: status,
+
+        maintenance: new Date()
+            .toISOString()
+            .split("T")[0],
+
+        inspection: inspection
+    });
+
+    renderAircraft();
+
+    closeModal();
+
+    document.getElementById("tailNumber").value = "";
+    document.getElementById("aircraftModel").value = "";
+    document.getElementById("flightHours").value = "";
+    document.getElementById("nextInspection").value = "";
+}
+
+document
+    .getElementById("searchInput")
+    .addEventListener("input", renderAircraft);
+
+document
+    .getElementById("statusFilter")
+    .addEventListener("change", renderAircraft);
+
+renderAircraft();
+
+</script>
+
+</body>
+</html>
