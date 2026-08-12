@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Space Mission Control</title>
+
+<style>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: #020617;
+    color: white;
+    min-height: 100vh;
+}
+
+/* HEADER */
+
+header {
+    text-align: center;
+    padding: 25px;
+    border-bottom: 1px solid #1e293b;
+}
+
+header h1 {
+    font-size: 32px;
+    letter-spacing: 2px;
+}
+
+header p {
+    color: #60a5fa;
+    margin-top: 8px;
+}
+
+/* MAIN */
+
+.container {
+    display: grid;
+    grid-template-columns: 250px 1fr 250px;
+    gap: 20px;
+    padding: 20px;
+}
+
+/* PANELS */
+
+.panel {
+    background: #111827;
+    border: 1px solid #1e293b;
+    border-radius: 12px;
+    padding: 20px;
+}
+
+.panel h2 {
+    font-size: 18px;
+    margin-bottom: 20px;
+}
+
+/* TELEMETRY */
+
+.telemetry div {
+    margin: 18px 0;
+    color: #93c5fd;
+    font-size: 17px;
+}
+
+/* ROCKET AREA */
+
+.mission-area {
+    min-height: 500px;
+    background:
+        radial-gradient(circle at 50% 30%, #1e3a8a 0%, transparent 20%),
+        linear-gradient(#020617, #030712);
+
+    border-radius: 15px;
+    border: 1px solid #1e293b;
+
+    position: relative;
+    overflow: hidden;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.stars {
+    position: absolute;
+    inset: 0;
+
+    background-image:
+        radial-gradient(white 1px, transparent 1px),
+        radial-gradient(white 1px, transparent 1px);
+
+    background-size: 70px 70px, 120px 120px;
+    background-position: 10px 20px, 50px 80px;
+
+    opacity: .4;
+}
+
+.rocket {
+    position: absolute;
+    bottom: 60px;
+    font-size: 70px;
+    transition: bottom 1s linear;
+    z-index: 2;
+}
+
+.flame {
+    position: absolute;
+    width: 18px;
+    height: 45px;
+    background: linear-gradient(
+        orange,
+        red,
+        transparent
+    );
+
+    border-radius: 50%;
+    bottom: -35px;
+    left: 27px;
+
+    animation: flame .1s infinite alternate;
+}
+
+@keyframes flame {
+    from {
+        transform: scaleY(.8);
+    }
+
+    to {
+        transform: scaleY(1.2);
+    }
+}
+
+/* STATUS */
+
+.status {
+    text-align: center;
+    margin: 20px 0;
+    font-size: 20px;
+    font-weight: bold;
+    color: #00ff88;
+}
+
+/* BUTTONS */
+
+.controls {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+}
+
+button {
+    border: none;
+    border-radius: 8px;
+    padding: 13px 22px;
+    color: white;
+    background: #1d4ed8;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 15px;
+}
+
+button:hover {
+    background: #2563eb;
+}
+
+.abort {
+    background: #991b1b;
+}
+
+.abort:hover {
+    background: #dc2626;
+}
+
+.reset {
+    background: #374151;
+}
+
+/* RESOURCES */
+
+.resource {
+    margin-bottom: 25px;
+}
+
+.resource-title {
+    margin-bottom: 8px;
+}
+
+.progress {
+    width: 100%;
+    height: 15px;
+    background: #374151;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.progress-bar {
+    height: 100%;
+    width: 100%;
+    transition: width .5s;
+}
+
+.fuel {
+    background: #22c55e;
+}
+
+.oxygen {
+    background: #38bdf8;
+}
+
+/* MISSION LOG */
+
+.log {
+    margin: 20px;
+    background: #111827;
+    border: 1px solid #1e293b;
+    border-radius: 12px;
+    padding: 20px;
+}
+
+.log h2 {
+    margin-bottom: 10px;
+}
+
+#missionLog {
+    height: 130px;
+    overflow-y: auto;
+    font-family: monospace;
+    color: #94a3b8;
+}
+
+.log-entry {
+    margin: 5px 0;
+}
+
+/* MOBILE */
+
+@media (max-width: 900px) {
+
+    .container {
+        grid-template-columns: 1fr;
+    }
+
+    .mission-area {
+        min-height: 400px;
+    }
+
+    .controls {
+        flex-wrap: wrap;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>🚀 SPACE MISSION CONTROL</h1>
+    <p>MISSION: ORBITAL-01</p>
+</header>
+
+<main class="container">
+
+    <!-- TELEMETRY -->
+
+    <section class="panel telemetry">
+
+        <h2>LIVE TELEMETRY</h2>
+
+        <div id="altitude">
+            Altitude: 0 km
+        </div>
+
+        <div id="speed">
+            Speed: 0 km/h
+        </div>
+
+        <div id="fuelText">
+            Fuel: 100%
+        </div>
+
+        <div id="oxygenText">
+            Oxygen: 100%
+        </div>
+
+        <div id="timer">
+            Mission Time: 00:00
+        </div>
+
+    </section>
+
+
+    <!-- MISSION AREA -->
+
+    <section>
+
+        <div class="mission-area">
+
+            <div class="stars"></div>
+
+            <div class="rocket" id="rocket">
+                🚀
+                <div class="flame"></div>
+            </div>
+
+        </div>
+
+        <div
+            class="status"
+            id="status"
+        >
+            READY FOR LAUNCH
+        </div>
+
+        <div class="controls">
+
+            <button onclick="launchMission()">
+                🚀 LAUNCH
+            </button>
+
+            <button
+                class="abort"
+                onclick="abortMission()"
+            >
+                ⛔ ABORT
+            </button>
+
+            <button
+                class="reset"
+                onclick="resetMission()"
+            >
+                ↻ RESET
+            </button>
+
+        </div>
+
+    </section>
+
+
+    <!-- RESOURCES -->
+
+    <section class="panel">
+
+        <h2>RESOURCES</h2>
+
+        <div class="resource">
+
+            <div class="resource-title">
+                Fuel
+            </div>
+
+            <div class="progress">
+
+                <div
+                    class="progress-bar fuel"
+                    id="fuelBar"
+                ></div>
+
+            </div>
+
+        </div>
+
+
+        <div class="resource">
+
+            <div class="resource-title">
+                Oxygen
+            </div>
+
+            <div class="progress">
+
+                <div
+                    class="progress-bar oxygen"
+                    id="oxygenBar"
+                ></div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+<!-- MISSION LOG -->
+
+<section class="log">
+
+    <h2>MISSION LOG</h2>
+
+    <div id="missionLog">
+
+        <div class="log-entry">
+            [SYSTEM] Mission control initialized.
+        </div>
+
+        <div class="log-entry">
+            [SYSTEM] Orbital-01 standing by.
+        </div>
+
+    </div>
+
+</section>
+
+
+<script>
+
+let altitude = 0;
+let speed = 0;
+let fuel = 100;
+let oxygen = 100;
+
+let seconds = 0;
+
+let launched = false;
+let completed = false;
+
+let missionInterval = null;
+
+
+/* ELEMENTS */
+
+const altitudeElement =
+    document.getElementById("altitude");
+
+const speedElement =
+    document.getElementById("speed");
+
+const fuelText =
+    document.getElementById("fuelText");
+
+const oxygenText =
+    document.getElementById("oxygenText");
+
+const timerElement =
+    document.getElementById("timer");
+
+const fuelBar =
+    document.getElementById("fuelBar");
+
+const oxygenBar =
+    document.getElementById("oxygenBar");
+
+const statusElement =
+    document.getElementById("status");
+
+const rocket =
+    document.getElementById("rocket");
+
+const missionLog =
+    document.getElementById("missionLog");
+
+
+/* LAUNCH */
+
+function launchMission() {
+
+    if (launched || completed) {
+        return;
+    }
+
+    launched = true;
+
+    statusElement.textContent =
+        "🚀 LAUNCH IN PROGRESS";
+
+    statusElement.style.color =
+        "#00ff88";
+
+    addLog(
+        "[LAUNCH] Main engines ignited."
+    );
+
+    addLog(
+        "[LAUNCH] Rocket leaving launch platform."
+    );
+
+    missionInterval =
+        setInterval(updateMission, 1000);
+}
+
+
+/* UPDATE MISSION */
+
+function updateMission() {
+
+    if (!launched) {
+        return;
+    }
+
+    altitude +=
+        8 + Math.random() * 5;
+
+    speed +=
+        250 + Math.random() * 100;
+
+    fuel -=
+        1.2 + Math.random();
+
+    oxygen -= .15;
+
+    seconds++;
+
+    if (fuel < 0) {
+        fuel = 0;
+    }
+
+    if (oxygen < 0) {
+        oxygen = 0;
+    }
+
+    updateDisplay();
+
+    updateRocket();
+
+
+    /* FUEL FAILURE */
+
+    if (fuel <= 0) {
+
+        missionFailure(
+            "OUT OF FUEL"
+        );
+
+        return;
+    }
+
+
+    /* OXYGEN FAILURE */
+
+    if (oxygen <= 0) {
+
+        missionFailure(
+            "OXYGEN DEPLETED"
+        );
+
+        return;
+    }
+
+
+    /* ORBIT */
+
+    if (altitude >= 200) {
+
+        altitude = 200;
+
+        completeMission();
+    }
+}
+
+
+/* ROCKET MOVEMENT */
+
+function updateRocket() {
+
+    const maxAltitude = 200;
+
+    const percentage =
+        Math.min(
+            altitude / maxAltitude,
+            1
+        );
+
+    const movement =
+        percentage * 380;
+
+    rocket.style.bottom =
+        (60 + movement) + "px";
+}
+
+
+/* UPDATE DISPLAY */
+
+function updateDisplay() {
+
+    altitudeElement.textContent =
+        `Altitude: ${altitude.toFixed(1)} km`;
+
+    speedElement.textContent =
+        `Speed: ${speed.toFixed(0)} km/h`;
+
+    fuelText.textContent =
+        `Fuel: ${fuel.toFixed(1)}%`;
+
+    oxygenText.textContent =
+        `Oxygen: ${oxygen.toFixed(1)}%`;
+
+    const minutes =
+        Math.floor(seconds / 60);
+
+    const remainingSeconds =
+        seconds % 60;
+
+    timerElement.textContent =
+        `Mission Time: ${String(minutes).padStart(2, "0")}:${String(remainingSeconds).padStart(2, "0")}`;
+
+    fuelBar.style.width =
+        fuel + "%";
+
+    oxygenBar.style.width =
+        oxygen + "%";
+}
+
+
+/* SUCCESS */
+
+function completeMission() {
+
+    launched = false;
+    completed = true;
+
+    clearInterval(missionInterval);
+
+    statusElement.textContent =
+        "✅ ORBIT ACHIEVED";
+
+    statusElement.style.color =
+        "#00ff88";
+
+    addLog(
+        "[SUCCESS] Target orbit achieved."
+    );
+
+    addLog(
+        "[MISSION] Orbital-01 mission successful."
+    );
+}
+
+
+/* FAILURE */
+
+function missionFailure(reason) {
+
+    launched = false;
+
+    clearInterval(missionInterval);
+
+    statusElement.textContent =
+        "❌ MISSION FAILURE: " + reason;
+
+    statusElement.style.color =
+        "#ff3333";
+
+    addLog(
+        "[ERROR] " + reason
+    );
+}
+
+
+/* ABORT */
+
+function abortMission() {
+
+    if (!launched) {
+
+        addLog(
+            "[SYSTEM] No active mission."
+        );
+
+        return;
+    }
+
+    launched = false;
+
+    clearInterval(missionInterval);
+
+    statusElement.textContent =
+        "⛔ MISSION ABORTED";
+
+    statusElement.style.color =
+        "#ff4444";
+
+    addLog(
+        "[ABORT] Mission manually aborted."
+    );
+}
+
+
+/* RESET */
+
+function resetMission() {
+
+    clearInterval(missionInterval);
+
+    altitude = 0;
+    speed = 0;
+    fuel = 100;
+    oxygen = 100;
+
+    seconds = 0;
+
+    launched = false;
+    completed = false;
+
+    rocket.style.bottom =
+        "60px";
+
+    statusElement.textContent =
+        "READY FOR LAUNCH";
+
+    statusElement.style.color =
+        "#00ff88";
+
+    updateDisplay();
+
+    addLog(
+        "[SYSTEM] Mission reset."
+    );
+}
+
+
+/* LOG */
+
+function addLog(message) {
+
+    const entry =
+        document.createElement("div");
+
+    entry.className =
+        "log-entry";
+
+    const time =
+        new Date().toLocaleTimeString();
+
+    entry.textContent =
+        `[${time}] ${message}`;
+
+    missionLog.appendChild(entry);
+
+    missionLog.scrollTop =
+        missionLog.scrollHeight;
+}
+
+
+/* INITIAL DISPLAY */
+
+updateDisplay();
+
+</script>
+
+</body>
+</html>
