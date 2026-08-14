@@ -1,0 +1,1670 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lunar Rover Mission</title>
+
+<style>
+/* 271 Gravity Simulator Game in JavaFX */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background:
+        radial-gradient(circle at 50% 20%, #202735, #080a0f 70%);
+    color: white;
+    font-family: Arial, sans-serif;
+    overflow: hidden;
+}
+
+#game {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+canvas {
+    display: block;
+    width: min(1100px, 100vw);
+    height: min(700px, 100vh);
+    background: #929292;
+    border: 2px solid #444;
+}
+
+/* HUD */
+
+#hud {
+    position: absolute;
+    top: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+
+    width: min(1060px, 95vw);
+
+    display: grid;
+    grid-template-columns:
+        repeat(5, 1fr);
+
+    gap: 8px;
+
+    background: rgba(8, 11, 17, .92);
+    border: 1px solid #444;
+    border-radius: 12px;
+
+    padding: 10px;
+
+    z-index: 5;
+}
+
+.stat {
+    text-align: center;
+}
+
+.label {
+    color: #8d96a5;
+    font-size: 11px;
+    text-transform: uppercase;
+}
+
+.value {
+    font-size: 17px;
+    font-weight: bold;
+    margin-top: 3px;
+}
+
+.bar {
+    width: 100%;
+    height: 6px;
+    background: #292d35;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-top: 5px;
+}
+
+#fuelFill {
+    height: 100%;
+    width: 100%;
+    background: #43d17b;
+}
+
+#healthFill {
+    height: 100%;
+    width: 100%;
+    background: #e94b4b;
+}
+
+/* Mission panel */
+
+#missionPanel {
+    position: absolute;
+    top: 100px;
+    left: 25px;
+
+    width: 250px;
+
+    background: rgba(8, 11, 17, .85);
+    border: 1px solid #444;
+    border-radius: 12px;
+
+    padding: 14px;
+
+    z-index: 4;
+}
+
+#missionPanel h2 {
+    margin: 0 0 8px;
+    font-size: 17px;
+}
+
+#missionPanel p {
+    margin: 7px 0;
+    color: #c6ccd5;
+    font-size: 13px;
+}
+
+/* Minimap */
+
+#miniMap {
+    position: absolute;
+    right: 25px;
+    top: 100px;
+
+    width: 180px;
+    height: 125px;
+
+    background: rgba(5, 7, 10, .85);
+
+    border: 1px solid #555;
+    border-radius: 10px;
+
+    z-index: 4;
+}
+
+/* Bottom */
+
+#bottom {
+    position: absolute;
+
+    bottom: 18px;
+    left: 50%;
+
+    transform: translateX(-50%);
+
+    background: rgba(8, 11, 17, .9);
+
+    border: 1px solid #444;
+    border-radius: 12px;
+
+    padding: 10px 18px;
+
+    text-align: center;
+
+    z-index: 5;
+}
+
+#bottom small {
+    color: #9ca3af;
+}
+
+button {
+    margin-left: 12px;
+
+    border: 0;
+    border-radius: 7px;
+
+    padding: 8px 14px;
+
+    font-weight: bold;
+
+    cursor: pointer;
+}
+
+button:hover {
+    transform: translateY(-1px);
+}
+
+/* Message */
+
+#message {
+    position: absolute;
+
+    left: 50%;
+    top: 50%;
+
+    transform: translate(-50%, -50%);
+
+    width: min(500px, 90vw);
+
+    display: none;
+
+    text-align: center;
+
+    background: rgba(4, 6, 10, .95);
+
+    border: 2px solid #aaa;
+    border-radius: 18px;
+
+    padding: 35px;
+
+    z-index: 20;
+}
+
+#message h1 {
+    font-size: 40px;
+    margin: 0 0 12px;
+}
+
+#message p {
+    color: #c5cbd4;
+}
+
+#message button {
+    margin: 10px 0 0;
+}
+
+/* Mobile controls */
+
+#touchControls {
+    display: none;
+
+    position: absolute;
+
+    bottom: 20px;
+    right: 20px;
+
+    z-index: 10;
+}
+
+.touchRow {
+    display: flex;
+    justify-content: center;
+}
+
+.touch {
+    width: 55px;
+    height: 55px;
+
+    margin: 3px;
+
+    border-radius: 12px;
+
+    border: 1px solid #777;
+
+    background: rgba(20, 25, 34, .85);
+
+    color: white;
+
+    font-size: 20px;
+
+    user-select: none;
+    touch-action: none;
+}
+
+@media(max-width: 700px) {
+
+    #hud {
+        grid-template-columns: repeat(3, 1fr);
+        width: 96vw;
+    }
+
+    #missionPanel {
+        display: none;
+    }
+
+    #miniMap {
+        display: none;
+    }
+
+    #bottom {
+        display: none;
+    }
+
+    #touchControls {
+        display: block;
+    }
+
+    canvas {
+        border: 0;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div id="game">
+
+    <canvas id="canvas"
+            width="1100"
+            height="700">
+    </canvas>
+
+    <!-- HUD -->
+
+    <div id="hud">
+
+        <div class="stat">
+            <div class="label">Fuel</div>
+            <div class="value" id="fuelText">100%</div>
+
+            <div class="bar">
+                <div id="fuelFill"></div>
+            </div>
+        </div>
+
+        <div class="stat">
+            <div class="label">Health</div>
+            <div class="value" id="healthText">100</div>
+
+            <div class="bar">
+                <div id="healthFill"></div>
+            </div>
+        </div>
+
+        <div class="stat">
+            <div class="label">Score</div>
+            <div class="value" id="scoreText">0</div>
+        </div>
+
+        <div class="stat">
+            <div class="label">Samples</div>
+            <div class="value" id="samplesText">0 / 8</div>
+        </div>
+
+        <div class="stat">
+            <div class="label">Mission</div>
+            <div class="value" id="missionText">
+                Explore
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Mission -->
+
+    <div id="missionPanel">
+
+        <h2>🌕 Lunar Mission</h2>
+
+        <p>🪨 Collect at least 8 lunar samples.</p>
+
+        <p>⚠️ Avoid large craters.</p>
+
+        <p>⛽ Conserve rover fuel.</p>
+
+        <p>🏠 Return to the lunar base.</p>
+
+        <p>
+            <strong>Controls</strong><br>
+            W / ↑ — Accelerate<br>
+            S / ↓ — Brake<br>
+            A / ← — Turn Left<br>
+            D / → — Turn Right
+        </p>
+
+    </div>
+
+    <!-- Minimap -->
+
+    <canvas id="miniMap"
+            width="180"
+            height="125">
+    </canvas>
+
+    <!-- Bottom -->
+
+    <div id="bottom">
+
+        <small>
+            WASD / Arrow Keys • Lunar Rover Exploration
+        </small>
+
+        <button onclick="resetGame()">
+            Restart
+        </button>
+
+    </div>
+
+    <!-- Game Message -->
+
+    <div id="message">
+
+        <h1 id="messageTitle"></h1>
+
+        <p id="messageText"></p>
+
+        <button onclick="resetGame()">
+            Restart Mission
+        </button>
+
+    </div>
+
+    <!-- Mobile controls -->
+
+    <div id="touchControls">
+
+        <div class="touchRow">
+
+            <button class="touch"
+                    data-key="w">
+                ▲
+            </button>
+
+        </div>
+
+        <div class="touchRow">
+
+            <button class="touch"
+                    data-key="a">
+                ◀
+            </button>
+
+            <button class="touch"
+                    data-key="s">
+                ▼
+            </button>
+
+            <button class="touch"
+                    data-key="d">
+                ▶
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+const canvas =
+    document.getElementById("canvas");
+
+const ctx =
+    canvas.getContext("2d");
+
+const mini =
+    document.getElementById("miniMap");
+
+const miniCtx =
+    mini.getContext("2d");
+
+const WIDTH = canvas.width;
+const HEIGHT = canvas.height;
+
+
+// =====================================================
+// INPUT
+// =====================================================
+
+const keys = {};
+
+document.addEventListener("keydown", e => {
+
+    keys[e.key.toLowerCase()] = true;
+
+    if (
+        e.key.startsWith("Arrow") ||
+        e.key === " "
+    ) {
+        e.preventDefault();
+    }
+});
+
+document.addEventListener("keyup", e => {
+
+    keys[e.key.toLowerCase()] = false;
+});
+
+
+// Touch controls
+
+document.querySelectorAll(".touch")
+.forEach(button => {
+
+    const key =
+        button.dataset.key;
+
+    button.addEventListener(
+        "pointerdown",
+        e => {
+
+            e.preventDefault();
+
+            keys[key] = true;
+        }
+    );
+
+    button.addEventListener(
+        "pointerup",
+        () => {
+            keys[key] = false;
+        }
+    );
+
+    button.addEventListener(
+        "pointerleave",
+        () => {
+            keys[key] = false;
+        }
+    );
+});
+
+
+// =====================================================
+// RANDOM
+// =====================================================
+
+function random(min, max) {
+
+    return Math.random() *
+        (max - min) + min;
+}
+
+
+// =====================================================
+// ROVER
+// =====================================================
+
+const rover = {
+
+    x: 120,
+
+    y: 350,
+
+    angle: 0,
+
+    speed: 0,
+
+    fuel: 100,
+
+    health: 100
+
+};
+
+
+// =====================================================
+// GAME STATE
+// =====================================================
+
+let score = 0;
+
+let collected = 0;
+
+let gameOver = false;
+
+let victory = false;
+
+let craters = [];
+
+let samples = [];
+
+
+// =====================================================
+// WORLD GENERATION
+// =====================================================
+
+function generateWorld() {
+
+    craters = [];
+
+    samples = [];
+
+    // Craters
+
+    for (let i = 0; i < 50; i++) {
+
+        craters.push({
+
+            x: random(
+                30,
+                WIDTH - 30
+            ),
+
+            y: random(
+                30,
+                HEIGHT - 30
+            ),
+
+            radius: random(
+                12,
+                45
+            )
+        });
+    }
+
+    // Samples
+
+    for (let i = 0; i < 20; i++) {
+
+        samples.push({
+
+            x: random(
+                70,
+                WIDTH - 150
+            ),
+
+            y: random(
+                80,
+                HEIGHT - 100
+            ),
+
+            collected: false
+
+        });
+    }
+}
+
+
+// =====================================================
+// RESET
+// =====================================================
+
+function resetGame() {
+
+    rover.x = 120;
+
+    rover.y = 350;
+
+    rover.angle = 0;
+
+    rover.speed = 0;
+
+    rover.fuel = 100;
+
+    rover.health = 100;
+
+    score = 0;
+
+    collected = 0;
+
+    gameOver = false;
+
+    victory = false;
+
+    document
+        .getElementById("message")
+        .style.display = "none";
+
+    generateWorld();
+}
+
+
+// =====================================================
+// UPDATE
+// =====================================================
+
+function update(dt) {
+
+    if (
+        gameOver ||
+        victory
+    ) {
+        return;
+    }
+
+
+    // Acceleration
+
+    if (
+        (keys["w"] ||
+         keys["arrowup"]) &&
+        rover.fuel > 0
+    ) {
+
+        rover.speed +=
+            95 * dt;
+
+        rover.fuel -=
+            5.5 * dt;
+    }
+
+
+    // Reverse
+
+    if (
+        keys["s"] ||
+        keys["arrowdown"]
+    ) {
+
+        rover.speed -=
+            65 * dt;
+    }
+
+
+    // Friction
+
+    rover.speed *= 0.985;
+
+
+    // Maximum speed
+
+    rover.speed =
+        Math.max(
+            -75,
+            Math.min(
+                190,
+                rover.speed
+            )
+        );
+
+
+    // Steering
+
+    if (
+        keys["a"] ||
+        keys["arrowleft"]
+    ) {
+
+        rover.angle -=
+            2.7 * dt;
+    }
+
+    if (
+        keys["d"] ||
+        keys["arrowright"]
+    ) {
+
+        rover.angle +=
+            2.7 * dt;
+    }
+
+
+    // Movement
+
+    rover.x +=
+        Math.cos(rover.angle) *
+        rover.speed *
+        dt;
+
+    rover.y +=
+        Math.sin(rover.angle) *
+        rover.speed *
+        dt;
+
+
+    // World boundaries
+
+    rover.x =
+        Math.max(
+            25,
+            Math.min(
+                WIDTH - 25,
+                rover.x
+            )
+        );
+
+    rover.y =
+        Math.max(
+            25,
+            Math.min(
+                HEIGHT - 25,
+                rover.y
+            )
+        );
+
+
+    checkCraters();
+
+    checkSamples();
+
+    checkBase();
+
+
+    if (rover.health <= 0) {
+
+        rover.health = 0;
+
+        loseGame();
+    }
+}
+
+
+// =====================================================
+// CRATER COLLISION
+// =====================================================
+
+function checkCraters() {
+
+    for (const crater of craters) {
+
+        const dx =
+            rover.x - crater.x;
+
+        const dy =
+            rover.y - crater.y;
+
+        const distance =
+            Math.sqrt(
+                dx * dx +
+                dy * dy
+            );
+
+
+        if (
+            distance <
+            crater.radius + 13
+        ) {
+
+            rover.health -=
+                0.25;
+
+            rover.speed *=
+                0.91;
+        }
+    }
+}
+
+
+// =====================================================
+// SAMPLE COLLECTION
+// =====================================================
+
+function checkSamples() {
+
+    for (const sample of samples) {
+
+        if (sample.collected) {
+            continue;
+        }
+
+        const dx =
+            rover.x - sample.x;
+
+        const dy =
+            rover.y - sample.y;
+
+        const distance =
+            Math.sqrt(
+                dx * dx +
+                dy * dy
+            );
+
+
+        if (distance < 25) {
+
+            sample.collected = true;
+
+            collected++;
+
+            score += 100;
+
+            // Sample gives small fuel bonus
+
+            rover.fuel =
+                Math.min(
+                    100,
+                    rover.fuel + 3
+                );
+        }
+    }
+}
+
+
+// =====================================================
+// BASE
+// =====================================================
+
+const base = {
+
+    x: WIDTH - 90,
+
+    y: 75
+
+};
+
+
+function checkBase() {
+
+    const dx =
+        rover.x - base.x;
+
+    const dy =
+        rover.y - base.y;
+
+    const distance =
+        Math.sqrt(
+            dx * dx +
+            dy * dy
+        );
+
+
+    if (
+        distance < 55 &&
+        collected >= 8
+    ) {
+
+        victory = true;
+
+        rover.speed = 0;
+
+        showMessage(
+
+            "🏆 MISSION COMPLETE",
+
+            "The rover returned safely with " +
+            collected +
+            " lunar samples."
+
+        );
+    }
+}
+
+
+// =====================================================
+// DRAW MOON
+// =====================================================
+
+function drawMoon() {
+
+    ctx.fillStyle =
+        "#969696";
+
+    ctx.fillRect(
+        0,
+        0,
+        WIDTH,
+        HEIGHT
+    );
+
+
+    // Dust particles
+
+    for (let i = 0; i < 250; i++) {
+
+        const x =
+            (i * 73) %
+            WIDTH;
+
+        const y =
+            (i * 131) %
+            HEIGHT;
+
+        ctx.fillStyle =
+            i % 2
+                ? "#858585"
+                : "#a4a4a4";
+
+        ctx.fillRect(
+            x,
+            y,
+            2,
+            2
+        );
+    }
+
+
+    // Surface ridges
+
+    ctx.strokeStyle =
+        "#aaaaaa";
+
+    ctx.lineWidth = 2;
+
+    for (
+        let y = 40;
+        y < HEIGHT;
+        y += 85
+    ) {
+
+        ctx.beginPath();
+
+        ctx.moveTo(
+            0,
+            y
+        );
+
+        ctx.lineTo(
+            WIDTH,
+            y + 20
+        );
+
+        ctx.stroke();
+    }
+}
+
+
+// =====================================================
+// DRAW CRATERS
+// =====================================================
+
+function drawCraters() {
+
+    for (const crater of craters) {
+
+        ctx.fillStyle =
+            "#555";
+
+        ctx.beginPath();
+
+        ctx.ellipse(
+
+            crater.x,
+
+            crater.y,
+
+            crater.radius,
+
+            crater.radius * .65,
+
+            0,
+
+            0,
+
+            Math.PI * 2
+
+        );
+
+        ctx.fill();
+
+
+        // Rim
+
+        ctx.strokeStyle =
+            "#c4c4c4";
+
+        ctx.lineWidth = 3;
+
+        ctx.stroke();
+
+
+        // Inner crater
+
+        ctx.fillStyle =
+            "#414141";
+
+        ctx.beginPath();
+
+        ctx.ellipse(
+
+            crater.x,
+
+            crater.y,
+
+            crater.radius * .5,
+
+            crater.radius * .3,
+
+            0,
+
+            0,
+
+            Math.PI * 2
+
+        );
+
+        ctx.fill();
+    }
+}
+
+
+// =====================================================
+// DRAW SAMPLES
+// =====================================================
+
+function drawSamples() {
+
+    for (const sample of samples) {
+
+        if (sample.collected) {
+            continue;
+        }
+
+
+        // Glow
+
+        ctx.shadowBlur = 18;
+
+        ctx.shadowColor =
+            "#ffd700";
+
+
+        ctx.fillStyle =
+            "#ffd700";
+
+        ctx.beginPath();
+
+        ctx.moveTo(
+            sample.x,
+            sample.y - 10
+        );
+
+        ctx.lineTo(
+            sample.x + 8,
+            sample.y
+        );
+
+        ctx.lineTo(
+            sample.x + 4,
+            sample.y + 9
+        );
+
+        ctx.lineTo(
+            sample.x - 7,
+            sample.y + 5
+        );
+
+        ctx.closePath();
+
+        ctx.fill();
+
+
+        ctx.shadowBlur = 0;
+
+
+        ctx.strokeStyle =
+            "#fff";
+
+        ctx.stroke();
+    }
+}
+
+
+// =====================================================
+// DRAW BASE
+// =====================================================
+
+function drawBase() {
+
+    const x =
+        base.x - 40;
+
+    const y =
+        base.y - 35;
+
+
+    // Solar panels
+
+    ctx.fillStyle =
+        "#1b3c83";
+
+    ctx.fillRect(
+        x - 42,
+        y + 30,
+        32,
+        18
+    );
+
+    ctx.fillRect(
+        x + 90,
+        y + 30,
+        32,
+        18
+    );
+
+
+    // Building
+
+    ctx.fillStyle =
+        "#505965";
+
+    ctx.fillRect(
+        x,
+        y + 40,
+        80,
+        40
+    );
+
+
+    // Dome
+
+    ctx.fillStyle =
+        "#7fd7ff";
+
+    ctx.beginPath();
+
+    ctx.arc(
+        base.x,
+        y + 42,
+        32,
+        Math.PI,
+        0
+    );
+
+    ctx.fill();
+
+
+    ctx.strokeStyle =
+        "white";
+
+    ctx.stroke();
+
+
+    // Label
+
+    ctx.fillStyle =
+        "white";
+
+    ctx.font =
+        "bold 11px Arial";
+
+    ctx.fillText(
+        "LUNAR BASE",
+        x + 14,
+        y + 70
+    );
+}
+
+
+// =====================================================
+// DRAW ROVER
+// =====================================================
+
+function drawRover() {
+
+    ctx.save();
+
+    ctx.translate(
+        rover.x,
+        rover.y
+    );
+
+    ctx.rotate(
+        rover.angle
+    );
+
+
+    // Shadow
+
+    ctx.fillStyle =
+        "rgba(30,30,30,.35)";
+
+    ctx.beginPath();
+
+    ctx.ellipse(
+        0,
+        12,
+        30,
+        14,
+        0,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.fill();
+
+
+    // Wheels
+
+    ctx.fillStyle =
+        "#111";
+
+    const wheels = [
+
+        [-20, -19],
+        [7, -19],
+        [-20, 7],
+        [7, 7]
+
+    ];
+
+
+    for (
+        const [x, y]
+        of wheels
+    ) {
+
+        ctx.fillRect(
+            x,
+            y,
+            13,
+            13
+        );
+    }
+
+
+    // Main body
+
+    ctx.fillStyle =
+        "#dedede";
+
+    ctx.fillRoundRect(
+        -21,
+        -14,
+        42,
+        28,
+        5,
+        5
+    );
+
+
+    // Front
+
+    ctx.fillStyle =
+        "#aaa";
+
+    ctx.fillRect(
+        12,
+        -9,
+        9,
+        18
+    );
+
+
+    // Mast
+
+    ctx.strokeStyle =
+        "#222";
+
+    ctx.lineWidth = 3;
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        0,
+        -14
+    );
+
+    ctx.lineTo(
+        0,
+        -35
+    );
+
+    ctx.stroke();
+
+
+    // Camera
+
+    ctx.fillStyle =
+        "#174c91";
+
+    ctx.beginPath();
+
+    ctx.arc(
+        0,
+        -39,
+        8,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.fill();
+
+
+    // Antenna
+
+    ctx.strokeStyle =
+        "white";
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        5,
+        -34
+    );
+
+    ctx.lineTo(
+        15,
+        -45
+    );
+
+    ctx.stroke();
+
+
+    ctx.restore();
+}
+
+
+// =====================================================
+// MINIMAP
+// =====================================================
+
+function drawMinimap() {
+
+    miniCtx.fillStyle =
+        "#555";
+
+    miniCtx.fillRect(
+        0,
+        0,
+        180,
+        125
+    );
+
+
+    // Craters
+
+    for (const crater of craters) {
+
+        miniCtx.fillStyle =
+            "#333";
+
+        miniCtx.beginPath();
+
+        miniCtx.arc(
+
+            crater.x / WIDTH * 180,
+
+            crater.y / HEIGHT * 125,
+
+            Math.max(
+                1.5,
+                crater.radius / 8
+            ),
+
+            0,
+            Math.PI * 2
+
+        );
+
+        miniCtx.fill();
+    }
+
+
+    // Samples
+
+    for (const sample of samples) {
+
+        if (sample.collected) {
+            continue;
+        }
+
+        miniCtx.fillStyle =
+            "#ffd700";
+
+        miniCtx.fillRect(
+
+            sample.x / WIDTH * 180 - 1,
+
+            sample.y / HEIGHT * 125 - 1,
+
+            3,
+
+            3
+        );
+    }
+
+
+    // Base
+
+    miniCtx.fillStyle =
+        "#66d9ff";
+
+    miniCtx.fillRect(
+
+        base.x / WIDTH * 180 - 4,
+
+        base.y / HEIGHT * 125 - 4,
+
+        8,
+
+        8
+    );
+
+
+    // Rover
+
+    miniCtx.fillStyle =
+        "#fff";
+
+    miniCtx.beginPath();
+
+    miniCtx.arc(
+
+        rover.x / WIDTH * 180,
+
+        rover.y / HEIGHT * 125,
+
+        4,
+
+        0,
+
+        Math.PI * 2
+
+    );
+
+    miniCtx.fill();
+}
+
+
+// =====================================================
+// HUD
+// =====================================================
+
+function updateHUD() {
+
+    document
+        .getElementById("fuelText")
+        .textContent =
+        Math.round(rover.fuel) + "%";
+
+
+    document
+        .getElementById("healthText")
+        .textContent =
+        Math.round(rover.health);
+
+
+    document
+        .getElementById("scoreText")
+        .textContent =
+        score;
+
+
+    document
+        .getElementById("samplesText")
+        .textContent =
+        collected + " / 8";
+
+
+    document
+        .getElementById("fuelFill")
+        .style.width =
+        rover.fuel + "%";
+
+
+    document
+        .getElementById("healthFill")
+        .style.width =
+        rover.health + "%";
+
+
+    const mission =
+        document.getElementById(
+            "missionText"
+        );
+
+
+    if (victory) {
+
+        mission.textContent =
+            "COMPLETE";
+
+    } else if (gameOver) {
+
+        mission.textContent =
+            "FAILED";
+
+    } else if (collected >= 8) {
+
+        mission.textContent =
+            "RETURN TO BASE";
+
+    } else {
+
+        mission.textContent =
+            "EXPLORE";
+    }
+}
+
+
+// =====================================================
+// GAME OVER
+// =====================================================
+
+function loseGame() {
+
+    gameOver = true;
+
+    rover.speed = 0;
+
+    showMessage(
+
+        "💥 ROVER DESTROYED",
+
+        "Your rover took too much damage."
+    );
+}
+
+
+// =====================================================
+// MESSAGE
+// =====================================================
+
+function showMessage(
+    title,
+    text
+) {
+
+    document
+        .getElementById(
+            "messageTitle"
+        )
+        .textContent =
+        title;
+
+
+    document
+        .getElementById(
+            "messageText"
+        )
+        .textContent =
+        text;
+
+
+    document
+        .getElementById(
+            "message"
+        )
+        .style.display =
+        "block";
+}
+
+
+// =====================================================
+// GAME LOOP
+// =====================================================
+
+let previousTime =
+    performance.now();
+
+
+function gameLoop(time) {
+
+    let dt =
+        (time - previousTime) /
+        1000;
+
+    previousTime = time;
+
+
+    dt =
+        Math.min(
+            dt,
+            .05
+        );
+
+
+    update(dt);
+
+    drawMoon();
+
+    drawCraters();
+
+    drawSamples();
+
+    drawBase();
+
+    drawRover();
+
+    drawMinimap();
+
+    updateHUD();
+
+
+    requestAnimationFrame(
+        gameLoop
+    );
+}
+
+
+// =====================================================
+// START
+// =====================================================
+
+generateWorld();
+
+requestAnimationFrame(
+    gameLoop
+);
+
+</script>
+
+</body>
+</html>
