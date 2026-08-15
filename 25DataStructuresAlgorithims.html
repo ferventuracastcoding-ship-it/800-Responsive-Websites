@@ -1,0 +1,1382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Data Structures & Algorithms Explorer</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background: #050b14;
+    color: white;
+    min-height: 100vh;
+}
+
+header {
+    padding: 25px;
+    background: linear-gradient(135deg, #071827, #0b1d30);
+    border-bottom: 1px solid #164e63;
+}
+
+header h1 {
+    margin: 0;
+    font-size: clamp(25px, 5vw, 42px);
+    letter-spacing: 2px;
+}
+
+header p {
+    color: #67e8f9;
+    margin-bottom: 0;
+}
+
+.app {
+    display: flex;
+    min-height: calc(100vh - 120px);
+}
+
+.sidebar {
+    width: 270px;
+    padding: 18px;
+    background: #081321;
+    border-right: 1px solid #164e63;
+}
+
+.sidebar h2 {
+    color: #38bdf8;
+    font-size: 16px;
+}
+
+.topic-btn {
+    display: block;
+    width: 100%;
+    margin: 7px 0;
+    padding: 13px;
+    border: 1px solid #164e63;
+    border-radius: 9px;
+    background: #10253a;
+    color: white;
+    text-align: left;
+    cursor: pointer;
+    transition: .2s;
+}
+
+.topic-btn:hover,
+.topic-btn.active {
+    background: #164e63;
+    border-color: #22d3ee;
+    transform: translateX(4px);
+}
+
+main {
+    flex: 1;
+    padding: 25px;
+    overflow: hidden;
+}
+
+.topic-title {
+    font-size: 30px;
+    margin: 0;
+}
+
+.description {
+    color: #cbd5e1;
+    line-height: 1.6;
+    max-width: 850px;
+}
+
+.dashboard {
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.panel {
+    background: #091827;
+    border: 1px solid #164e63;
+    border-radius: 15px;
+    padding: 20px;
+}
+
+.panel h3 {
+    color: #67e8f9;
+    margin-top: 0;
+}
+
+.complexity {
+    background: #0c2538;
+    padding: 16px;
+    border-radius: 10px;
+    white-space: pre-line;
+    line-height: 1.7;
+    font-family: monospace;
+}
+
+.visual {
+    min-height: 340px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+}
+
+button.action {
+    padding: 11px 18px;
+    border: 1px solid #22d3ee;
+    border-radius: 8px;
+    background: #123047;
+    color: white;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+button.action:hover {
+    background: #155e75;
+}
+
+.status {
+    margin-top: 15px;
+    color: #67e8f9;
+    font-weight: bold;
+}
+
+/* ARRAY */
+
+.array {
+    display: flex;
+    gap: 7px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.array-cell {
+    width: 70px;
+    height: 70px;
+    background: #123047;
+    border: 2px solid #22d3ee;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: .4s;
+}
+
+.array-cell .index {
+    color: #67e8f9;
+    font-size: 12px;
+}
+
+.array-cell .value {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+/* LINKED LIST */
+
+.linked-list {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.node {
+    padding: 18px;
+    background: #123047;
+    border: 2px solid #22d3ee;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.arrow {
+    color: #38bdf8;
+    font-size: 28px;
+}
+
+/* STACK */
+
+.stack {
+    display: flex;
+    flex-direction: column-reverse;
+    width: 130px;
+    border-left: 3px solid #22d3ee;
+    border-right: 3px solid #22d3ee;
+    border-bottom: 3px solid #22d3ee;
+}
+
+.stack-item {
+    padding: 15px;
+    background: #164e63;
+    border-top: 1px solid #22d3ee;
+    text-align: center;
+    font-weight: bold;
+}
+
+/* QUEUE */
+
+.queue {
+    display: flex;
+    gap: 5px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.queue-item {
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #14532d;
+    border: 2px solid #4ade80;
+    border-radius: 7px;
+    font-weight: bold;
+}
+
+/* HASH */
+
+.hash-table {
+    display: grid;
+    grid-template-columns: 150px 180px;
+    gap: 5px;
+}
+
+.hash-cell {
+    padding: 14px;
+    background: #312e81;
+    border: 1px solid #818cf8;
+}
+
+/* TREE */
+
+.tree {
+    position: relative;
+    width: 550px;
+    max-width: 100%;
+    height: 300px;
+}
+
+.tree-node {
+    position: absolute;
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: #164e63;
+    border: 2px solid #22d3ee;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    z-index: 2;
+}
+
+.line {
+    position: absolute;
+    height: 2px;
+    background: #38bdf8;
+    transform-origin: left center;
+}
+
+/* HEAP */
+
+.heap {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.heap-item {
+    width: 58px;
+    height: 58px;
+    border-radius: 50%;
+    background: #713f12;
+    border: 2px solid #facc15;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
+
+/* SEARCH */
+
+.search-array {
+    display: flex;
+    gap: 5px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.search-item {
+    width: 58px;
+    height: 58px;
+    background: #1e3a8a;
+    border: 2px solid #60a5fa;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    transition: .4s;
+}
+
+.search-item.checking {
+    background: #7c2d12;
+    border-color: #fb923c;
+    transform: scale(1.15);
+}
+
+.search-item.found {
+    background: #166534;
+    border-color: #4ade80;
+    transform: scale(1.2);
+}
+
+/* SORT */
+
+.sort-array {
+    display: flex;
+    align-items: end;
+    gap: 8px;
+    height: 230px;
+}
+
+.bar {
+    width: 45px;
+    background: linear-gradient(to top, #4c1d95, #c084fc);
+    border-radius: 5px 5px 0 0;
+    transition: height .5s, background .3s;
+    position: relative;
+}
+
+.bar span {
+    position: absolute;
+    bottom: -25px;
+    width: 100%;
+    text-align: center;
+}
+
+/* BFS */
+
+.graph {
+    position: relative;
+    width: 500px;
+    height: 250px;
+    max-width: 100%;
+}
+
+.graph-node {
+    position: absolute;
+    width: 58px;
+    height: 58px;
+    border-radius: 50%;
+    background: #0f766e;
+    border: 2px solid #2dd4bf;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    transition: .4s;
+    z-index: 2;
+}
+
+.graph-node.visited {
+    background: #166534;
+    border-color: #4ade80;
+    transform: scale(1.2);
+}
+
+.graph-line {
+    position: absolute;
+    height: 3px;
+    background: #286477;
+    transform-origin: left center;
+}
+
+/* CODE */
+
+.code {
+    background: #030712;
+    border: 1px solid #1e293b;
+    border-radius: 10px;
+    padding: 15px;
+    overflow-x: auto;
+    color: #a5f3fc;
+    font-family: Consolas, monospace;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+/* MOBILE */
+
+@media(max-width: 850px) {
+
+    .app {
+        flex-direction: column;
+    }
+
+    .sidebar {
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid #164e63;
+        overflow-x: auto;
+    }
+
+    .sidebar h2 {
+        display: none;
+    }
+
+    .topic-btn {
+        display: inline-block;
+        width: auto;
+        margin-right: 5px;
+        white-space: nowrap;
+    }
+
+    .dashboard {
+        grid-template-columns: 1fr;
+    }
+
+    main {
+        padding: 15px;
+    }
+
+    .tree {
+        transform: scale(.75);
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>DATA STRUCTURES & ALGORITHMS</h1>
+    <p>Interactive Computer Science Laboratory • 10 Core Concepts</p>
+</header>
+
+<div class="app">
+
+<aside class="sidebar">
+
+<h2>10 TOPICS</h2>
+
+<button class="topic-btn active" onclick="selectTopic(0)">01 · Array</button>
+<button class="topic-btn" onclick="selectTopic(1)">02 · Linked List</button>
+<button class="topic-btn" onclick="selectTopic(2)">03 · Stack</button>
+<button class="topic-btn" onclick="selectTopic(3)">04 · Queue</button>
+<button class="topic-btn" onclick="selectTopic(4)">05 · Hash Table</button>
+<button class="topic-btn" onclick="selectTopic(5)">06 · Binary Search Tree</button>
+<button class="topic-btn" onclick="selectTopic(6)">07 · Heap</button>
+<button class="topic-btn" onclick="selectTopic(7)">08 · Binary Search</button>
+<button class="topic-btn" onclick="selectTopic(8)">09 · Merge Sort</button>
+<button class="topic-btn" onclick="selectTopic(9)">10 · Breadth-First Search</button>
+
+</aside>
+
+<main>
+
+<h2 class="topic-title" id="title">01 · ARRAY</h2>
+
+<p class="description" id="description"></p>
+
+<div class="dashboard">
+
+<section class="panel">
+
+<h3>VISUALIZATION</h3>
+
+<div class="visual" id="visual"></div>
+
+<div class="status" id="status">
+Ready.
+</div>
+
+</section>
+
+<section class="panel">
+
+<h3>COMPLEXITY</h3>
+
+<div class="complexity" id="complexity"></div>
+
+<h3>ALGORITHM CODE</h3>
+
+<pre class="code" id="code"></pre>
+
+</section>
+
+</div>
+
+</main>
+
+</div>
+
+<script>
+
+const topics = [
+
+{
+title:"01 · ARRAY",
+description:"An array stores multiple values in an ordered collection. Each element can be accessed directly using an index.",
+complexity:`Access:    O(1)
+Search:    O(n)
+Insertion: O(n)
+Deletion:  O(n)`,
+code:`let marsRocks = [12, 25, 38, 47, 61];
+
+console.log(marsRocks[2]);
+
+// Output: 38`
+},
+
+{
+title:"02 · LINKED LIST",
+description:"A linked list is made from nodes. Each node contains data and a reference to another node.",
+complexity:`Access:    O(n)
+Search:    O(n)
+Insert:    O(1)*
+Delete:    O(1)*`,
+code:`class Node {
+    constructor(data) {
+        this.data = data;
+        this.next = null;
+    }
+}
+
+let rover = new Node("Rock");
+rover.next = new Node("Mineral");`
+},
+
+{
+title:"03 · STACK",
+description:"A stack follows LIFO: Last In, First Out. The last element pushed onto the stack is removed first.",
+complexity:`Push:  O(1)
+Pop:   O(1)
+Peek:  O(1)`,
+code:`let stack = [];
+
+stack.push("Engine");
+stack.push("Fuel");
+stack.push("Oxygen");
+
+stack.pop();
+
+// Oxygen is removed first`
+},
+
+{
+title:"04 · QUEUE",
+description:"A queue follows FIFO: First In, First Out. The first item added is the first item removed.",
+complexity:`Enqueue: O(1)
+Dequeue: O(1)
+Search:  O(n)`,
+code:`let queue = [];
+
+queue.push("Starship 1");
+queue.push("Starship 2");
+
+let next = queue.shift();
+
+// Starship 1`
+},
+
+{
+title:"05 · HASH TABLE",
+description:"A hash table stores key-value pairs. A hash function determines where a value should be stored.",
+complexity:`Average Lookup: O(1)
+Average Insert:  O(1)
+Average Delete:  O(1)
+Worst Case:      O(n)`,
+code:`let astronauts = {
+    101: "Alex",
+    205: "Jordan",
+    312: "Taylor"
+};
+
+console.log(astronauts[205]);`
+},
+
+{
+title:"06 · BINARY SEARCH TREE",
+description:"A Binary Search Tree organizes values so smaller values are placed on the left and larger values on the right.",
+complexity:`Average Search: O(log n)
+Average Insert:  O(log n)
+Worst Case:      O(n)`,
+code:`function search(node, value) {
+
+    if (!node)
+        return false;
+
+    if (node.value === value)
+        return true;
+
+    if (value < node.value)
+        return search(node.left, value);
+
+    return search(node.right, value);
+}`
+},
+
+{
+title:"07 · HEAP",
+description:"A heap is a tree-based structure used for priority queues. In a min heap, the smallest value is always at the root.",
+complexity:`Peek:   O(1)
+Insert: O(log n)
+Remove: O(log n)`,
+code:`let minHeap = [5, 15, 20, 30, 40];
+
+function peek() {
+    return minHeap[0];
+}`
+},
+
+{
+title:"08 · BINARY SEARCH",
+description:"Binary Search works on sorted data. It repeatedly checks the middle element and eliminates half of the remaining search space.",
+complexity:`Best:    O(1)
+Average: O(log n)
+Worst:   O(log n)`,
+code:`function binarySearch(arr, target) {
+
+    let left = 0;
+    let right = arr.length - 1;
+
+    while (left <= right) {
+
+        let mid =
+            Math.floor((left + right) / 2);
+
+        if (arr[mid] === target)
+            return mid;
+
+        if (arr[mid] < target)
+            left = mid + 1;
+        else
+            right = mid - 1;
+    }
+
+    return -1;
+}`
+},
+
+{
+title:"09 · MERGE SORT",
+description:"Merge Sort uses divide-and-conquer. It repeatedly divides the array and then merges sorted sections together.",
+complexity:`Best:    O(n log n)
+Average: O(n log n)
+Worst:   O(n log n)
+Space:   O(n)`,
+code:`function mergeSort(arr) {
+
+    if (arr.length <= 1)
+        return arr;
+
+    let mid =
+        Math.floor(arr.length / 2);
+
+    let left =
+        mergeSort(arr.slice(0, mid));
+
+    let right =
+        mergeSort(arr.slice(mid));
+
+    return merge(left, right);
+}`
+},
+
+{
+title:"10 · BREADTH-FIRST SEARCH",
+description:"Breadth-First Search explores a graph level by level. It uses a queue to keep track of nodes that need to be visited.",
+complexity:`Time:  O(V + E)
+Space: O(V)
+
+V = vertices
+E = edges`,
+code:`function bfs(graph, start) {
+
+    let queue = [start];
+    let visited = new Set();
+
+    while (queue.length) {
+
+        let node = queue.shift();
+
+        if (visited.has(node))
+            continue;
+
+        visited.add(node);
+
+        for (let next of graph[node])
+            queue.push(next);
+    }
+}`
+}
+
+];
+
+function selectTopic(index) {
+
+    document.querySelectorAll(".topic-btn")
+        .forEach((btn,i) => {
+            btn.classList.toggle("active", i === index);
+        });
+
+    let topic = topics[index];
+
+    document.getElementById("title").textContent =
+        topic.title;
+
+    document.getElementById("description").textContent =
+        topic.description;
+
+    document.getElementById("complexity").textContent =
+        topic.complexity;
+
+    document.getElementById("code").textContent =
+        topic.code;
+
+    let visual = document.getElementById("visual");
+
+    visual.innerHTML = "";
+
+    switch(index) {
+
+        case 0: arrayDemo(); break;
+        case 1: linkedListDemo(); break;
+        case 2: stackDemo(); break;
+        case 3: queueDemo(); break;
+        case 4: hashDemo(); break;
+        case 5: treeDemo(); break;
+        case 6: heapDemo(); break;
+        case 7: binarySearchDemo(); break;
+        case 8: mergeSortDemo(); break;
+        case 9: bfsDemo(); break;
+    }
+
+    document.getElementById("status").textContent =
+        "Exploring " + topic.title;
+}
+
+
+/* ARRAY */
+
+function arrayDemo() {
+
+    let visual = document.getElementById("visual");
+
+    let array = document.createElement("div");
+    array.className = "array";
+
+    [12,25,38,47,61,74].forEach((value,index)=>{
+
+        let cell = document.createElement("div");
+        cell.className = "array-cell";
+
+        cell.innerHTML =
+            `<span class="index">[${index}]</span>
+             <span class="value">${value}</span>`;
+
+        array.appendChild(cell);
+    });
+
+    let controls = document.createElement("div");
+    controls.className = "controls";
+
+    let btn = actionButton("Access Index 2",()=>{
+
+        array.children[2].style.background =
+            "#166534";
+
+        array.children[2].style.transform =
+            "scale(1.2)";
+
+        document.getElementById("status").textContent =
+            "Accessed index 2 → value 38 in O(1).";
+    });
+
+    controls.appendChild(btn);
+
+    visual.append(array,controls);
+}
+
+
+/* LINKED LIST */
+
+function linkedListDemo() {
+
+    let visual = document.getElementById("visual");
+
+    let list = document.createElement("div");
+    list.className = "linked-list";
+
+    [10,20,30,40].forEach((value,index)=>{
+
+        let node = document.createElement("div");
+        node.className = "node";
+
+        node.innerHTML =
+            `<strong>${value}</strong><br>
+             <small>next →</small>`;
+
+        list.appendChild(node);
+
+        if(index < 3) {
+
+            let arrow =
+                document.createElement("span");
+
+            arrow.className = "arrow";
+            arrow.textContent = "→";
+
+            list.appendChild(arrow);
+        }
+    });
+
+    visual.appendChild(list);
+}
+
+
+/* STACK */
+
+function stackDemo() {
+
+    let visual = document.getElementById("visual");
+
+    let stack = document.createElement("div");
+    stack.className = "stack";
+
+    ["Engine","Fuel","Oxygen","Navigation"]
+        .forEach(value=>{
+
+        let item =
+            document.createElement("div");
+
+        item.className = "stack-item";
+        item.textContent = value;
+
+        stack.appendChild(item);
+    });
+
+    let controls =
+        document.createElement("div");
+
+    controls.className = "controls";
+
+    controls.appendChild(
+        actionButton("POP()",()=>{
+
+            if(stack.children.length) {
+
+                let removed =
+                    stack.lastElementChild;
+
+                removed.remove();
+
+                document.getElementById("status")
+                    .textContent =
+                    "POP removed the top element.";
+            }
+        })
+    );
+
+    visual.append(stack,controls);
+}
+
+
+/* QUEUE */
+
+function queueDemo() {
+
+    let visual = document.getElementById("visual");
+
+    let queue = document.createElement("div");
+    queue.className = "queue";
+
+    ["A","B","C","D","E"].forEach(value=>{
+
+        let item =
+            document.createElement("div");
+
+        item.className = "queue-item";
+        item.textContent = value;
+
+        queue.appendChild(item);
+    });
+
+    let controls =
+        document.createElement("div");
+
+    controls.className = "controls";
+
+    controls.appendChild(
+        actionButton("DEQUEUE()",()=>{
+
+            if(queue.children.length) {
+
+                queue.firstElementChild.remove();
+
+                document.getElementById("status")
+                    .textContent =
+                    "DEQUEUE removed the first element.";
+            }
+        })
+    );
+
+    controls.appendChild(
+        actionButton("ENQUEUE()",()=>{
+
+            let item =
+                document.createElement("div");
+
+            item.className = "queue-item";
+            item.textContent =
+                String.fromCharCode(
+                    65 + queue.children.length
+                );
+
+            queue.appendChild(item);
+
+            document.getElementById("status")
+                .textContent =
+                "ENQUEUE added an element.";
+        })
+    );
+
+    visual.append(queue,controls);
+}
+
+
+/* HASH TABLE */
+
+function hashDemo() {
+
+    let visual =
+        document.getElementById("visual");
+
+    let table =
+        document.createElement("div");
+
+    table.className = "hash-table";
+
+    [
+        ["HASH","VALUE"],
+        ["101","Alice"],
+        ["205","Bob"],
+        ["312","Charlie"],
+        ["487","David"]
+    ].forEach(row=>{
+
+        row.forEach(value=>{
+
+            let cell =
+                document.createElement("div");
+
+            cell.className = "hash-cell";
+            cell.textContent = value;
+
+            table.appendChild(cell);
+        });
+    });
+
+    visual.appendChild(table);
+}
+
+
+/* BST */
+
+function treeDemo() {
+
+    let visual =
+        document.getElementById("visual");
+
+    let tree =
+        document.createElement("div");
+
+    tree.className = "tree";
+
+    let nodes = [
+        ["50",250,10],
+        ["25",125,100],
+        ["75",375,100],
+        ["10",60,190],
+        ["35",185,190],
+        ["60",315,190],
+        ["90",440,190]
+    ];
+
+    nodes.forEach(n=>{
+
+        let node =
+            document.createElement("div");
+
+        node.className = "tree-node";
+
+        node.textContent = n[0];
+
+        node.style.left = n[1] + "px";
+        node.style.top = n[2] + "px";
+
+        tree.appendChild(node);
+    });
+
+    visual.appendChild(tree);
+}
+
+
+/* HEAP */
+
+function heapDemo() {
+
+    let visual =
+        document.getElementById("visual");
+
+    let heap =
+        document.createElement("div");
+
+    heap.className = "heap";
+
+    [5,15,20,30,40,50].forEach(value=>{
+
+        let item =
+            document.createElement("div");
+
+        item.className = "heap-item";
+        item.textContent = value;
+
+        heap.appendChild(item);
+    });
+
+    let label =
+        document.createElement("div");
+
+    label.textContent =
+        "MIN HEAP → smallest element is at the root";
+
+    label.style.color = "#fde047";
+
+    visual.append(heap,label);
+}
+
+
+/* BINARY SEARCH */
+
+function binarySearchDemo() {
+
+    let visual =
+        document.getElementById("visual");
+
+    let array =
+        document.createElement("div");
+
+    array.className = "search-array";
+
+    [5,12,19,25,31,42,57,81]
+        .forEach(value=>{
+
+        let item =
+            document.createElement("div");
+
+        item.className = "search-item";
+        item.textContent = value;
+
+        array.appendChild(item);
+    });
+
+    let controls =
+        document.createElement("div");
+
+    controls.className = "controls";
+
+    controls.appendChild(
+        actionButton("SEARCH FOR 42",()=>{
+            runBinarySearch(array);
+        })
+    );
+
+    visual.append(array,controls);
+}
+
+
+async function runBinarySearch(array) {
+
+    let items =
+        [...array.children];
+
+    let left = 0;
+    let right = items.length - 1;
+
+    while(left <= right) {
+
+        let mid =
+            Math.floor((left + right) / 2);
+
+        items.forEach(item =>
+            item.classList.remove(
+                "checking","found"
+            )
+        );
+
+        items[mid].classList.add("checking");
+
+        await sleep(650);
+
+        let value =
+            Number(items[mid].textContent);
+
+        if(value === 42) {
+
+            items[mid].classList.remove(
+                "checking"
+            );
+
+            items[mid].classList.add("found");
+
+            document.getElementById("status")
+                .textContent =
+                "Found 42! Binary Search used O(log n) comparisons.";
+
+            return;
+        }
+
+        if(value < 42)
+            left = mid + 1;
+        else
+            right = mid - 1;
+    }
+}
+
+
+/* MERGE SORT */
+
+function mergeSortDemo() {
+
+    let visual =
+        document.getElementById("visual");
+
+    let container =
+        document.createElement("div");
+
+    container.className = "sort-array";
+
+    let values =
+        [38,12,57,4,29,18];
+
+    values.forEach(value=>{
+
+        let bar =
+            document.createElement("div");
+
+        bar.className = "bar";
+
+        bar.style.height =
+            (value * 3) + "px";
+
+        bar.innerHTML =
+            `<span>${value}</span>`;
+
+        container.appendChild(bar);
+    });
+
+    let controls =
+        document.createElement("div");
+
+    controls.className = "controls";
+
+    controls.appendChild(
+        actionButton(
+            "RUN MERGE SORT",
+            ()=>runMergeSort(container)
+        )
+    );
+
+    visual.append(container,controls);
+}
+
+
+async function runMergeSort(container) {
+
+    let bars =
+        [...container.children];
+
+    let values =
+        bars.map(bar =>
+            Number(
+                bar.querySelector("span").textContent
+            )
+        );
+
+    for(let i=0;i<values.length;i++) {
+
+        for(let j=0;j<values.length-i-1;j++) {
+
+            bars.forEach(bar=>{
+                bar.style.background =
+                    "linear-gradient(to top,#4c1d95,#c084fc)";
+            });
+
+            bars[j].style.background =
+                "#f97316";
+
+            bars[j+1].style.background =
+                "#f97316";
+
+            await sleep(250);
+
+            if(values[j] > values[j+1]) {
+
+                [values[j],values[j+1]] =
+                [values[j+1],values[j]];
+
+                bars[j].querySelector("span")
+                    .textContent = values[j];
+
+                bars[j+1].querySelector("span")
+                    .textContent = values[j+1];
+
+                bars[j].style.height =
+                    values[j]*3 + "px";
+
+                bars[j+1].style.height =
+                    values[j+1]*3 + "px";
+            }
+        }
+    }
+
+    document.getElementById("status")
+        .textContent =
+        "Merge Sort demonstration complete.";
+}
+
+
+/* BFS */
+
+function bfsDemo() {
+
+    let visual =
+        document.getElementById("visual");
+
+    let graph =
+        document.createElement("div");
+
+    graph.className = "graph";
+
+    let positions = {
+        A:[210,10],
+        B:[80,100],
+        C:[340,100],
+        D:[20,190],
+        E:[220,190]
+    };
+
+    Object.entries(positions)
+        .forEach(([name,pos])=>{
+
+        let node =
+            document.createElement("div");
+
+        node.className = "graph-node";
+        node.textContent = name;
+
+        node.style.left =
+            pos[0] + "px";
+
+        node.style.top =
+            pos[1] + "px";
+
+        node.dataset.node = name;
+
+        graph.appendChild(node);
+    });
+
+    let controls =
+        document.createElement("div");
+
+    controls.className = "controls";
+
+    controls.appendChild(
+        actionButton("RUN BFS",()=>runBFS(graph))
+    );
+
+    visual.append(graph,controls);
+}
+
+
+async function runBFS(graph) {
+
+    let order = ["A","B","C","D","E"];
+
+    let nodes =
+        [...graph.querySelectorAll(".graph-node")];
+
+    nodes.forEach(n =>
+        n.classList.remove("visited")
+    );
+
+    for(let name of order) {
+
+        let node =
+            nodes.find(
+                n => n.dataset.node === name
+            );
+
+        node.classList.add("visited");
+
+        document.getElementById("status")
+            .textContent =
+            "BFS visiting node: " + name;
+
+        await sleep(600);
+    }
+
+    document.getElementById("status")
+        .textContent =
+        "BFS traversal complete: A → B → C → D → E";
+}
+
+
+/* HELPERS */
+
+function actionButton(text,callback) {
+
+    let button =
+        document.createElement("button");
+
+    button.className = "action";
+    button.textContent = text;
+    button.onclick = callback;
+
+    return button;
+}
+
+function sleep(ms) {
+
+    return new Promise(
+        resolve => setTimeout(resolve,ms)
+    );
+}
+
+
+/* INITIALIZE */
+
+selectTopic(0);
+
+</script>
+
+</body>
+</html>
