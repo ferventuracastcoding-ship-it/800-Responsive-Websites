@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Teal Space Invaders</title>
+<style>
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  min-height: 100vh;
+  font-family: Arial, sans-serif;
+  background:
+    radial-gradient(circle at 20% 20%, rgba(0,255,220,.12) 0 2px, transparent 3px),
+    radial-gradient(circle at 80% 70%, rgba(0,255,220,.1) 0 1px, transparent 2px),
+    #03191d;
+  color: #bffff8;
+  overflow-x: hidden;
+}
+
+header {
+  padding: 20px;
+  text-align: center;
+  border-bottom: 1px solid #087d7a;
+  background: rgba(0,35,39,.85);
+  box-shadow: 0 0 25px rgba(0,255,220,.15);
+}
+
+header h1 {
+  color: #25ffe5;
+  font-size: clamp(2rem, 7vw, 4rem);
+  letter-spacing: 8px;
+  text-shadow: 0 0 15px #00ffe1;
+}
+
+header p {
+  margin-top: 8px;
+  color: #74cfc8;
+}
+
+.game-container {
+  width: min(1000px, 94%);
+  margin: 25px auto;
+}
+
+.dashboard {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.stat {
+  padding: 12px;
+  text-align: center;
+  border: 1px solid #087d7a;
+  border-radius: 8px;
+  background: #06282c;
+}
+
+.stat span {
+  display: block;
+  color: #29ffe5;
+  font-size: 1.4rem;
+  font-weight: bold;
+  margin-top: 5px;
+}
+
+.game {
+  position: relative;
+  height: 600px;
+  overflow: hidden;
+  border: 2px solid #0bafa5;
+  border-radius: 12px;
+  background:
+    radial-gradient(circle at 15% 30%, #bffff8 0 1px, transparent 2px),
+    radial-gradient(circle at 45% 70%, #bffff8 0 1px, transparent 2px),
+    radial-gradient(circle at 80% 25%, #bffff8 0 1px, transparent 2px),
+    radial-gradient(circle at 65% 45%, #bffff8 0 1px, transparent 2px),
+    linear-gradient(#021317, #05282b);
+  box-shadow:
+    inset 0 0 50px rgba(0,255,220,.12),
+    0 0 30px rgba(0,255,220,.15);
+}
+
+.scanline {
+  position: absolute;
+  width: 100%;
+  height: 2px;
+  background: rgba(0,255,220,.12);
+  animation: scan 5s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes scan {
+  from { top: 0; }
+  to { top: 100%; }
+}
+
+.invaders {
+  position: absolute;
+  top: 55px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: grid;
+  grid-template-columns: repeat(8, 48px);
+  gap: 18px;
+}
+
+.invader {
+  width: 48px;
+  height: 38px;
+  position: relative;
+  background: #17d8c7;
+  clip-path: polygon(
+    20% 0, 35% 0, 35% 15%, 65% 15%, 65% 0,
+    80% 0, 80% 15%, 100% 15%, 100% 65%,
+    85% 65%, 85% 100%, 70% 100%, 70% 80%,
+    30% 80%, 30% 100%, 15% 100%, 15% 65%,
+    0 65%, 0 15%, 20% 15%
+  );
+  filter: drop-shadow(0 0 8px #00ffe1);
+}
+
+.invader::after {
+  content: "";
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background: #002b2d;
+  left: 11px;
+  top: 13px;
+  box-shadow: 18px 0 #002b2d;
+}
+
+.player {
+  position: absolute;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 58px;
+  height: 45px;
+  background: #22ffe4;
+  clip-path: polygon(
+    50% 0, 100% 100%, 70% 100%, 70% 70%,
+    30% 70%, 30% 100%, 0 100%
+  );
+  filter: drop-shadow(0 0 12px #00ffe1);
+}
+
+.player::after {
+  content: "";
+  position: absolute;
+  width: 8px;
+  height: 20px;
+  background: #d5fff9;
+  left: 25px;
+  top: 0;
+}
+
+.bullet {
+  position: absolute;
+  width: 4px;
+  height: 15px;
+  background: #ffffff;
+  box-shadow: 0 0 10px #00ffe1;
+}
+
+.enemy-bullet {
+  position: absolute;
+  width: 5px;
+  height: 15px;
+  background: #ff668d;
+  box-shadow: 0 0 8px #ff668d;
+}
+
+.controls {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 15px;
+}
+
+button {
+  border: 1px solid #11bfb3;
+  background: #07363a;
+  color: #7ffff4;
+  padding: 12px 22px;
+  border-radius: 7px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: .2s;
+}
+
+button:hover {
+  background: #0b5b5d;
+  box-shadow: 0 0 15px rgba(0,255,220,.35);
+  transform: translateY(-2px);
+}
+
+.instructions {
+  margin-top: 20px;
+  padding: 18px;
+  border-left: 4px solid #17d8c7;
+  background: #05272b;
+  line-height: 1.7;
+}
+
+.instructions strong {
+  color: #26ffe5;
+}
+
+@media (max-width: 700px) {
+  .dashboard {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .game {
+    height: 520px;
+  }
+
+  .invaders {
+    grid-template-columns: repeat(6, 38px);
+    gap: 10px;
+  }
+
+  .invader {
+    width: 38px;
+    height: 30px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1>SPACE INVADERS</h1>
+  <p>TEAL GALACTIC DEFENSE SYSTEM</p>
+</header>
+
+<main class="game-container">
+
+  <section class="dashboard">
+    <div class="stat">SCORE<span id="score">000000</span></div>
+    <div class="stat">LIVES<span id="lives">3</span></div>
+    <div class="stat">WAVE<span id="wave">1</span></div>
+    <div class="stat">HIGH SCORE<span id="high">000000</span></div>
+  </section>
+
+  <section class="game" id="game">
+    <div class="scanline"></div>
+
+    <div class="invaders" id="invaders"></div>
+
+    <div class="player" id="player"></div>
+  </section>
+
+  <div class="controls">
+    <button id="left">◀ LEFT</button>
+    <button id="fire">⚡ FIRE</button>
+    <button id="right">RIGHT ▶</button>
+    <button id="restart">↻ RESTART</button>
+  </div>
+
+  <div class="instructions">
+    <strong>MISSION CONTROL</strong><br>
+    Move with <strong>← →</strong> or the buttons.
+    Fire with <strong>SPACE</strong>.
+    Destroy every alien before they reach your defense line.
+  </div>
+
+</main>
+
+<script>
+const game = document.getElementById("game");
+const player = document.getElementById("player");
+const invadersContainer = document.getElementById("invaders");
+
+const scoreEl = document.getElementById("score");
+const livesEl = document.getElementById("lives");
+const waveEl = document.getElementById("wave");
+const highEl = document.getElementById("high");
+
+let score = 0;
+let lives = 3;
+let wave = 1;
+let playerX = 50;
+let bullets = [];
+let enemyBullets = [];
+let gameRunning = true;
+let invaderDirection = 1;
+let invaderOffset = 0;
+
+let highScore = Number(localStorage.getItem("tealHighScore")) || 0;
+highEl.textContent = String(highScore).padStart(6, "0");
+
+function createInvaders() {
+  invadersContainer.innerHTML = "";
+
+  const count = window.innerWidth < 700 ? 24 : 32;
+
+  for (let i = 0; i < count; i++) {
+    const invader = document.createElement("div");
+    invader.className = "invader";
+    invader.dataset.alive = "true";
+    invader.dataset.points = 10 + (Math.floor(i / 8) * 10);
+    invadersContainer.appendChild(invader);
+  }
+}
+
+function updatePlayer() {
+  player.style.left = playerX + "%";
+}
+
+function movePlayer(amount) {
+  if (!gameRunning) return;
+
+  playerX += amount;
+  playerX = Math.max(5, Math.min(95, playerX));
+  updatePlayer();
+}
+
+function shoot() {
+  if (!gameRunning) return;
+
+  const bullet = document.createElement("div");
+  bullet.className = "bullet";
+
+  const playerRect = player.getBoundingClientRect();
+  const gameRect = game.getBoundingClientRect();
+
+  bullet.style.left =
+    (playerRect.left - gameRect.left + playerRect.width / 2) + "px";
+
+  bullet.style.top =
+    (playerRect.top - gameRect.top - 15) + "px";
+
+  game.appendChild(bullet);
+  bullets.push(bullet);
+}
+
+function moveBullets() {
+  bullets.forEach((bullet, index) => {
+    let top = parseFloat(bullet.style.top);
+    top -= 8;
+    bullet.style.top = top + "px";
+
+    const bulletRect = bullet.getBoundingClientRect();
+
+    document.querySelectorAll(".invader").forEach(invader => {
+      if (invader.dataset.alive !== "true") return;
+
+      const rect = invader.getBoundingClientRect();
+
+      if (
+        bulletRect.left < rect.right &&
+        bulletRect.right > rect.left &&
+        bulletRect.top < rect.bottom &&
+        bulletRect.bottom > rect.top
+      ) {
+        invader.dataset.alive = "false";
+        invader.remove();
+
+        const points = Number(invader.dataset.points);
+        score += points;
+        updateStats();
+
+        bullet.remove();
+      }
+    });
+
+    if (top < 0) {
+      bullet.remove();
+    }
+  });
+
+  bullets = bullets.filter(b => b.isConnected);
+}
+
+function moveInvaders() {
+  if (!gameRunning) return;
+
+  invaderOffset += 0.35 * invaderDirection;
+
+  if (invaderOffset > 35 || invaderOffset < -35) {
+    invaderDirection *= -1;
+
+    const currentTop = parseFloat(invadersContainer.style.top || 55);
+    invadersContainer.style.top = (currentTop + 12) + "px";
+  }
+
+  invadersContainer.style.transform =
+    `translateX(calc(-50% + ${invaderOffset}px))`;
+
+  const invaderRect = invadersContainer.getBoundingClientRect();
+  const gameRect = game.getBoundingClientRect();
+  const playerRect = player.getBoundingClientRect();
+
+  if (invaderRect.bottom >= playerRect.top) {
+    loseLife();
+  }
+}
+
+function enemyFire() {
+  if (!gameRunning) return;
+
+  const invaders = document.querySelectorAll(".invader");
+
+  if (!invaders.length) return;
+
+  const invader =
+    invaders[Math.floor(Math.random() * invaders.length)];
+
+  const invaderRect = invader.getBoundingClientRect();
+  const gameRect = game.getBoundingClientRect();
+
+  const bullet = document.createElement("div");
+  bullet.className = "enemy-bullet";
+
+  bullet.style.left =
+    (invaderRect.left - gameRect.left + invaderRect.width / 2) + "px";
+
+  bullet.style.top =
+    (invaderRect.bottom - gameRect.top) + "px";
+
+  game.appendChild(bullet);
+  enemyBullets.push(bullet);
+}
+
+function moveEnemyBullets() {
+  const playerRect = player.getBoundingClientRect();
+
+  enemyBullets.forEach(bullet => {
+    let top = parseFloat(bullet.style.top);
+    top += 5;
+    bullet.style.top = top + "px";
+
+    const rect = bullet.getBoundingClientRect();
+
+    if (
+      rect.left < playerRect.right &&
+      rect.right > playerRect.left &&
+      rect.top < playerRect.bottom &&
+      rect.bottom > playerRect.top
+    ) {
+      bullet.remove();
+      loseLife();
+    }
+
+    if (top > game.clientHeight) {
+      bullet.remove();
+    }
+  });
+
+  enemyBullets = enemyBullets.filter(b => b.isConnected);
+}
+
+function loseLife() {
+  if (!gameRunning) return;
+
+  lives--;
+  updateStats();
+
+  if (lives <= 0) {
+    gameOver();
+  } else {
+    playerX = 50;
+    updatePlayer();
+
+    invadersContainer.style.top = "55px";
+    invaderOffset = 0;
+  }
+}
+
+function updateStats() {
+  scoreEl.textContent = String(score).padStart(6, "0");
+  livesEl.textContent = lives;
+  waveEl.textContent = wave;
+
+  if (score > highScore) {
+    highScore = score;
+    localStorage.setItem("tealHighScore", highScore);
+    highEl.textContent = String(highScore).padStart(6, "0");
+  }
+
+  if (document.querySelectorAll(".invader").length === 0) {
+    wave++;
+    waveEl.textContent = wave;
+    createInvaders();
+    invadersContainer.style.top = "55px";
+    invaderOffset = 0;
+  }
+}
+
+function gameOver() {
+  gameRunning = false;
+
+  setTimeout(() => {
+    alert("GAME OVER\nFinal Score: " + score);
+  }, 100);
+}
+
+function restart() {
+  bullets.forEach(b => b.remove());
+  enemyBullets.forEach(b => b.remove());
+
+  bullets = [];
+  enemyBullets = [];
+
+  score = 0;
+  lives = 3;
+  wave = 1;
+  playerX = 50;
+  invaderOffset = 0;
+  invaderDirection = 1;
+  gameRunning = true;
+
+  invadersContainer.style.top = "55px";
+  invadersContainer.style.transform = "translateX(-50%)";
+
+  updatePlayer();
+  createInvaders();
+  updateStats();
+}
+
+document.addEventListener("keydown", e => {
+  if (e.key === "ArrowLeft") movePlayer(-3);
+  if (e.key === "ArrowRight") movePlayer(3);
+
+  if (e.code === "Space") {
+    e.preventDefault();
+    shoot();
+  }
+});
+
+document.getElementById("left").addEventListener("click", () => {
+  movePlayer(-5);
+});
+
+document.getElementById("right").addEventListener("click", () => {
+  movePlayer(5);
+});
+
+document.getElementById("fire").addEventListener("click", shoot);
+document.getElementById("restart").addEventListener("click", restart);
+
+setInterval(moveBullets, 30);
+setInterval(moveEnemyBullets, 30);
+setInterval(moveInvaders, 40);
+setInterval(enemyFire, 900);
+
+createInvaders();
+updatePlayer();
+updateStats();
+</script>
+
+</body>
+</html>
