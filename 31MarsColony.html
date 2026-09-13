@@ -1,0 +1,1570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Mars Colony Command</title>
+
+<style>
+/* =========================================================
+   MARS COLONY COMMAND
+   Complete CSS
+========================================================= */
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background:
+        radial-gradient(circle at 50% 20%, #52251d 0%, #180d0b 45%, #050505 100%);
+    color: #f5f1e8;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+/* ---------- STARS ---------- */
+
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background-image:
+        radial-gradient(circle, rgba(255,255,255,.7) 1px, transparent 1px),
+        radial-gradient(circle, rgba(255,255,255,.35) 1px, transparent 1px);
+    background-size: 90px 90px, 150px 150px;
+    background-position: 20px 30px, 70px 80px;
+    opacity: .35;
+    z-index: -2;
+}
+
+/* ---------- HEADER ---------- */
+
+header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    backdrop-filter: blur(15px);
+    background: rgba(10, 7, 6, .82);
+    border-bottom: 1px solid rgba(255,255,255,.1);
+}
+
+.navbar {
+    max-width: 1400px;
+    margin: auto;
+    padding: 18px 25px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    letter-spacing: 2px;
+}
+
+.logo-orbit {
+    width: 34px;
+    height: 34px;
+    border: 2px solid #e95d32;
+    border-radius: 50%;
+    position: relative;
+}
+
+.logo-orbit::after {
+    content: "";
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    background: #ff9a58;
+    border-radius: 50%;
+    top: 2px;
+    right: 1px;
+}
+
+nav {
+    display: flex;
+    gap: 25px;
+}
+
+nav a {
+    color: #bbb;
+    text-decoration: none;
+    font-size: .9rem;
+    transition: .3s;
+}
+
+nav a:hover {
+    color: #ff8b54;
+}
+
+/* ---------- HERO ---------- */
+
+.hero {
+    min-height: 90vh;
+    max-width: 1400px;
+    margin: auto;
+    padding: 100px 25px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    gap: 50px;
+}
+
+.hero-text span {
+    color: #ff7947;
+    letter-spacing: 4px;
+    font-size: .8rem;
+}
+
+.hero h1 {
+    font-size: clamp(3rem, 7vw, 7rem);
+    line-height: .9;
+    margin: 20px 0;
+    background: linear-gradient(90deg, #fff, #ff9b68, #c94e32);
+    -webkit-background-clip: text;
+    color: transparent;
+}
+
+.hero p {
+    max-width: 600px;
+    color: #aaa;
+    line-height: 1.8;
+    font-size: 1.05rem;
+}
+
+.hero-buttons {
+    display: flex;
+    gap: 15px;
+    margin-top: 30px;
+    flex-wrap: wrap;
+}
+
+button {
+    border: none;
+    cursor: pointer;
+    color: white;
+    background: #a83e27;
+    padding: 14px 22px;
+    border-radius: 8px;
+    font-weight: bold;
+    transition: .3s;
+}
+
+button:hover {
+    transform: translateY(-3px);
+    background: #d95a37;
+    box-shadow: 0 10px 30px rgba(217,90,55,.25);
+}
+
+.secondary {
+    background: transparent;
+    border: 1px solid #754335;
+}
+
+/* ---------- MARS ---------- */
+
+.mars-display {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.mars {
+    width: min(430px, 80vw);
+    aspect-ratio: 1;
+    border-radius: 50%;
+    position: relative;
+
+    background:
+        radial-gradient(circle at 35% 30%, #e98459, #9b3929 48%, #481713 85%);
+
+    box-shadow:
+        inset -50px -30px 80px rgba(0,0,0,.8),
+        0 0 100px rgba(212,73,40,.25);
+
+    animation: marsFloat 7s ease-in-out infinite;
+}
+
+.mars::before {
+    content: "";
+    position: absolute;
+    width: 90px;
+    height: 45px;
+    border-radius: 50%;
+    background: rgba(65,20,15,.35);
+    top: 25%;
+    left: 25%;
+    transform: rotate(-20deg);
+}
+
+.mars::after {
+    content: "";
+    position: absolute;
+    width: 55px;
+    height: 25px;
+    border-radius: 50%;
+    background: rgba(50,15,10,.35);
+    bottom: 25%;
+    right: 20%;
+}
+
+.orbit {
+    position: absolute;
+    inset: -25px;
+    border: 1px solid rgba(255,150,100,.25);
+    border-radius: 50%;
+    animation: orbit 12s linear infinite;
+}
+
+.orbit-dot {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    background: #ffbd83;
+    border-radius: 50%;
+    top: 15px;
+    left: 50%;
+}
+
+@keyframes marsFloat {
+    50% {
+        transform: translateY(-15px);
+    }
+}
+
+@keyframes orbit {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* ---------- SECTION ---------- */
+
+section {
+    max-width: 1400px;
+    margin: auto;
+    padding: 90px 25px;
+}
+
+.section-heading {
+    margin-bottom: 40px;
+}
+
+.section-heading span {
+    color: #ff7947;
+    font-size: .75rem;
+    letter-spacing: 3px;
+}
+
+.section-heading h2 {
+    font-size: clamp(2rem, 5vw, 4rem);
+    margin-top: 8px;
+}
+
+.section-heading p {
+    color: #999;
+    margin-top: 10px;
+}
+
+/* ---------- STATS ---------- */
+
+.stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+}
+
+.stat {
+    background: rgba(255,255,255,.045);
+    border: 1px solid rgba(255,255,255,.09);
+    border-radius: 14px;
+    padding: 25px;
+    backdrop-filter: blur(10px);
+}
+
+.stat h3 {
+    font-size: 2rem;
+    color: #ff8c5b;
+}
+
+.stat p {
+    color: #999;
+    margin-top: 8px;
+}
+
+/* ---------- CITY ---------- */
+
+.city-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18px;
+}
+
+.module {
+    min-height: 220px;
+    padding: 25px;
+    border-radius: 16px;
+    border: 1px solid rgba(255,255,255,.1);
+    background:
+        linear-gradient(145deg, rgba(112,45,32,.55), rgba(20,12,10,.8));
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    transition: .35s;
+}
+
+.module:hover {
+    transform: translateY(-8px) scale(1.02);
+    border-color: #d85a37;
+}
+
+.module-icon {
+    font-size: 2.5rem;
+    margin-bottom: 25px;
+}
+
+.module h3 {
+    font-size: 1.25rem;
+}
+
+.module p {
+    color: #999;
+    margin-top: 10px;
+    line-height: 1.5;
+}
+
+.module-number {
+    position: absolute;
+    right: 18px;
+    top: 15px;
+    color: #684136;
+    font-size: 3rem;
+    font-weight: bold;
+}
+
+/* ---------- STARSHIPS ---------- */
+
+.starships {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 15px;
+}
+
+.starship {
+    background: rgba(255,255,255,.04);
+    border: 1px solid rgba(255,255,255,.1);
+    padding: 25px 15px;
+    border-radius: 18px;
+    text-align: center;
+    transition: .3s;
+}
+
+.starship:hover {
+    transform: translateY(-10px);
+    border-color: #ff7947;
+}
+
+.rocket {
+    height: 180px;
+    width: 50px;
+    margin: 10px auto 25px;
+    position: relative;
+    background: linear-gradient(90deg,#aaa,#f5f5f5,#777);
+    border-radius: 50% 50% 12px 12px;
+}
+
+.rocket::before {
+    content: "";
+    position: absolute;
+    top: -25px;
+    left: 0;
+    border-left: 25px solid transparent;
+    border-right: 25px solid transparent;
+    border-bottom: 30px solid #ddd;
+}
+
+.rocket::after {
+    content: "";
+    position: absolute;
+    bottom: -35px;
+    left: 8px;
+    width: 34px;
+    height: 45px;
+    background: linear-gradient(#ffbc4a, #ff3b20, transparent);
+    clip-path: polygon(20% 0,80% 0,100% 100%,50% 65%,0 100%);
+    animation: flame .4s infinite alternate;
+}
+
+@keyframes flame {
+    to {
+        transform: scaleY(1.25);
+    }
+}
+
+.starship h3 {
+    margin-bottom: 5px;
+}
+
+.starship p {
+    color: #888;
+    font-size: .85rem;
+}
+
+/* ---------- GARDENS ---------- */
+
+.garden-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.garden {
+    border-radius: 18px;
+    padding: 30px;
+    background:
+        linear-gradient(145deg, rgba(28,76,54,.65), rgba(10,20,15,.9));
+    border: 1px solid rgba(100,200,130,.15);
+}
+
+.garden-visual {
+    height: 150px;
+    margin-bottom: 20px;
+    border-radius: 12px;
+    background:
+        repeating-linear-gradient(
+            90deg,
+            #173d2b 0 25px,
+            #235c3d 25px 45px
+        );
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-around;
+    overflow: hidden;
+}
+
+.plant {
+    width: 10px;
+    height: 70px;
+    background: #54a66d;
+    border-radius: 50% 50% 0 0;
+    animation: grow 3s ease-in-out infinite alternate;
+}
+
+.plant:nth-child(2) {
+    height: 95px;
+}
+
+.plant:nth-child(3) {
+    height: 60px;
+}
+
+.plant:nth-child(4) {
+    height: 85px;
+}
+
+@keyframes grow {
+    to {
+        transform: scaleY(1.08);
+    }
+}
+
+.garden p {
+    color: #aaa;
+    margin-top: 10px;
+}
+
+/* ---------- ROVERS ---------- */
+
+.rover-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18px;
+}
+
+.rover {
+    background: #151312;
+    border: 1px solid #332622;
+    border-radius: 15px;
+    padding: 25px;
+    transition: .3s;
+}
+
+.rover:hover {
+    border-color: #ff7548;
+}
+
+.rover-art {
+    height: 110px;
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.rover-body {
+    position: absolute;
+    width: 120px;
+    height: 45px;
+    background: #aaa;
+    border-radius: 10px;
+    top: 35px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.rover-camera {
+    position: absolute;
+    width: 25px;
+    height: 25px;
+    background: #555;
+    border-radius: 5px;
+    top: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.wheel {
+    position: absolute;
+    width: 25px;
+    height: 25px;
+    background: #222;
+    border: 4px solid #777;
+    border-radius: 50%;
+    top: 70px;
+}
+
+.wheel.one {
+    left: 28%;
+}
+
+.wheel.two {
+    left: 62%;
+}
+
+.rover p {
+    color: #888;
+    margin-top: 8px;
+}
+
+/* ---------- COMMAND CENTER ---------- */
+
+.command {
+    background:
+        linear-gradient(135deg, rgba(96,36,24,.7), rgba(15,10,8,.9));
+    border: 1px solid rgba(255,120,70,.2);
+    border-radius: 25px;
+    padding: 35px;
+}
+
+.command-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 30px;
+}
+
+.map {
+    min-height: 350px;
+    border-radius: 18px;
+    position: relative;
+    overflow: hidden;
+    background:
+        radial-gradient(circle at center, #703426, #291512 65%, #100909);
+    border: 1px solid #633326;
+}
+
+.map::before {
+    content: "";
+    position: absolute;
+    inset: 30px;
+    border: 1px dashed rgba(255,170,120,.2);
+    border-radius: 50%;
+}
+
+.map-grid {
+    position: absolute;
+    inset: 0;
+    background:
+        linear-gradient(rgba(255,255,255,.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.04) 1px, transparent 1px);
+    background-size: 45px 45px;
+}
+
+.map-point {
+    position: absolute;
+    width: 15px;
+    height: 15px;
+    background: #ff7045;
+    border-radius: 50%;
+    box-shadow: 0 0 20px #ff7045;
+    animation: pulse 1.5s infinite;
+}
+
+.point-one {
+    top: 30%;
+    left: 30%;
+}
+
+.point-two {
+    top: 55%;
+    left: 65%;
+}
+
+.point-three {
+    top: 70%;
+    left: 42%;
+}
+
+.point-four {
+    top: 25%;
+    left: 70%;
+}
+
+@keyframes pulse {
+    50% {
+        transform: scale(1.6);
+        opacity: .5;
+    }
+}
+
+.systems {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.system {
+    padding: 18px;
+    background: rgba(255,255,255,.04);
+    border-radius: 10px;
+}
+
+.system-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.progress {
+    height: 6px;
+    background: #2a211e;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.progress span {
+    display: block;
+    height: 100%;
+    background: #dc6745;
+}
+
+/* ---------- FOOTER ---------- */
+
+footer {
+    text-align: center;
+    padding: 50px 20px;
+    color: #666;
+    border-top: 1px solid rgba(255,255,255,.08);
+}
+
+footer strong {
+    color: #b65a40;
+}
+
+/* ---------- MODAL ---------- */
+
+.modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.75);
+    backdrop-filter: blur(8px);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 500;
+    padding: 20px;
+}
+
+.modal.active {
+    display: flex;
+}
+
+.modal-box {
+    max-width: 500px;
+    width: 100%;
+    background: #17110f;
+    border: 1px solid #734032;
+    border-radius: 18px;
+    padding: 35px;
+    animation: modalIn .3s ease;
+}
+
+.modal-box h2 {
+    color: #ff8b5c;
+    margin-bottom: 15px;
+}
+
+.modal-box p {
+    color: #aaa;
+    line-height: 1.7;
+}
+
+.close {
+    float: right;
+    background: transparent;
+    border: 1px solid #55342b;
+    padding: 8px 12px;
+}
+
+/* ---------- MOBILE ---------- */
+
+@media (max-width: 1000px) {
+
+    .hero {
+        grid-template-columns: 1fr;
+        text-align: center;
+    }
+
+    .hero p {
+        margin: auto;
+    }
+
+    .hero-buttons {
+        justify-content: center;
+    }
+
+    .stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .city-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .starships {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .garden-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .rover-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .command-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 600px) {
+
+    nav {
+        display: none;
+    }
+
+    .navbar {
+        justify-content: center;
+    }
+
+    .hero {
+        padding-top: 70px;
+    }
+
+    .stats,
+    .city-grid,
+    .starships,
+    .rover-grid {
+        grid-template-columns: 1fr;
+    }
+
+    section {
+        padding: 60px 18px;
+    }
+
+    .mars {
+        width: 280px;
+    }
+
+    .command {
+        padding: 18px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<!-- =========================================================
+     NAVIGATION
+========================================================= -->
+
+<header>
+
+<div class="navbar">
+
+<div class="logo">
+    <div class="logo-orbit"></div>
+    MARS COLONY
+</div>
+
+<nav>
+    <a href="#city">City</a>
+    <a href="#starships">Starships</a>
+    <a href="#gardens">Gardens</a>
+    <a href="#rovers">Rovers</a>
+    <a href="#command">Command</a>
+</nav>
+
+</div>
+
+</header>
+
+
+<!-- =========================================================
+     HERO
+========================================================= -->
+
+<main>
+
+<section class="hero">
+
+<div class="hero-text">
+
+<span>HUMANITY'S NEXT FRONTIER</span>
+
+<h1>MARS<br>COLONY</h1>
+
+<p>
+A futuristic settlement designed for long-term human life
+on the Red Planet. Explore our city modules, Starships,
+hydroponic gardens, autonomous rovers and planetary
+command systems.
+</p>
+
+<div class="hero-buttons">
+
+<button onclick="scrollToSection('city')">
+Explore Colony
+</button>
+
+<button class="secondary" onclick="openModal(
+'Mars Mission',
+'The colony is designed as a modular settlement where habitats, laboratories, farms, landing zones and transportation systems work together as one planetary city.'
+)">
+Mission Brief
+</button>
+
+</div>
+
+</div>
+
+
+<div class="mars-display">
+
+<div class="mars">
+
+<div class="orbit">
+    <div class="orbit-dot"></div>
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- =========================================================
+     COLONY STATS
+========================================================= -->
+
+<section>
+
+<div class="section-heading">
+
+<span>COLONY STATUS</span>
+
+<h2>Mission Dashboard</h2>
+
+<p>Live simulated colony statistics.</p>
+
+</div>
+
+<div class="stats">
+
+<div class="stat">
+    <h3 id="population">1,284</h3>
+    <p>Colonists</p>
+</div>
+
+<div class="stat">
+    <h3>97%</h3>
+    <p>Oxygen Systems</p>
+</div>
+
+<div class="stat">
+    <h3>82%</h3>
+    <p>Food Production</p>
+</div>
+
+<div class="stat">
+    <h3>24/7</h3>
+    <p>Rover Operations</p>
+</div>
+
+</div>
+
+</section>
+
+
+<!-- =========================================================
+     CITY MODULES
+========================================================= -->
+
+<section id="city">
+
+<div class="section-heading">
+
+<span>URBAN INFRASTRUCTURE</span>
+
+<h2>Colony City Modules</h2>
+
+<p>
+Connected habitats form the foundation of the Martian city.
+</p>
+
+</div>
+
+<div class="city-grid">
+
+<div class="module" onclick="openModule('Habitat Alpha')">
+<div class="module-number">01</div>
+<div class="module-icon">🏠</div>
+<h3>Habitat Alpha</h3>
+<p>Residential habitat supporting long-duration Martian living.</p>
+</div>
+
+<div class="module" onclick="openModule('Science Lab')">
+<div class="module-number">02</div>
+<div class="module-icon">🔬</div>
+<h3>Science Lab</h3>
+<p>Research center for geology, biology and planetary science.</p>
+</div>
+
+<div class="module" onclick="openModule('Medical Center')">
+<div class="module-number">03</div>
+<div class="module-icon">🏥</div>
+<h3>Medical Center</h3>
+<p>Emergency care, diagnostics and astronaut health monitoring.</p>
+</div>
+
+<div class="module" onclick="openModule('Engineering Hub')">
+<div class="module-number">04</div>
+<div class="module-icon">⚙️</div>
+<h3>Engineering Hub</h3>
+<p>Maintains habitats, vehicles, power systems and infrastructure.</p>
+</div>
+
+<div class="module" onclick="openModule('Power Station')">
+<div class="module-number">05</div>
+<div class="module-icon">☀️</div>
+<h3>Power Station</h3>
+<p>Solar and nuclear power infrastructure supporting the colony.</p>
+</div>
+
+<div class="module" onclick="openModule('Water Facility')">
+<div class="module-number">06</div>
+<div class="module-icon">💧</div>
+<h3>Water Facility</h3>
+<p>Processes and recycles water for the entire settlement.</p>
+</div>
+
+<div class="module" onclick="openModule('Landing Port')">
+<div class="module-number">07</div>
+<div class="module-icon">🚀</div>
+<h3>Landing Port</h3>
+<p>Arrival zone for cargo vehicles and crewed Starships.</p>
+</div>
+
+<div class="module" onclick="openModule('Central Command')">
+<div class="module-number">08</div>
+<div class="module-icon">🛰️</div>
+<h3>Central Command</h3>
+<p>Coordinates planetary communications and colony operations.</p>
+</div>
+
+</div>
+
+</section>
+
+
+<!-- =========================================================
+     STARSHIPS
+========================================================= -->
+
+<section id="starships">
+
+<div class="section-heading">
+
+<span>INTERPLANETARY TRANSPORT</span>
+
+<h2>Starship Fleet</h2>
+
+<p>Five simulated Starships assigned to the Mars colony.</p>
+
+</div>
+
+<div class="starships">
+
+<div class="starship">
+<div class="rocket"></div>
+<h3>Starship 01</h3>
+<p>Cargo Transport</p>
+</div>
+
+<div class="starship">
+<div class="rocket"></div>
+<h3>Starship 02</h3>
+<p>Colonist Transport</p>
+</div>
+
+<div class="starship">
+<div class="rocket"></div>
+<h3>Starship 03</h3>
+<p>Mining Mission</p>
+</div>
+
+<div class="starship">
+<div class="rocket"></div>
+<h3>Starship 04</h3>
+<p>Science Mission</p>
+</div>
+
+<div class="starship">
+<div class="rocket"></div>
+<h3>Starship 05</h3>
+<p>Emergency Supply</p>
+</div>
+
+</div>
+
+</section>
+
+
+<!-- =========================================================
+     HYDROPONIC GARDENS
+========================================================= -->
+
+<section id="gardens">
+
+<div class="section-heading">
+
+<span>FOOD PRODUCTION</span>
+
+<h2>Martian Gardens</h2>
+
+<p>
+Hydroponic agriculture provides fresh food inside protected environments.
+</p>
+
+</div>
+
+<div class="garden-grid">
+
+<div class="garden">
+
+<div class="garden-visual">
+<div class="plant"></div>
+<div class="plant"></div>
+<div class="plant"></div>
+<div class="plant"></div>
+</div>
+
+<h3>Garden Alpha</h3>
+<p>Leafy greens • 92% efficiency</p>
+
+</div>
+
+
+<div class="garden">
+
+<div class="garden-visual">
+<div class="plant"></div>
+<div class="plant"></div>
+<div class="plant"></div>
+<div class="plant"></div>
+</div>
+
+<h3>Garden Beta</h3>
+<p>Tomatoes • 87% efficiency</p>
+
+</div>
+
+
+<div class="garden">
+
+<div class="garden-visual">
+<div class="plant"></div>
+<div class="plant"></div>
+<div class="plant"></div>
+<div class="plant"></div>
+</div>
+
+<h3>Garden Gamma</h3>
+<p>Potatoes • 89% efficiency</p>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- =========================================================
+     ROVERS
+========================================================= -->
+
+<section id="rovers">
+
+<div class="section-heading">
+
+<span>AUTONOMOUS EXPLORATION</span>
+
+<h2>Mars Rover Fleet</h2>
+
+<p>Robotic vehicles exploring and maintaining the colony.</p>
+
+</div>
+
+<div class="rover-grid">
+
+<div class="rover">
+
+<div class="rover-art">
+<div class="rover-camera"></div>
+<div class="rover-body"></div>
+<div class="wheel one"></div>
+<div class="wheel two"></div>
+</div>
+
+<h3>Rover Atlas</h3>
+<p>Geological Survey</p>
+
+</div>
+
+
+<div class="rover">
+
+<div class="rover-art">
+<div class="rover-camera"></div>
+<div class="rover-body"></div>
+<div class="wheel one"></div>
+<div class="wheel two"></div>
+</div>
+
+<h3>Rover Phoenix</h3>
+<p>Water Detection</p>
+
+</div>
+
+
+<div class="rover">
+
+<div class="rover-art">
+<div class="rover-camera"></div>
+<div class="rover-body"></div>
+<div class="wheel one"></div>
+<div class="wheel two"></div>
+</div>
+
+<h3>Rover Nova</h3>
+<p>Construction</p>
+
+</div>
+
+
+<div class="rover">
+
+<div class="rover-art">
+<div class="rover-camera"></div>
+<div class="rover-body"></div>
+<div class="wheel one"></div>
+<div class="wheel two"></div>
+</div>
+
+<h3>Rover Titan</h3>
+<p>Long Range Exploration</p>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- =========================================================
+     COMMAND CENTER
+========================================================= -->
+
+<section id="command">
+
+<div class="section-heading">
+
+<span>PLANETARY OPERATIONS</span>
+
+<h2>Colony Command</h2>
+
+</div>
+
+<div class="command">
+
+<div class="command-grid">
+
+<div class="map">
+
+<div class="map-grid"></div>
+
+<div class="map-point point-one"></div>
+<div class="map-point point-two"></div>
+<div class="map-point point-three"></div>
+<div class="map-point point-four"></div>
+
+</div>
+
+
+<div class="systems">
+
+<div class="system">
+
+<div class="system-row">
+<span>Oxygen</span>
+<strong>97%</strong>
+</div>
+
+<div class="progress">
+<span style="width:97%"></span>
+</div>
+
+</div>
+
+
+<div class="system">
+
+<div class="system-row">
+<span>Water</span>
+<strong>91%</strong>
+</div>
+
+<div class="progress">
+<span style="width:91%"></span>
+</div>
+
+</div>
+
+
+<div class="system">
+
+<div class="system-row">
+<span>Power</span>
+<strong>88%</strong>
+</div>
+
+<div class="progress">
+<span style="width:88%"></span>
+</div>
+
+</div>
+
+
+<div class="system">
+
+<div class="system-row">
+<span>Food</span>
+<strong>82%</strong>
+</div>
+
+<div class="progress">
+<span style="width:82%"></span>
+</div>
+
+</div>
+
+
+<div class="system">
+
+<div class="system-row">
+<span>Communications</span>
+<strong>99%</strong>
+</div>
+
+<div class="progress">
+<span style="width:99%"></span>
+</div>
+
+</div>
+
+<button onclick="runSystemCheck()">
+Run System Check
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+</main>
+
+
+<!-- =========================================================
+     MODAL
+========================================================= -->
+
+<div class="modal" id="modal">
+
+<div class="modal-box">
+
+<button class="close" onclick="closeModal()">X</button>
+
+<h2 id="modalTitle">System</h2>
+
+<p id="modalText">
+System information.
+</p>
+
+<br>
+
+<button onclick="closeModal()">
+Return to Colony
+</button>
+
+</div>
+
+</div>
+
+
+<!-- =========================================================
+     FOOTER
+========================================================= -->
+
+<footer>
+
+<p>
+<strong>MARS COLONY COMMAND</strong>
+</p>
+
+<p>
+Humanity • Science • Exploration • Mars
+</p>
+
+</footer>
+
+
+<script>
+/* =========================================================
+   MARS COLONY JAVASCRIPT
+========================================================= */
+
+/* ---------- SMOOTH SCROLL ---------- */
+
+function scrollToSection(id) {
+
+    const section = document.getElementById(id);
+
+    if (section) {
+        section.scrollIntoView({
+            behavior: "smooth"
+        });
+    }
+}
+
+
+/* ---------- MODAL ---------- */
+
+const modal = document.getElementById("modal");
+const modalTitle = document.getElementById("modalTitle");
+const modalText = document.getElementById("modalText");
+
+
+function openModal(title, text) {
+
+    modalTitle.textContent = title;
+    modalText.textContent = text;
+
+    modal.classList.add("active");
+}
+
+
+function closeModal() {
+
+    modal.classList.remove("active");
+}
+
+
+modal.addEventListener("click", function(event) {
+
+    if (event.target === modal) {
+        closeModal();
+    }
+
+});
+
+
+/* ---------- CITY MODULE DETAILS ---------- */
+
+function openModule(moduleName) {
+
+    const information = {
+
+        "Habitat Alpha":
+            "Habitat Alpha contains residential quarters, recreation areas and life-support systems for colony residents.",
+
+        "Science Lab":
+            "The Science Lab studies Martian geology, atmospheric chemistry, microbiology and possible resources.",
+
+        "Medical Center":
+            "The Medical Center provides emergency treatment, diagnostics and long-term astronaut health monitoring.",
+
+        "Engineering Hub":
+            "Engineers maintain vehicles, habitat structures, robotics, power systems and industrial machinery.",
+
+        "Power Station":
+            "The Power Station distributes electricity from simulated solar and nuclear generation systems.",
+
+        "Water Facility":
+            "The Water Facility recycles wastewater and processes extracted Martian resources.",
+
+        "Landing Port":
+            "The Landing Port manages incoming Starships, cargo vehicles and surface transportation.",
+
+        "Central Command":
+            "Central Command coordinates colony operations, communications, robotics and resource management."
+
+    };
+
+    openModal(
+        moduleName,
+        information[moduleName] || "Colony module operational."
+    );
+}
+
+
+/* ---------- SYSTEM CHECK ---------- */
+
+function runSystemCheck() {
+
+    const systems = [
+        "Oxygen",
+        "Water",
+        "Power",
+        "Food",
+        "Communications"
+    ];
+
+    let index = 0;
+
+    function checkNext() {
+
+        if (index >= systems.length) {
+
+            openModal(
+                "SYSTEM CHECK COMPLETE",
+                "All five major colony systems are operating within simulated mission parameters."
+            );
+
+            return;
+        }
+
+        console.log(
+            "Checking " + systems[index] + "..."
+        );
+
+        index++;
+
+        setTimeout(checkNext, 400);
+    }
+
+    checkNext();
+}
+
+
+/* ---------- POPULATION SIMULATION ---------- */
+
+let population = 1284;
+
+setInterval(function() {
+
+    const change =
+        Math.random() > 0.5 ? 1 : -1;
+
+    population += change;
+
+    document.getElementById(
+        "population"
+    ).textContent =
+        population.toLocaleString();
+
+}, 3000);
+
+
+/* ---------- STARSHIP CLICK EVENTS ---------- */
+
+const starships =
+    document.querySelectorAll(".starship");
+
+starships.forEach(function(ship, index) {
+
+    ship.addEventListener("click", function() {
+
+        openModal(
+            "Starship " + String(index + 1).padStart(2, "0"),
+            "Mission status: ACTIVE. This Starship is assigned to the Mars Colony transportation network."
+        );
+
+    });
+
+});
+
+
+/* ---------- KEYBOARD SHORTCUT ---------- */
+
+document.addEventListener("keydown", function(event) {
+// event.key === "Escape")
+// closeModal();
+    if (event.key === "Escape") {
+        closeModal();
+    }
+
+});
+
+
+/* ---------- CONSOLE MESSAGE ---------- */
+
+console.log(
+    "%c MARS COLONY COMMAND ONLINE ",
+    "background:#7d3424;color:white;font-size:18px;padding:10px;"
+);
+
+console.log(
+    "Colony systems initialized."
+);
+
+</script>
+
+</body>
+</html>
