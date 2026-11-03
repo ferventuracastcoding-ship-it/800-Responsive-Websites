@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AVL Tree Visualizer</title>
+</head>
+<body>
+<div id="app"></div>
+
+<script>
+// =============================================
+// 1. DYNAMIC CSS
+// =============================================
+
+const css = document.createElement("style");
+
+css.textContent = `
+* { box-sizing:border-box; }
+body {
+  margin:0;
+  font-family:monospace;
+  background:#101820;
+  color:#e8f1f2;
+}
+header {
+  padding:24px;
+  background:#172b35;
+  text-align:center;
+  border-bottom:2px solid #19c7b0;
+}
+h1 { color:#48e0cc; }
+main { padding:20px; max-width:1200px; margin:auto; }
+.panel {
+  background:#1b303b;
+  border:1px solid #35515d;
+  border-radius:10px;
+  padding:16px;
+  margin-bottom:16px;
+}
+.controls {
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+}
+input, select, button {
+  padding:11px;
+  border-radius:6px;
+  border:1px solid #42606b;
+  font-family:monospace;
+}
+input { background:#0e1b22;color:white;width:130px; }
+button {
+  background:#087f79;
+  color:white;
+  cursor:pointer;
+}
+button:hover { background:#10aaa0; }
+.tree {
+  min-height:360px;
+  overflow:auto;
+  position:relative;
+}
+svg {
+  width:100%;
+  min-width:650px;
+  height:360px;
+}
+.edge {
+  stroke:#68858f;
+  stroke-width:2;
+}
+.node circle {
+  fill:#126e70;
+  stroke:#58e5d5;
+  stroke-width:3;
+  transition:all .3s;
+}
+.node text {
+  fill:white;
+  font-size:14px;
+  text-anchor:middle;
+  dominant-baseline:middle;
+}
+.node.highlight circle {
+  fill:#d18a19;
+  stroke:#ffe39a;
+}
+.node text.balance {
+  font-size:10px;
+  fill:#b9fff5;
+}
+.stats {
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(120px,1fr));
+  gap:10px;
+}
+.stat {
+  background:#10232c;
+  padding:14px;
+  border-radius:8px;
+  text-align:center;
+}
+.stat strong {
+  display:block;
+  color:#53e8d4;
+  font-size:24px;
+}
+#log {
+  max-height:180px;
+  overflow:auto;
+  line-height:1.8;
+  color:#a9e9df;
+}
+.traversals {
+  line-height:2;
+  overflow-wrap:anywhere;
+}
+@media(max-width:600px) {
+  main {padding:10px;}
+  header {padding:12px;}
+}
+`;
+
+document.head.appendChild(css);
+
+// =============================================
+// 2. HTML INTERFACE
+// =============================================
+
+document.querySelector("#app").innerHTML = `
+<header>
+<h1>AVL TREE LAB</h1>
+<p>Self-Balancing Binary Search Tree</p>
+</header>
+
+<main>
+
+<div class="panel">
+<h3>Tree Operations</h3>
+<div class="controls">
+<input id="value" type="number" placeholder="Enter value">
+<button onclick="insertValue()">INSERT</button>
+<button onclick="deleteValue()">DELETE</button>
+<button onclick="searchValue()">SEARCH</button>
+<button onclick="randomTree()">RANDOM</button>
+<button onclick="resetTree()">RESET</button>
+</div>
+</div>
+
+<div class="panel">
+<h3>Tree Visualization</h3>
+<div class="tree">
+<svg id="treeSvg" viewBox="0 0 1000 360"></svg>
+</div>
+</div>
+
+<div class="panel">
+<h3>AVL Statistics</h3>
+<div class="stats">
+<div class="stat">Nodes<strong id="nodes">0</strong></div>
+<div class="stat">Height<strong id="height">0</strong></div>
+<div class="stat">Balance<strong id="balance">0</strong></div>
+<div class="stat">Root<strong id="root">-</strong></div>
+<div class="stat">Rotations<strong id="rotations">0</strong></div>
+</div>
+</div>
+
+<div class="panel">
+<h3>Traversal Algorithms</h3>
+<div class="controls">
+<button onclick="showTraversal('inorder')">INORDER</button>
+<button onclick="showTraversal('preorder')">PREORDER</button>
+<button onclick="showTraversal('postorder')">POSTORDER</button>
+<button onclick="showTraversal('levelorder')">LEVEL ORDER</button>
+</div>
+<div id="traversal" class="traversals"></div>
+</div>
+
+<div class="panel">
+<h3>Algorithm Explanation</h3>
+<div id="explanation">Insert a number to begin.</div>
+</div>
+
+<div class="panel">
+<h3>Operation Log</h3>
+<div id="log"></div>
+</div>
+
+</main>
+`;
+
+// =============================================
+// 3. AVL NODE
+// =============================================
+
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
+    this.height = 1;
+  }
+}
+
+// =============================================
+// 4. AVL TREE CLASS
+// =============================================
+
+class AVLTree {
+  constructor() {
+    this.root = null;
+    this.rotations = 0;
+    this.count = 0;
+  }
+
+  height(node) {
+    return node ? node.height : 0;
+  }
+
+  update(node) {
+    node.height = 1 + Math.max(
+      this.height(node.left),
+      this.height(node.right)
+    );
+  }
+
+  balance(node) {
+    if (!node) return 0;
+
+    return this.height(node.left) -
+           this.height(node.right);
+  }
+
+  // ===========================================
+  // 5. RIGHT ROTATION
+  // ===========================================
+
+  rotateRight(y) {
+    const x = y.left;
+    const middle = x.right;
+
+    x.right = y;
+    y.left = middle;
+
+    this.update(y);
+    this.update(x);
+
+    this.rotations++;
+
+    log("Right rotation at " + y.value);
+
+    return x;
+  }
+
+  // ===========================================
+  // 6. LEFT ROTATION
+  // ===========================================
+
+  rotateLeft(x) {
+    const y = x.right;
+    const middle = y.left;
+
+    y.left = x;
+    x.right = middle;
+
+    this.update(x);
+    this.update(y);
+
+    this.rotations++;
+
+    log("Left rotation at " + x.value);
+
+    return y;
+  }
+
+  // ===========================================
+  // 7. INSERTION
+  // ===========================================
+
+  insert(value) {
+    if (this.search(value)) {
+      log("Duplicate value: " + value);
+      return false;
+    }
+
+    this.root = this._insert(this.root, value);
+    this.count++;
+
+    return true;
+  }
+
+  _insert(node, value) {
+    if (!node) {
+      log("Created node " + value);
+      return new Node(value);
+    }
+
+    if (value < node.value) {
+      node.left = this._insert(node.left, value);
+    } else if (value > node.value) {
+      node.right = this._insert(node.right, value);
+    }
+
+    this.update(node);
+
+    const b = this.balance(node);
+
+    // LL CASE
+    if (b > 1 && value < node.left.value) {
+      log("LL imbalance");
+      return this.rotateRight(node);
+    }
+
+    // RR CASE
+    if (b < -1 && value > node.right.value) {
+      log("RR imbalance");
+      return this.rotateLeft(node);
+    }
+
+    // LR CASE
+    if (b > 1 && value > node.left.value) {
+      log("LR imbalance");
+      node.left = this.rotateLeft(node.left);
+      return this.rotateRight(node);
+    }
+
+    // RL CASE
+    if (b < -1 && value < node.right.value) {
+      log("RL imbalance");
+      node.right = this.rotateRight(node.right);
+      return this.rotateLeft(node);
+    }
+
+    return node;
+  }
+
+  // ===========================================
+  // 8. SEARCH
+  // ===========================================
+
+  search(value) {
+    let current = this.root;
+
+    while (current) {
+      if (value === current.value) return current;
+
+      current = value < current.value
+        ? current.left
+        : current.right;
+    }
+
+    return null;
+  }
+
+  // ===========================================
+  // 9. DELETE
+  // ===========================================
+
+  delete(value) {
+    if (!this.search(value)) {
+      log("Value not found: " + value);
+      return false;
+    }
+
+    this.root = this._delete(this.root, value);
+    this.count--;
+
+    return true;
+  }
+
+  _delete(node, value) {
+    if (!node) return null;
+
+    if (value < node.value) {
+      node.left = this._delete(node.left, value);
+    } else if (value > node.value) {
+      node.right = this._delete(node.right, value);
+    } else {
+
+      if (!node.left || !node.right) {
+        node = node.left || node.right;
+      } else {
+        let successor = node.right;
+
+        while (successor.left) {
+          successor = successor.left;
+        }
+
+        node.value = successor.value;
+
+        node.right = this._delete(
+          node.right,
+          successor.value
+        );
+      }
+    }
+
+    if (!node) return null;
+
+    this.update(node);
+
+    const b = this.balance(node);
+
+    if (b > 1 && this.balance(node.left) >= 0) {
+      return this.rotateRight(node);
+    }
+
+    if (b > 1 && this.balance(node.left) < 0) {
+      node.left = this.rotateLeft(node.left);
+      return this.rotateRight(node);
+    }
+
+    if (b < -1 && this.balance(node.right) <= 0) {
+      return this.rotateLeft(node);
+    }
+
+    if (b < -1 && this.balance(node.right) > 0) {
+      node.right = this.rotateRight(node.right);
+      return this.rotateLeft(node);
+    }
+
+    return node;
+  }
+
+  // ===========================================
+  // 10. TRAVERSALS
+  // ===========================================
+
+  inorder(node = this.root, result = []) {
+    if (!node) return result;
+
+    this.inorder(node.left, result);
+    result.push(node.value);
+    this.inorder(node.right, result);
+
+    return result;
+  }
+
+  preorder(node = this.root, result = []) {
+    if (!node) return result;
+
+    result.push(node.value);
+    this.preorder(node.left, result);
+    this.preorder(node.right, result);
+
+    return result;
+  }
+
+  postorder(node = this.root, result = []) {
+    if (!node) return result;
+
+    this.postorder(node.left, result);
+    this.postorder(node.right, result);
+    result.push(node.value);
+
+    return result;
+  }
+
+  levelorder() {
+    if (!this.root) return [];
+
+    const queue = [this.root];
+    const result = [];
+
+    while (queue.length) {
+      const node = queue.shift();
+
+      result.push(node.value);
+
+      if (node.left) queue.push(node.left);
+      if (node.right) queue.push(node.right);
+    }
+
+    return result;
+  }
+}
+
+// =============================================
+// 11. VISUALIZER STATE
+// =============================================
+
+const tree = new AVLTree();
+let highlighted = null;
+
+function log(message) {
+  const element = document.querySelector("#log");
+
+  const entry = document.createElement("div");
+  entry.textContent = "▶ " + message;
+
+  element.prepend(entry);
+}
+
+// =============================================
+// 12. SVG TREE RENDERING
+// =============================================
+
+function renderTree() {
+  const svg = document.querySelector("#treeSvg");
+
+  svg.innerHTML = "";
+
+  if (!tree.root) {
+    svg.innerHTML =
+      `<text x="500" y="180" fill="white"
+       text-anchor="middle">Empty AVL Tree</text>`;
+
+    updateStats();
+    return;
+  }
+
+  const NS = "http://www.w3.org/2000/svg";
+
+  function createSVG(tag, attributes) {
+    const element = document.createElementNS(NS, tag);
+
+    Object.entries(attributes).forEach(([key, value]) => {
+      element.setAttribute(key, value);
+    });
+
+    svg.appendChild(element);
+
+    return element;
+  }
+
+  function draw(node, x, y, gap) {
+    if (!node) return;
+
+    const childY = y + 75;
+
+    if (node.left) {
+      createSVG("line", {
+        x1: x,
+        y1: y,
+        x2: x - gap,
+        y2: childY,
+        class: "edge"
+      });
+
+      draw(node.left, x - gap, childY, gap / 2);
+    }
+
+    if (node.right) {
+      createSVG("line", {
+        x1: x,
+        y1: y,
+        x2: x + gap,
+        y2: childY,
+        class: "edge"
+      });
+
+      draw(node.right, x + gap, childY, gap / 2);
+    }
+
+    const group = createSVG("g", {
+      class: node.value === highlighted
+        ? "node highlight"
+        : "node"
+    });
+
+    const circle = document.createElementNS(NS, "circle");
+    circle.setAttribute("cx", x);
+    circle.setAttribute("cy", y);
+    circle.setAttribute("r", 23);
+
+    group.appendChild(circle);
+
+    const label = document.createElementNS(NS, "text");
+    label.setAttribute("x", x);
+    label.setAttribute("y", y);
+    label.textContent = node.value;
+
+    group.appendChild(label);
+
+    const balanceLabel = document.createElementNS(NS, "text");
+    balanceLabel.setAttribute("x", x);
+    balanceLabel.setAttribute("y", y + 36);
+    balanceLabel.setAttribute("class", "balance");
+    balanceLabel.textContent = "BF:" + tree.balance(node);
+
+    group.appendChild(balanceLabel);
+  }
+
+  draw(tree.root, 500, 45, 220);
+
+  updateStats();
+}
+
+// =============================================
+// 13. STATISTICS
+// =============================================
+
+function updateStats() {
+  document.querySelector("#nodes").textContent = tree.count;
+
+  document.querySelector("#height").textContent =
+    tree.height(tree.root);
+
+  document.querySelector("#balance").textContent =
+    tree.balance(tree.root);
+
+  document.querySelector("#root").textContent =
+    tree.root ? tree.root.value : "-";
+
+  document.querySelector("#rotations").textContent =
+    tree.rotations;
+}
+
+// =============================================
+// 14. USER CONTROLS
+// =============================================
+
+function getInput() {
+  const input = document.querySelector("#value");
+  const value = input.value.trim();
+
+  if (value === "" || !Number.isSafeInteger(Number(value))) {
+    alert("Enter a valid integer.");
+    return null;
+  }
+
+  return Number(value);
+}
+
+function insertValue() {
+  const value = getInput();
+
+  if (value === null) return;
+
+  if (tree.insert(value)) {
+    highlighted = value;
+    log("Inserted " + value);
+  }
+
+  renderTree();
+}
+
+function deleteValue() {
+  const value = getInput();
+
+  if (value === null) return;
+
+  tree.delete(value);
+  highlighted = null;
+
+  renderTree();
+}
+
+function searchValue() {
+  const value = getInput();
+
+  if (value === null) return;
+
+  const result = tree.search(value);
+
+  highlighted = result ? value : null;
+
+  log(result
+    ? "Found " + value
+    : "Not found " + value);
+
+  document.querySelector("#explanation").textContent =
+    result
+      ? `Found ${value}. Its left child is ${
+          result.left?.value ?? "none"
+        } and right child is ${
+          result.right?.value ?? "none"
+        }.`
+      : `${value} does not exist in this tree.`;
+
+  renderTree();
+}
+
+function resetTree() {
+  tree.root = null;
+  tree.count = 0;
+  tree.rotations = 0;
+  highlighted = null;
+
+  document.querySelector("#log").innerHTML = "";
+  document.querySelector("#traversal").textContent = "";
+  document.querySelector("#explanation").textContent =
+    "Tree reset. Insert a number to begin.";
+
+  renderTree();
+}
+
+function randomTree() {
+  resetTree();
+
+  const numbers = Array.from(
+    { length: 10 },
+    () => Math.floor(Math.random() * 90) + 10
+  );
+
+  [...new Set(numbers)].forEach(value => {
+    tree.insert(value);
+  });
+
+  log("Generated random AVL tree");
+
+  renderTree();
+}
+
+// =============================================
+// 15. TRAVERSAL CONTROLS
+// =============================================
+
+function showTraversal(type) {
+  const methods = {
+    inorder: tree.inorder(),
+    preorder: tree.preorder(),
+    postorder: tree.postorder(),
+    levelorder: tree.levelorder()
+  };
+
+  const result = methods[type];
+
+  document.querySelector("#traversal").textContent =
+    type.toUpperCase() + ": " + result.join(" → ");
+
+  document.querySelector("#explanation").textContent = {
+    inorder: "Left → Root → Right. Produces sorted values in a BST.",
+    preorder: "Root → Left → Right. Visits the root first.",
+    postorder: "Left → Right → Root. Visits the root last.",
+    levelorder: "Uses a queue to visit nodes level by level."
+  }[type];
+}
+
+// =============================================
+// 16. INITIAL TREE
+// =============================================
+
+[50, 30, 70, 20, 40, 60, 80].forEach(value => {
+  tree.insert(value);
+});
+
+log("AVL Tree initialized");
+log("Seven nodes inserted");
+
+renderTree();
+
+</script>
+</body>
+</html>
