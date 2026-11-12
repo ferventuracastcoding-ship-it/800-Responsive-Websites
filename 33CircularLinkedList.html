@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Reverse Circular Recursive Linked List Visualizer</title>
+
+<style>
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        margin: 0;
+        min-height: 100vh;
+        background:
+            radial-gradient(circle at top, #172554, #020617 60%);
+        color: white;
+        font-family: Arial, sans-serif;
+        padding: 25px;
+    }
+
+    .container {
+        max-width: 1300px;
+        margin: auto;
+    }
+
+    h1 {
+        text-align: center;
+        color: #67e8f9;
+        margin-bottom: 5px;
+    }
+
+    .subtitle {
+        text-align: center;
+        color: #94a3b8;
+        margin-bottom: 25px;
+    }
+
+    .controls {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        justify-content: center;
+        margin-bottom: 25px;
+    }
+
+    button {
+        border: 1px solid #38bdf8;
+        background: #0f172a;
+        color: #e0f2fe;
+        padding: 12px 18px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: bold;
+    }
+
+    button:hover {
+        background: #0369a1;
+        transform: translateY(-2px);
+    }
+
+    .dashboard {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 15px;
+        margin-bottom: 25px;
+    }
+
+    .card {
+        background: rgba(15, 23, 42, 0.9);
+        border: 1px solid #334155;
+        border-radius: 12px;
+        padding: 18px;
+    }
+
+    .card h3 {
+        color: #67e8f9;
+        margin-top: 0;
+    }
+
+    .value {
+        font-size: 25px;
+        font-weight: bold;
+        color: #f8fafc;
+    }
+
+    .visualizer {
+        background: rgba(2, 6, 23, 0.9);
+        border: 1px solid #334155;
+        border-radius: 15px;
+        padding: 25px;
+        min-height: 250px;
+    }
+
+    .nodes {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .node {
+        min-width: 105px;
+        padding: 16px 10px;
+        text-align: center;
+        border: 2px solid #38bdf8;
+        border-radius: 12px;
+        background: #0f172a;
+        box-shadow: 0 0 15px rgba(56, 189, 248, 0.2);
+        transition: 0.3s;
+    }
+
+    .node.active {
+        border-color: #facc15;
+        box-shadow: 0 0 25px rgba(250, 204, 21, 0.7);
+        transform: scale(1.08);
+    }
+
+    .planet {
+        font-size: 18px;
+        font-weight: bold;
+    }
+
+    .pointer {
+        color: #38bdf8;
+        font-size: 25px;
+        font-weight: bold;
+    }
+
+    .recursive-panel {
+        margin-top: 20px;
+        background: #020617;
+        border: 1px solid #334155;
+        border-radius: 10px;
+        padding: 20px;
+    }
+
+    .recursive-line {
+        font-family: monospace;
+        color: #a5f3fc;
+        padding: 5px 0;
+    }
+
+    .log {
+        margin-top: 20px;
+        background: #020617;
+        border: 1px solid #1e293b;
+        border-radius: 10px;
+        padding: 15px;
+        height: 180px;
+        overflow-y: auto;
+        font-family: monospace;
+        color: #94a3b8;
+    }
+
+    .info {
+        margin-top: 20px;
+        background: #0f172a;
+        border-left: 4px solid #38bdf8;
+        padding: 15px;
+        line-height: 1.6;
+    }
+
+    @media (max-width: 850px) {
+        .dashboard {
+            grid-template-columns: 1fr;
+        }
+
+        .node {
+            min-width: 85px;
+        }
+    }
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>🔄 Circular Recursive Linked List Visualizer</h1>
+
+    <div class="subtitle">
+        Reverse • Circular • Recursive • Solar System
+    </div>
+
+    <div class="controls">
+
+        <button onclick="traverseForward()">
+            ▶ Forward
+        </button>
+
+        <button onclick="traverseReverse()">
+            ◀ Reverse
+        </button>
+
+        <button onclick="reverseList()">
+            🔄 Reverse List
+        </button>
+
+        <button onclick="recursiveTraverse()">
+            🧠 Recursive
+        </button>
+
+        <button onclick="recursiveReverse()">
+            ♻ Recursive Reverse
+        </button>
+
+        <button onclick="resetList()">
+            ↻ Reset
+        </button>
+
+    </div>
+
+    <div class="dashboard">
+
+        <div class="card">
+            <h3>Structure</h3>
+            <div class="value" id="structure">
+                Circular
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>Nodes</h3>
+            <div class="value" id="nodeCount">
+                7
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>Current Node</h3>
+            <div class="value" id="currentNode">
+                Earth
+            </div>
+        </div>
+
+    </div>
+
+    <div class="visualizer">
+
+        <h2>Linked List</h2>
+
+        <div id="nodes" class="nodes"></div>
+
+    </div>
+
+    <div class="recursive-panel">
+
+        <h2>🧠 Recursive Call Stack</h2>
+
+        <div id="recursiveOutput">
+            Recursive operations will appear here.
+        </div>
+
+    </div>
+
+    <div class="log" id="log">
+        SYSTEM: Circular linked list initialized...
+    </div>
+
+    <div class="info">
+
+        <strong>How it works:</strong>
+
+        <br><br>
+
+        A normal linked list eventually points to
+        <code>null</code>. A circular linked list instead
+        points back to its first node.
+
+        <br><br>
+
+        This project uses:
+
+        <br>
+        <strong>Earth → Mars → Jupiter → Saturn → Uranus → Neptune → Pluto → Earth</strong>
+
+        <br><br>
+
+        The recursive functions process nodes by repeatedly
+        calling themselves until they return to the starting node.
+
+    </div>
+
+</div>
+
+
+<script>
+
+/*
+====================================================
+NODE
+====================================================
+*/
+
+class Node {
+
+    constructor(data) {
+
+        // Store the planet name.
+        this.data = data;
+
+        // Store the next node.
+        this.next = null;
+
+    }
+
+}
+
+
+/*
+====================================================
+CIRCULAR LINKED LIST
+====================================================
+*/
+
+class CircularLinkedList {
+
+    constructor() {
+
+        // First node.
+        this.head = null;
+
+        // Number of nodes.
+        this.size = 0;
+
+    }
+
+
+    /*
+    ================================================
+    APPEND
+    ================================================
+    */
+
+    append(data) {
+
+        // Create a new node.
+        const newNode = new Node(data);
+
+        // If the list is empty...
+        if (this.head === null) {
+
+            // New node becomes the head.
+            this.head = newNode;
+
+            // Point back to itself.
+            newNode.next = newNode;
+
+            // Increase size.
+            this.size++;
+
+            return;
+
+        }
+
+        // Start at the head.
+        let current = this.head;
+
+        // Find the final node.
+        while (current.next !== this.head) {
+
+            current = current.next;
+
+        }
+
+        // Connect last node to new node.
+        current.next = newNode;
+
+        // New node points back to head.
+        newNode.next = this.head;
+
+        // Increase size.
+        this.size++;
+
+    }
+
+
+    /*
+    ================================================
+    FORWARD TRAVERSAL
+    ================================================
+    */
+
+    traverse() {
+
+        const result = [];
+
+        if (this.head === null) {
+
+            return result;
+
+        }
+
+        let current = this.head;
+
+        do {
+
+            result.push(current.data);
+
+            current = current.next;
+
+        } while (current !== this.head);
+
+        return result;
+
+    }
+
+
+    /*
+    ================================================
+    REVERSE THE CIRCULAR LIST
+    ================================================
+    */
+
+    reverse() {
+
+        if (
+            this.head === null ||
+            this.head.next === this.head
+        ) {
+
+            return;
+
+        }
+
+        let previous = null;
+
+        let current = this.head;
+
+        let first = this.head;
+
+        do {
+
+            let nextNode = current.next;
+
+            current.next = previous;
+
+            previous = current;
+
+            current = nextNode;
+
+        } while (current !== first);
+
+        // Old head becomes the final node.
+        first.next = previous;
+
+        // Previous becomes the new head.
+        this.head = previous;
+
+    }
+
+
+    /*
+    ================================================
+    RECURSIVE TRAVERSAL
+    ================================================
+    */
+
+    recursiveTraverse() {
+
+        const result = [];
+
+        if (this.head === null) {
+
+            return result;
+
+        }
+
+        const start = this.head;
+
+        const visit = (node) => {
+
+            result.push(node.data);
+
+            if (node.next !== start) {
+
+                visit(node.next);
+
+            }
+
+        };
+
+        visit(start);
+
+        return result;
+
+    }
+
+
+    /*
+    ================================================
+    RECURSIVE REVERSE
+    ================================================
+    */
+
+    recursiveReverse() {
+
+        const values = this.recursiveTraverse();
+
+        values.reverse();
+
+        const newList =
+            new CircularLinkedList();
+
+        values.forEach(value => {
+
+            newList.append(value);
+
+        });
+
+        this.head = newList.head;
+
+        this.size = newList.size;
+
+    }
+
+}
+
+
+/*
+====================================================
+CREATE SOLAR SYSTEM
+====================================================
+*/
+
+const list = new CircularLinkedList();
+
+const planets = [
+    "Earth",
+    "Mars",
+    "Jupiter",
+    "Saturn",
+    "Uranus",
+    "Neptune",
+    "Pluto"
+];
+
+
+/*
+Add planets.
+*/
+
+planets.forEach(planet => {
+
+    list.append(planet);
+
+});
+
+
+/*
+====================================================
+RENDER
+====================================================
+*/
+
+function render() {
+
+    const container =
+        document.getElementById("nodes");
+
+    container.innerHTML = "";
+
+    const values =
+        list.traverse();
+
+    values.forEach((planet, index) => {
+
+        const node =
+            document.createElement("div");
+
+        node.className = "node";
+
+        if (index === 0) {
+
+            node.classList.add("active");
+
+        }
+
+        node.innerHTML = `
+            <div class="planet">
+                ${planet}
+            </div>
+
+            <small>
+                next →
+            </small>
+        `;
+
+        container.appendChild(node);
+
+        const pointer =
+            document.createElement("div");
+
+        pointer.className = "pointer";
+
+        if (index === values.length - 1) {
+
+            pointer.textContent = "↻";
+
+        } else {
+
+            pointer.textContent = "→";
+
+        }
+
+        container.appendChild(pointer);
+
+    });
+
+    document.getElementById("nodeCount")
+        .textContent = list.size;
+
+    document.getElementById("currentNode")
+        .textContent =
+        list.head ? list.head.data : "None";
+
+}
+
+
+/*
+====================================================
+FORWARD TRAVERSAL
+====================================================
+*/
+
+function traverseForward() {
+
+    const values =
+        list.traverse();
+
+    setLog(
+        "FORWARD TRAVERSAL:\n" +
+        values.join(" → ") +
+        " → " +
+        values[0]
+    );
+
+    highlightSequence(values);
+
+}
+
+
+/*
+====================================================
+REVERSE TRAVERSAL
+====================================================
+*/
+
+function traverseReverse() {
+
+    const values =
+        list.traverse();
+
+    const reversed =
+        [...values].reverse();
+
+    setLog(
+        "REVERSE TRAVERSAL:\n" +
+        reversed.join(" → ") +
+        " → " +
+        reversed[0]
+    );
+
+    highlightSequence(reversed);
+
+}
+
+
+/*
+====================================================
+REVERSE LIST
+====================================================
+*/
+
+function reverseList() {
+
+    list.reverse();
+
+    render();
+
+    setLog(
+        "LIST REVERSED:\n" +
+        list.traverse().join(" → ")
+    );
+
+}
+
+
+/*
+====================================================
+RECURSIVE TRAVERSAL
+====================================================
+*/
+
+function recursiveTraverse() {
+
+    const output =
+        document.getElementById("recursiveOutput");
+
+    output.innerHTML = "";
+
+    const values =
+        list.traverse();
+
+    let index = 0;
+
+    function recurse() {
+
+        if (index >= values.length) {
+
+            const done =
+                document.createElement("div");
+
+            done.className = "recursive-line";
+
+            done.textContent =
+                "↩ Base case reached — return";
+
+            output.appendChild(done);
+
+            return;
+
+        }
+
+        const line =
+            document.createElement("div");
+
+        line.className = "recursive-line";
+
+        line.textContent =
+            `recursive(${values[index]})`;
+
+        output.appendChild(line);
+
+        index++;
+
+        recurse();
+
+    }
+
+    recurse();
+
+    setLog(
+        "Recursive traversal completed:\n" +
+        values.join(" → ")
+    );
+
+}
+
+
+/*
+====================================================
+RECURSIVE REVERSE
+====================================================
+*/
+
+function recursiveReverse() {
+
+    const output =
+        document.getElementById("recursiveOutput");
+
+    output.innerHTML = "";
+
+    const values =
+        list.traverse();
+
+    const reversed =
+        [...values].reverse();
+
+    let index = 0;
+
+    function reverseStep() {
+
+        if (index >= reversed.length) {
+
+            const done =
+                document.createElement("div");
+
+            done.className = "recursive-line";
+
+            done.textContent =
+                "↩ Base case reached — reverse complete";
+
+            output.appendChild(done);
+
+            return;
+
+        }
+
+        const line =
+            document.createElement("div");
+
+        line.className = "recursive-line";
+
+        line.textContent =
+            `reverse(${reversed[index]})`;
+
+        output.appendChild(line);
+
+        index++;
+
+        reverseStep();
+
+    }
+
+    reverseStep();
+
+    list.recursiveReverse();
+
+    render();
+
+    setLog(
+        "RECURSIVE REVERSE:\n" +
+        list.traverse().join(" → ")
+    );
+
+}
+
+
+/*
+====================================================
+HIGHLIGHT SEQUENCE
+====================================================
+*/
+
+function highlightSequence(sequence) {
+
+    const nodes =
+        document.querySelectorAll(".node");
+
+    nodes.forEach(node => {
+
+        node.classList.remove("active");
+
+    });
+
+    let index = 0;
+
+    function nextHighlight() {
+
+        nodes.forEach(node => {
+
+            node.classList.remove("active");
+
+        });
+
+        if (index >= sequence.length) {
+
+            return;
+
+        }
+
+        const target =
+            sequence[index];
+
+        nodes.forEach(node => {
+
+            const planet =
+                node.querySelector(".planet");
+
+            if (
+                planet &&
+                planet.textContent.trim() === target
+            ) {
+
+                node.classList.add("active");
+
+            }
+
+        });
+
+        index++;
+
+        setTimeout(nextHighlight, 700);
+
+    }
+
+    nextHighlight();
+
+}
+
+
+/*
+====================================================
+RESET
+====================================================
+*/
+
+function resetList() {
+
+    list.head = null;
+
+    list.size = 0;
+
+    planets.forEach(planet => {
+
+        list.append(planet);
+
+    });
+
+    render();
+
+    document.getElementById("recursiveOutput")
+        .innerHTML =
+        "Recursive operations will appear here.";
+
+    setLog(
+        "RESET:\n" +
+        planets.join(" → ") +
+        " → Earth"
+    );
+
+}
+
+
+/*
+====================================================
+LOG
+====================================================
+*/
+
+function setLog(message) {
+
+    document.getElementById("log")
+        .textContent = message;
+
+}
+
+
+/*
+====================================================
+INITIAL RENDER
+====================================================
+*/
+
+render();
+
+</script>
+
+</body>
+</html>
