@@ -1,0 +1,167 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MARS / STARSHIP Mission IDE</title>
+<style>
+:root{--bg:#252729;--panel:#303336;--panel2:#383b3f;--line:#4b4f53;--text:#e3e5e7;--muted:#a4a9ad;--accent:#e68a50;--green:#8fc79a;--blue:#8bb8dc;--red:#e16e68;--shadow:0 8px 24px #0005}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:13px "Segoe UI",Arial,sans-serif;overflow:hidden}
+button,select,input{font:inherit;color:inherit}button{cursor:pointer;border:1px solid #555b60;background:linear-gradient(#45494d,#383b3f);padding:7px 10px;border-radius:3px;transition:.15s}button:hover{border-color:var(--accent);background:#4c4945}button:active{transform:translateY(1px)}button.active{border-color:var(--accent);background:#5a4031;color:#ffd6b9}
+.topbar{height:34px;background:#1c1e20;display:flex;align-items:center;gap:12px;padding:0 12px;border-bottom:1px solid #111;font-size:12px}.logo{font-weight:800;color:var(--accent);letter-spacing:1.4px}.topbar .crumb{color:#b5b9bd}.spacer{flex:1}.live{color:var(--green);font-weight:700}.menubar{height:34px;display:flex;align-items:center;gap:3px;padding:0 9px;background:#2d3033;border-bottom:1px solid var(--line)}.menubar button{padding:5px 9px;background:transparent;border-color:transparent}
+.toolbar{min-height:43px;display:flex;align-items:center;gap:6px;padding:5px 10px;background:#34373a;border-bottom:1px solid var(--line);flex-wrap:wrap}.toolbar .sep{height:24px;border-left:1px solid #555;margin:0 4px}.status-pill{border:1px solid #555b60;background:#25282a;border-radius:3px;padding:6px 9px;color:#c5c9cc}
+.workspace{height:calc(100vh - 145px);min-height:420px;display:grid;grid-template-columns:205px minmax(360px,1fr) 285px;gap:7px;padding:7px}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:4px;min-width:0;overflow:hidden;display:flex;flex-direction:column}.panel-head{height:31px;flex:none;background:#3a3d40;border-bottom:1px solid var(--line);padding:8px 10px;font-weight:700;font-size:11px;letter-spacing:.6px;text-transform:uppercase;display:flex;align-items:center;justify-content:space-between}.panel-head small{font-weight:400;color:var(--muted);letter-spacing:0}.panel-body{padding:10px;overflow:auto;min-height:0;flex:1}.tree-row{display:flex;align-items:center;gap:7px;padding:7px 5px;border-radius:3px;color:#c9cdd0}.tree-row:hover,.tree-row.selected{background:#474a4d}.tree-row .ico{width:18px;text-align:center;color:var(--accent)}.tree-row.sub{padding-left:22px;font-size:12px}.section-label{color:#9fa5aa;text-transform:uppercase;font-size:10px;letter-spacing:1px;margin:14px 0 7px}.metric{display:flex;justify-content:space-between;gap:8px;padding:6px 0;border-bottom:1px solid #45494c}.metric span{color:var(--muted)}.metric b{font-variant-numeric:tabular-nums}.good{color:var(--green)}.warn{color:#f1bc77}.center{display:grid;grid-template-rows:minmax(250px,1fr) 190px;gap:7px;min-width:0;min-height:0}.viewport{position:relative;min-height:0;background:#1d2022;border:1px solid var(--line);border-radius:4px;overflow:hidden}.viewport canvas{width:100%;height:100%;display:block}.hud{position:absolute;left:12px;top:11px;display:flex;gap:6px;flex-wrap:wrap;pointer-events:none}.hud span{font:10px Consolas,monospace;letter-spacing:.5px;background:#171a1cdd;border:1px solid #5a5e60;padding:5px 7px;border-radius:2px}.hud .rec{color:#ff8b7e}.viewport-actions{position:absolute;right:10px;top:10px;display:flex;gap:5px}.viewport-actions button{background:#24282bdc;font-size:11px}.crosshair{position:absolute;left:50%;top:49%;width:18px;height:18px;transform:translate(-50%,-50%);pointer-events:none;opacity:.6}.crosshair:before,.crosshair:after{content:"";position:absolute;background:#e4e6e7}.crosshair:before{width:1px;height:18px;left:8px}.crosshair:after{height:1px;width:18px;top:8px}.view-caption{position:absolute;bottom:8px;left:10px;color:#e4d4c6;text-shadow:0 1px 2px #000;font:11px Consolas,monospace}.bottom-panel{min-height:0}.tabs{height:32px;display:flex;gap:2px;align-items:stretch;background:#2b2e30;border-bottom:1px solid var(--line);padding:3px 4px 0}.tab{padding:6px 11px;border:0;background:transparent;color:#adb2b6;border-bottom:2px solid transparent}.tab.active{color:#f0b18a;border-bottom-color:var(--accent);background:#393c3f}.console{font:11px Consolas,monospace;line-height:1.7;padding:9px 11px;overflow:auto;height:calc(100% - 32px);color:#c3c8cb}.console .time{color:#858c92}.console .ok{color:var(--green)}.console .cmd{color:#e9ad7f}.tool-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}.tool-grid button{text-align:left;font-size:11px;padding:8px 7px}.tool-grid button span{display:inline-block;width:19px;color:var(--accent)}.right-panel{gap:7px;display:flex;flex-direction:column;min-height:0}.right-panel .panel{flex:1;min-height:0}.readout{display:grid;grid-template-columns:1fr 1fr;gap:7px}.readout-card{background:#26292b;border:1px solid #494d50;padding:9px;border-radius:3px}.readout-card small{display:block;color:var(--muted);font-size:10px;margin-bottom:6px}.readout-card strong{font:18px Consolas,monospace}.readout-card em{font-style:normal;color:var(--green);font-size:10px;display:block;margin-top:4px}.bar{height:5px;background:#1e2022;border-radius:4px;overflow:hidden;margin-top:6px}.bar i{display:block;height:100%;background:var(--accent);width:65%}.bar.green i{background:var(--green)}.bar.blue i{background:var(--blue)}.system-list{display:grid;gap:9px}.system-line{display:grid;grid-template-columns:1fr auto;gap:4px;font-size:11px}.system-line span{color:#b6bbc0}.system-line b{font:11px Consolas,monospace}.system-line .bar{grid-column:1/-1;margin-top:0}.inspector p{color:var(--muted);line-height:1.5}.inspector label{display:block;color:#b5bbc0;font-size:11px;margin:10px 0 5px}.inspector select,.inspector input{width:100%;background:#242729;border:1px solid #555b60;padding:7px;border-radius:3px}.statusbar{height:24px;background:#202224;border-top:1px solid #111;display:flex;align-items:center;gap:16px;padding:0 10px;color:#9da3a8;font:10px Consolas,monospace}.statusbar .right{margin-left:auto}.modal-backdrop{display:none;position:fixed;inset:0;background:#0009;z-index:10;align-items:center;justify-content:center}.modal-backdrop.open{display:flex}.modal{width:min(470px,calc(100vw - 30px));background:#303336;border:1px solid #666;box-shadow:var(--shadow);border-radius:5px}.modal h3{margin:0;padding:13px 15px;background:#3b3f42;border-bottom:1px solid #555;font-size:13px}.modal-content{padding:15px;line-height:1.55;color:#c7cbce}.modal-foot{padding:10px 15px;border-top:1px solid #4b4f53;display:flex;justify-content:flex-end;gap:7px}.toast{position:fixed;right:18px;bottom:36px;background:#25292b;border:1px solid var(--accent);padding:10px 14px;border-radius:3px;box-shadow:var(--shadow);display:none;z-index:20}.toast.show{display:block;animation:fade 2.6s forwards}@keyframes fade{0%,75%{opacity:1}100%{opacity:0}}.paused .rec{color:#b8bdc0}@media(max-width:1000px){.workspace{grid-template-columns:175px minmax(300px,1fr);}.right-panel{display:none}.center{grid-template-rows:minmax(250px,1fr) 170px}}@media(max-width:650px){body{overflow:auto}.workspace{height:auto;min-height:calc(100vh - 145px);display:flex;flex-direction:column}.workspace>.panel{min-height:220px}.center{min-height:620px}.left-panel{order:2}.center{order:1}.right-panel{display:flex;order:3}.topbar .crumb{display:none}}
+</style>
+</head>
+<body>
+<div class="topbar"><span class="logo">MARS//OPS</span><span class="crumb">workspace / mars_void / mission-control</span><span class="spacer"></span><span class="live">● LINK NOMINAL</span><span>UTC 14:32:08</span><span>v2.6.14</span></div>
+<div class="menubar"><button data-modal="mission">File</button><button data-modal="systems">Edit</button><button data-modal="help">View</button><button data-modal="mission">Mission</button><button data-modal="systems">Telemetry</button><button data-modal="help">Help</button></div>
+<div class="toolbar">
+<button id="startBtn" class="active">▶ Run simulation</button><button id="pauseBtn">Ⅱ Pause</button><button id="resetBtn">↺ Reset scene</button><span class="sep"></span>
+<button id="cameraBtn">◉ Camera: Orbit</button><button id="dustBtn">〰 Dust storm: Off</button><button id="nightBtn">☾ Lighting: Day</button><span class="sep"></span>
+<button id="scanBtn">⌖ Surface scan</button><button id="reportBtn">▤ Mission report</button><span class="spacer"></span><span class="status-pill" id="modePill">SIMULATION ACTIVE</span>
+</div>
+<div class="workspace">
+<aside class="panel left-panel">
+<div class="panel-head">Mission Explorer <small>▾</small></div>
+<div class="panel-body">
+<div class="tree-row selected"><span class="ico">▣</span> SN-42 Surface Ops</div>
+<div class="tree-row sub"><span class="ico">◈</span> SN-42 / Hull</div>
+<div class="tree-row sub"><span class="ico">⌁</span> Landing gear</div>
+<div class="tree-row sub"><span class="ico">♨</span> Raptor engines</div>
+<div class="tree-row"><span class="ico">▦</span> Terrain analysis</div>
+<div class="tree-row"><span class="ico">⌁</span> Navigation mesh</div>
+<div class="tree-row"><span class="ico">◉</span> Telemetry stream</div>
+<div class="tree-row"><span class="ico">⚙</span> Systems monitor</div>
+<div class="section-label">Scene tools</div>
+<div class="tool-grid">
+<button data-tool="rock"><span>◆</span>Add boulder</button><button data-tool="marker"><span>⌖</span>Place marker</button>
+<button data-tool="rover"><span>▰</span>Deploy rover</button><button data-tool="flag"><span>⚑</span>Plant flag</button>
+<button data-tool="crater"><span>◉</span>Add crater</button><button data-tool="beacon"><span>⌁</span>Drop beacon</button>
+</div>
+<div class="section-label">Mission objectives</div>
+<div class="tree-row"><span class="ico good">✓</span> Landing confirmed</div>
+<div class="tree-row"><span class="ico good">✓</span> Hull integrity check</div>
+<div class="tree-row"><span class="ico warn">◷</span> Terrain survey</div>
+<div class="tree-row"><span class="ico">○</span> Rover deployment</div>
+<div class="tree-row"><span class="ico">○</span> Sample collection</div>
+<div class="section-label">Environment</div>
+<div class="metric"><span>Sol</span><b>0042</b></div><div class="metric"><span>Local time</span><b>14:32 LMST</b></div><div class="metric"><span>Gravity</span><b>3.71 m/s²</b></div><div class="metric"><span>Pressure</span><b>610 Pa</b></div>
+</div>
+</aside>
+<main class="center">
+<section class="viewport" id="viewport">
+<canvas id="scene" aria-label="Animated starship on the Martian surface"></canvas>
+<div class="hud"><span>LIVE SURFACE VIEW</span><span class="rec" id="rec">● REC</span><span>CAM 01 / EXTERIOR</span><span id="coords">LAT 18.4° N · LON 77.5° E</span></div>
+<div class="viewport-actions"><button id="zoomOut">−</button><button id="zoomIn">＋</button><button id="fullscreenBtn">⛶</button></div>
+<div class="crosshair"></div><div class="view-caption" id="caption">SITE: AMAZONIS PLANITIA · STARLIGNER SN-42</div>
+</section>
+<section class="panel bottom-panel">
+<div class="tabs"><button class="tab active" data-tab="console">Console</button><button class="tab" data-tab="telemetry">Telemetry</button><button class="tab" data-tab="events">Event log</button></div>
+<div class="console" id="console"></div>
+</section>
+</main>
+<aside class="right-panel">
+<section class="panel"><div class="panel-head">Flight & Surface Telemetry <small>LIVE</small></div><div class="panel-body">
+<div class="readout"><div class="readout-card"><small>HULL TEMP</small><strong id="temp">−62°C</strong><em>Within limits</em></div><div class="readout-card"><small>BATTERY</small><strong id="battery">98.4%</strong><div class="bar green"><i id="batteryBar" style="width:98%"></i></div></div><div class="readout-card"><small>WIND SPEED</small><strong id="wind">12.8</strong><em>m/s · ESE</em></div><div class="readout-card"><small>O₂ RESERVE</small><strong id="oxygen">96%</strong><div class="bar blue"><i id="oxygenBar" style="width:96%"></i></div></div></div>
+<div class="section-label">Vehicle systems</div><div class="system-list">
+<div class="system-line"><span>Hull pressure</span><b class="good">NOMINAL</b><div class="bar green"><i style="width:92%"></i></div></div>
+<div class="system-line"><span>Power bus</span><b class="good">ONLINE</b><div class="bar green"><i style="width:88%"></i></div></div>
+<div class="system-line"><span>Thermal control</span><b class="good">ACTIVE</b><div class="bar"><i style="width:67%"></i></div></div>
+<div class="system-line"><span>Comms array</span><b class="good">LOCKED</b><div class="bar blue"><i style="width:99%"></i></div></div>
+<div class="system-line"><span>Landing legs</span><b class="good">DEPLOYED</b><div class="bar green"><i style="width:100%"></i></div></div></div>
+</div></section>
+<section class="panel inspector"><div class="panel-head">Mission Controls</div><div class="panel-body">
+<label for="thrust">RCS thruster test</label><input id="thrust" type="range" min="0" max="100" value="0"><div class="metric"><span>Thruster output</span><b id="thrustVal">0%</b></div>
+<label for="roverMode">Rover deployment mode</label><select id="roverMode"><option>Standby</option><option>Deploy rover</option><option>Return to Starship</option></select>
+<label for="target">Navigation target</label><select id="target"><option>Survey waypoint Alpha</option><option>Crater rim Bravo</option><option>Rock sample Charlie</option><option>Return to Starship</option></select>
+<div style="display:flex;gap:6px;margin-top:12px"><button id="executeBtn" style="flex:1">Execute command</button><button id="abortBtn">Abort</button></div>
+<p id="inspectText">Select a scene tool, then click the Martian surface to place an object. Use the camera and lighting controls to inspect the landing site.</p>
+</div></section>
+</aside>
+</div>
+<div class="statusbar"><span id="statusLeft">READY</span><span>GPU: SOFTWARE RENDER</span><span>SIM RATE 1.0×</span><span class="right">MISSION ELAPSED <b id="elapsed">00:12:44</b></span></div>
+<div class="modal-backdrop" id="modal"><div class="modal"><h3 id="modalTitle">Mission panel</h3><div class="modal-content" id="modalContent"></div><div class="modal-foot"><button id="modalClose">Close</button><button id="modalAction" class="active">Confirm</button></div></div></div><div class="toast" id="toast"></div>
+<script>
+(()=>{
+const canvas=document.getElementById('scene'),ctx=canvas.getContext('2d'),viewport=document.getElementById('viewport');
+let W=900,H=500, running=true,dust=false,night=false,camera=0,zoom=1,elapsed=764,frame=0,tool=null,objects=[],scan=false,thrust=0,roverDeployed=false,tab='console',toastTimer;
+const $=id=>document.getElementById(id);
+function log(msg,type=''){const el=document.createElement('div');el.innerHTML=`<span class="time">[SOL 42 ${new Date().toLocaleTimeString('en-GB',{hour12:false})}]</span> <span class="${type}">${msg}</span>`;$('console').prepend(el);while($('console').children.length>70)$('console').lastChild.remove()}
+function notify(msg){const t=$('toast');t.textContent=msg;t.classList.remove('show');void t.offsetWidth;t.classList.add('show')}
+function resize(){const r=viewport.getBoundingClientRect();W=Math.max(1,r.width);H=Math.max(1,r.height);const d=Math.min(devicePixelRatio||1,2);canvas.width=W*d;canvas.height=H*d;ctx.setTransform(d,0,0,d,0,0)}
+window.addEventListener('resize',resize);
+function poly(points,fill,stroke=null){ctx.beginPath();points.forEach((p,i)=>i?ctx.lineTo(p[0],p[1]):ctx.moveTo(p[0],p[1]));ctx.closePath();ctx.fillStyle=fill;ctx.fill();if(stroke){ctx.strokeStyle=stroke;ctx.stroke()}}
+function ellipse(x,y,rx,ry,fill){ctx.beginPath();ctx.ellipse(x,y,rx,ry,0,0,Math.PI*2);ctx.fillStyle=fill;ctx.fill()}
+function drawTerrain(){
+ const sky=ctx.createLinearGradient(0,0,0,H*.65);sky.addColorStop(0,night?'#101b2b':'#8c9ca7');sky.addColorStop(.6,night?'#4b4142':'#c5b1a0');sky.addColorStop(1,night?'#98664f':'#d98b5d');ctx.fillStyle=sky;ctx.fillRect(0,0,W,H);
+ // distant ridges
+ poly([[0,H*.53],[W*.1,H*.42],[W*.2,H*.49],[W*.33,H*.37],[W*.43,H*.47],[W*.59,H*.39],[W*.72,H*.48],[W*.87,H*.35],[W,H*.45],[W,H*.72],[0,H*.72]],night?'#554a4a':'#9c7061');
+ poly([[0,H*.61],[W*.13,H*.53],[W*.25,H*.59],[W*.4,H*.49],[W*.53,H*.58],[W*.68,H*.5],[W*.82,H*.57],[W,H*.49],[W,H],[0,H]],night?'#765046':'#bc7651');
+ const ground=ctx.createLinearGradient(0,H*.56,0,H);ground.addColorStop(0,night?'#875039':'#c87846');ground.addColorStop(1,night?'#372d2e':'#82452f');ctx.fillStyle=ground;ctx.fillRect(0,H*.58,W,H*.42);
+ // strata and dusty ripples
+ for(let i=0;i<22;i++){let y=H*.63+(i/22)*H*.42;ctx.beginPath();ctx.moveTo(0,y);for(let x=0;x<=W;x+=35)ctx.lineTo(x,y+Math.sin(x*.013+i*1.7)*5);ctx.strokeStyle=`rgba(75,36,27,${.04+i%4*.012})`;ctx.lineWidth=1;ctx.stroke()}
+ for(let i=0;i<55;i++){let x=((i*173+frame*.14)%W),y=H*.61+((i*79)%Math.floor(H*.38));ellipse(x,y,1+(i%3),.7,`rgba(62,35,27,${night?.22:.14})`)}
+ // distant sun
+ ellipse(W*.82,H*.13,night?12:25,night?12:25,night?'#d8dce5':'#f8dfb4');if(!night){ellipse(W*.82,H*.13,36,36,'rgba(255,228,180,.12)')}
+}
+function drawShip(){
+ ctx.save();const cx=W*.52,cy=H*.56;ctx.translate(cx,cy);ctx.scale(zoom,zoom);ctx.rotate(camera*.025);
+ // cast shadow
+ ctx.save();ctx.translate(12,62);ctx.scale(1,.26);ellipse(0,0,Math.min(W*.25,180),40,'rgba(32,23,21,.42)');ctx.restore();
+ // legs behind hull
+ ctx.strokeStyle='#42474a';ctx.lineWidth=7;ctx.lineCap='round';[[ -49,22,-72,65],[-28,26,-35,71],[32,25,38,71],[51,20,75,63]].forEach(a=>{ctx.beginPath();ctx.moveTo(a[0],a[1]);ctx.lineTo(a[2],a[3]);ctx.stroke();ctx.fillStyle='#777c7e';ctx.fillRect(a[2]-9,a[3]-3,19,6)});
+ // body silhouette
+ const hull=ctx.createLinearGradient(-48,-145,58,10);hull.addColorStop(0,'#c6c9c8');hull.addColorStop(.27,night?'#aab2b6':'#f0eee6');hull.addColorStop(.58,'#7e898d');hull.addColorStop(1,'#4c555a');
+ ctx.beginPath();ctx.moveTo(0,-170);ctx.bezierCurveTo(31,-150,40,-111,42,-68);ctx.lineTo(36,17);ctx.quadraticCurveTo(0,33,-36,17);ctx.lineTo(-42,-68);ctx.bezierCurveTo(-40,-111,-31,-150,0,-170);ctx.closePath();ctx.fillStyle=hull;ctx.fill();ctx.strokeStyle='#e4e5df';ctx.lineWidth=1.5;ctx.stroke();
+ // longitudinal seams
+ ctx.strokeStyle='#596368';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(0,-162);ctx.lineTo(0,22);ctx.moveTo(-30,-86);ctx.lineTo(30,-86);ctx.moveTo(-34,-38);ctx.lineTo(34,-38);ctx.stroke();
+ // nose highlight
+ poly([[-3,-163],[0,-170],[9,-153],[8,-80],[2,-68]],'rgba(255,255,255,.36)');
+ // heat shield / engine skirt
+ poly([[-35,-15],[35,-15],[29,24],[17,34],[-17,34],[-29,24]],'#4a5054','#b8bdbb');
+ for(let i=-2;i<=2;i++){ctx.fillStyle='#24292d';ctx.beginPath();ctx.arc(i*10,20,4,0,Math.PI*2);ctx.fill()}
+ // markings
+ ctx.fillStyle='#df7046';ctx.fillRect(-36,-58,72,7);ctx.fillStyle='#f0eee7';ctx.font='bold 10px Arial';ctx.textAlign='center';ctx.fillText('MARS VOID',0,-44);ctx.font='8px Consolas';ctx.fillText('SN-42',0,-32);
+ // portholes
+ for(let i=0;i<3;i++){ellipse(-13+i*13,-105,3.3,4,night?'#6e9bb8':'#607f8e');ctx.strokeStyle='#e6e9e5';ctx.strokeRect(-16+i*13,-109,6,8)}
+ // reflected glints
+ ctx.strokeStyle='rgba(255,255,255,.5)';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(-26,-128);ctx.quadraticCurveTo(-33,-95,-29,-70);ctx.stroke();
+ // subtle engine shimmer if thrusters
+ if(thrust>0){for(let i=0;i<3;i++){poly([[(i-1)*10-4,31],[(i-1)*10+4,31],[(i-1)*10+2,35+thrust*.45+Math.random()*5],[(i-1)*10-2,35+thrust*.45]],i%2?'#ffb56c':'#e66b42')}}
+ ctx.restore();
+}
+function drawRocks(){for(let i=0;i<15;i++){let x=(i*137+33)%W,y=H*.72+(i*47%(Math.max(1,H*.25)));let s=3+(i%5)*2;poly([[x-s,y],[x-s*.5,y-s*.7],[x+s*.6,y-s*.6],[x+s,y],[x+s*.4,y+s*.3],[x-s*.7,y+s*.2]],i%2?'#85513d':'#9b5c41')}}
+function drawObjects(){objects.forEach(o=>{ctx.save();ctx.translate(o.x*W,o.y*H);if(o.type==='marker'){ctx.strokeStyle='#f8e4a5';ctx.lineWidth=2;ctx.beginPath();ctx.arc(0,0,10,0,Math.PI*2);ctx.moveTo(-14,0);ctx.lineTo(14,0);ctx.moveTo(0,-14);ctx.lineTo(0,14);ctx.stroke()}else if(o.type==='rover'){ctx.fillStyle='#c4c7c1';ctx.fillRect(-13,-8,26,11);ctx.strokeStyle='#e4b079';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(0,-8);ctx.lineTo(4,-20);ctx.stroke();[-9,9].forEach(x=>ellipse(x,5,5,5,'#25292c'));ellipse(4,-21,3,3,'#c5d9e4')}else if(o.type==='flag'||o.type==='beacon'){ctx.strokeStyle='#dedbd1';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(0,10);ctx.lineTo(0,-20);ctx.stroke();poly([[0,-20],[15,-15],[0,-10]],o.type==='flag'?'#f4e7d0':'#72c5d2');if(o.type==='beacon'){ellipse(0,-24,5,5,'rgba(100,220,240,.65)')}}else if(o.type==='rock'){poly([[-14,5],[-9,-7],[1,-12],[13,-5],[16,6],[2,10]],'#76503f','#b57a54')}else if(o.type==='crater'){ellipse(0,0,19,8,'#704331');ellipse(-1,-2,13,4,'#d08758')}ctx.restore()})}
+function drawDust(){if(!dust)return;for(let i=0;i<30;i++){let x=(i*83+frame*1.9)%W,y=H*.4+(i*37%Math.floor(H*.56));ctx.strokeStyle=`rgba(244,205,166,${.08+(i%4)*.025})`;ctx.lineWidth=1+(i%2);ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(x+18+(i%6)*5,y-2);ctx.stroke()}}
+function drawScan(){if(!scan)return;let r=(frame*2)%Math.max(W,H);ctx.strokeStyle='rgba(117,210,220,.55)';ctx.lineWidth=1.5;ctx.beginPath();ctx.arc(W*.52,H*.56,r,0,Math.PI*2);ctx.stroke();ctx.strokeStyle='rgba(117,210,220,.2)';ctx.beginPath();ctx.moveTo(0,H*.56);ctx.lineTo(W,H*.56);ctx.moveTo(W*.52,0);ctx.lineTo(W*.52,H);ctx.stroke()}
+function render(){ctx.clearRect(0,0,W,H);drawTerrain();drawRocks();drawShip();drawObjects();drawDust();drawScan();frame++;if(running)requestAnimationFrame(render)}
+function startRender(){render()}
+function setTab(t){tab=t;document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active',b.dataset.tab===t));const c=$('console');c.innerHTML='';if(t==='console'){log('Surface operations kernel initialized.','ok');log('STARSHIP SN-42 · landing gear locked.','ok');log('Terrain mesh loaded: Amazonis Planitia.','cmd')}else if(t==='telemetry'){log('HULL_TEMP: -62 C | PRESSURE: NOMINAL','ok');log('BATTERY_BUS: 98.4% | COMMS: LOCKED','ok');log('WIND_VECTOR: 12.8 m/s ESE','cmd')}else{log('14:31:52  Landing sequence complete.','ok');log('14:32:02  Hull integrity test passed.','ok');log('14:32:08  Surface operations initiated.','cmd')}}
+document.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>setTab(b.dataset.tab)));
+function modal(title,content,action){$('modalTitle').textContent=title;$('modalContent').textContent=content;$('modal').classList.add('open');$('modalAction').onclick=()=>{if(action)action();$('modal').classList.remove('open')}}
+$('modalClose').onclick=()=>$('modal').classList.remove('open');$('modal').addEventListener('click',e=>{if(e.target===$('modal'))$('modal').classList.remove('open')});
+document.querySelectorAll('[data-modal]').forEach(b=>b.onclick=()=>{let type=b.dataset.modal;if(type==='mission')modal('Mission workspace','MARSVOID SN-42 is on the Martian surface. Mission phase: surface operations. Scene changes are local to this browser simulation.',()=>notify('Mission workspace acknowledged'));else if(type==='systems')modal('System configuration','Power bus: online. Hull pressure: nominal. RCS thrusters: standby. Landing gear: deployed.',()=>notify('System checks complete'));else modal('Simulation help','Run or pause the scene. Use scene tools to place objects on the terrain. Scan reveals a radar sweep. Adjust camera, lighting and dust effects from the toolbar.',()=>notify('Help panel closed'))});
+$('startBtn').onclick=()=>{running=true;$('startBtn').classList.add('active');$('modePill').textContent='SIMULATION ACTIVE';$('statusLeft').textContent='RUNNING';$('viewport').classList.remove('paused');requestAnimationFrame(render);log('Simulation resumed.','ok')};
+$('pauseBtn').onclick=()=>{running=false;$('startBtn').classList.remove('active');$('modePill').textContent='SIMULATION PAUSED';$('statusLeft').textContent='PAUSED';$('viewport').classList.add('paused');log('Simulation paused by operator.','cmd')};
+$('resetBtn').onclick=()=>{objects=[];zoom=1;camera=0;dust=false;night=false;scan=false;thrust=0;$('thrust').value=0;$('thrustVal').textContent='0%';$('dustBtn').textContent='〰 Dust storm: Off';$('nightBtn').textContent='☾ Lighting: Day';$('cameraBtn').textContent='◉ Camera: Orbit';log('Scene reset to initial landing state.','cmd');notify('Scene reset');};
+$('cameraBtn').onclick=()=>{camera=(camera+1)%3;$('cameraBtn').textContent=['◉ Camera: Orbit','◉ Camera: Low angle','◉ Camera: Survey'][camera];$('caption').textContent=['SITE: AMAZONIS PLANITIA · STARSHIP SN-42','LOW ANGLE VIEW · LANDING GEAR INSPECTION','SURVEY VIEW · TERRAIN RECONSTRUCTION'][camera];log('Camera mode changed: '+['Orbit','Low angle','Survey'][camera]+'.','cmd')};
+$('dustBtn').onclick=()=>{dust=!dust;$('dustBtn').textContent='〰 Dust storm: '+(dust?'On':'Off');log('Dust simulation '+(dust?'enabled':'disabled')+'.','cmd')};
+$('nightBtn').onclick=()=>{night=!night;$('nightBtn').textContent='☾ Lighting: '+(night?'Night':'Day');log('Lighting profile set to '+(night?'night':'day')+'.','cmd')};
+$('scanBtn').onclick=()=>{scan=!scan;$('scanBtn').classList.toggle('active',scan);log(scan?'LIDAR sweep initiated. Terrain mesh resolution: 0.4 m.':'LIDAR sweep ended.','ok');notify(scan?'Surface scan active':'Surface scan stopped')};
+$('reportBtn').onclick=()=>modal('Mission report · Sol 0042','STARSHIP SN-42 / AMAZONIS PLANITIA\n\nLanding: nominal\nHull integrity: 100%\nBattery: 98.4%\nSurface pressure: 610 Pa\nWind: 12.8 m/s ESE\nObjectives: 2 complete / 3 pending\n\nRecommendation: complete terrain survey before rover deployment.',()=>{log('Mission report generated.','ok');notify('Report generated')});
+$('zoomIn').onclick=()=>{zoom=Math.min(1.65,zoom+.1);log('Camera zoom '+Math.round(zoom*100)+'%.','cmd')};$('zoomOut').onclick=()=>{zoom=Math.max(.65,zoom-.1);log('Camera zoom '+Math.round(zoom*100)+'%.','cmd')};
+$('fullscreenBtn').onclick=()=>{if(!document.fullscreenElement)viewport.requestFullscreen?.();else document.exitFullscreen?.()};
+document.querySelectorAll('[data-tool]').forEach(b=>b.onclick=()=>{tool=b.dataset.tool;document.querySelectorAll('[data-tool]').forEach(x=>x.classList.toggle('active',x===b));$('inspectText').textContent='Placement tool armed: '+tool+'. Click a location in the scene to place it.';notify('Placement tool: '+tool)});
+canvas.addEventListener('click',e=>{if(!tool){$('inspectText').textContent='Scene selected. Choose a tool from Mission Explorer to add an object.';return}const r=canvas.getBoundingClientRect();const x=(e.clientX-r.left)/r.width,y=(e.clientY-r.top)/r.height;if(y<.58){notify('Choose a point on the visible ground');return}objects.push({type:tool,x,y});log('Placed '+tool+' at grid '+Math.round(x*100)+','+Math.round(y*100)+'.','ok');$('inspectText').textContent='Placed '+tool+' at surface coordinate '+(x*100).toFixed(1)+', '+(y*100).toFixed(1)+'.';tool=null;document.querySelectorAll('[data-tool]').forEach(b=>b.classList.remove('active'))});
+$('thrust').addEventListener('input',e=>{thrust=+e.target.value;$('thrustVal').textContent=thrust+'%';if(thrust>0&&thrust%25===0)log('RCS test output adjusted to '+thrust+'%.','cmd')});
+$('executeBtn').onclick=()=>{const mode=$('roverMode').value,target=$('target').value;if(mode==='Deploy rover'){if(!roverDeployed){objects.push({type:'rover',x:.68,y:.77});roverDeployed=true;log('Rover deployment command accepted. Rover placed at east landing perimeter.','ok')}else log('Rover already deployed.','cmd')}else if(mode==='Return to Starship'){roverDeployed=false;objects=objects.filter(o=>o.type!=='rover');log('Rover return command acknowledged.','cmd')}else log('Standby confirmed. Navigation target: '+target+'.','cmd');$('inspectText').textContent='Command executed: '+mode+' / '+target;notify('Command executed')};
+$('abortBtn').onclick=()=>{thrust=0;$('thrust').value=0;$('thrustVal').textContent='0%';log('ABORT: thruster test halted. Vehicle remains in safe surface configuration.','cmd');notify('Thruster test aborted')};
+let ticks=0;setInterval(()=>{if(!running)return;elapsed++;ticks++;$('elapsed').textContent=String(Math.floor(elapsed/3600)).padStart(2,'0')+':'+String(Math.floor(elapsed/60)%60).padStart(2,'0')+':'+String(elapsed%60).padStart(2,'0');if(ticks%3===0){$('temp').textContent=(night?-78:-62+Math.sin(elapsed/60)*1.4).toFixed(1)+'°C';$('wind').textContent=(12.8+Math.sin(elapsed/13)*1.7).toFixed(1);const b=Math.max(80,98.4-elapsed/10000);$('battery').textContent=b.toFixed(1)+'%';$('batteryBar').style.width=b+'%';$('oxygen').textContent=(96-Math.max(0,elapsed-764)/1500).toFixed(1)+'%';$('oxygenBar').style.width=$('oxygen').textContent}} ,1000);
+resize();setTab('console');log('STARSHIP SURFACE OPERATIONS IDE v2.6.14','cmd');log('Scene ready · STARSHIP SN-42 · Sol 0042','ok');requestAnimationFrame(render);
+})();
+</script>
+</body>
+</html>
