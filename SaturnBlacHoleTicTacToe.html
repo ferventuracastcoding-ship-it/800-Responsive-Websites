@@ -1,0 +1,2504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
+
+<title>
+Saturn vs Black Hole AI
+</title>
+
+<style>
+
+/* =========================================================
+   RESET
+========================================================= */
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+
+/* =========================================================
+   BODY
+========================================================= */
+
+body {
+
+    min-height: 100vh;
+
+    background:
+        radial-gradient(
+            circle at 50% 45%,
+            #211b0d 0%,
+            #09090b 38%,
+            #020203 75%,
+            #000 100%
+        );
+
+    color: white;
+
+    font-family:
+        "Courier New",
+        monospace;
+
+    overflow-x: hidden;
+
+}
+
+
+/* =========================================================
+   STAR FIELD
+========================================================= */
+
+body::before {
+
+    content: "";
+
+    position: fixed;
+
+    inset: 0;
+
+    background-image:
+
+        radial-gradient(
+            circle,
+            white 1px,
+            transparent 1px
+        ),
+
+        radial-gradient(
+            circle,
+            rgba(255,255,255,.5) 1px,
+            transparent 1px
+        );
+
+    background-size:
+        90px 90px,
+        150px 150px;
+
+    animation:
+        stars 25s linear infinite;
+
+    opacity: .25;
+
+    pointer-events: none;
+
+}
+
+@keyframes stars {
+
+    from {
+        background-position:
+            0 0,
+            0 0;
+    }
+
+    to {
+        background-position:
+            90px 90px,
+            -150px 150px;
+    }
+
+}
+
+
+/* =========================================================
+   APP
+========================================================= */
+
+.app {
+
+    width: min(1400px, 95%);
+
+    margin: auto;
+
+    padding:
+        30px 0 60px;
+
+    position: relative;
+
+    z-index: 2;
+
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+header {
+
+    text-align: center;
+
+    margin-bottom: 25px;
+
+}
+
+header h1 {
+
+    font-size:
+        clamp(2rem, 6vw, 5rem);
+
+    letter-spacing: 4px;
+
+    color: #ffd76a;
+
+    text-shadow:
+
+        0 0 10px #ffb000,
+
+        0 0 25px #ff8700,
+
+        0 0 50px #ff4500;
+
+    animation:
+        titleGlow 2s infinite alternate;
+
+}
+
+@keyframes titleGlow {
+
+    from {
+
+        text-shadow:
+            0 0 10px #ff9d00;
+
+    }
+
+    to {
+
+        text-shadow:
+            0 0 20px #ffca28,
+            0 0 45px #ff7800,
+            0 0 70px #ff3300;
+
+    }
+
+}
+
+header p {
+
+    margin-top: 10px;
+
+    color: #999;
+
+    letter-spacing: 3px;
+
+}
+
+
+/* =========================================================
+   PLAYER SHOWCASE
+========================================================= */
+
+.players {
+
+    display: grid;
+
+    grid-template-columns:
+        1fr 130px 1fr;
+
+    align-items: center;
+
+    gap: 20px;
+
+    margin-bottom: 25px;
+
+}
+
+.player-card {
+
+    min-height: 180px;
+
+    padding: 20px;
+
+    border-radius: 20px;
+
+    background:
+        rgba(255,255,255,.04);
+
+    border:
+        1px solid rgba(255,255,255,.12);
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 25px;
+
+    transition: .3s;
+
+}
+
+.player-card.active {
+
+    border-color:
+        #ffd45c;
+
+    box-shadow:
+        0 0 40px rgba(255,180,0,.3);
+
+    transform:
+        translateY(-4px);
+
+}
+
+.player-card h2 {
+
+    color: #ffd45c;
+
+    margin-bottom: 8px;
+
+}
+
+.player-card span {
+
+    color: #999;
+
+}
+
+.vs {
+
+    text-align: center;
+
+    font-size: 2.5rem;
+
+    font-weight: bold;
+
+    color: #ff9700;
+
+    text-shadow:
+        0 0 25px #ff6000;
+
+}
+
+
+/* =========================================================
+   SATURN CSS OBJECT
+========================================================= */
+
+.saturn {
+
+    width: 100px;
+
+    height: 100px;
+
+    position: relative;
+
+    flex-shrink: 0;
+
+}
+
+
+/* Saturn planet */
+
+.saturn-planet {
+
+    position: absolute;
+
+    width: 62px;
+
+    height: 62px;
+
+    top: 19px;
+
+    left: 19px;
+
+    border-radius: 50%;
+
+    background:
+
+        repeating-linear-gradient(
+            to bottom,
+            #fff1b0 0px,
+            #d7a84f 8px,
+            #8b602d 13px,
+            #f3d88a 19px
+        );
+
+    box-shadow:
+
+        inset -12px -8px 18px rgba(0,0,0,.45),
+
+        0 0 20px rgba(255,190,70,.7);
+
+    z-index: 3;
+
+}
+
+
+/* Saturn ring */
+
+.saturn-ring {
+
+    position: absolute;
+
+    width: 110px;
+
+    height: 35px;
+
+    top: 32px;
+
+    left: -5px;
+
+    border:
+
+        7px solid #d8b66a;
+
+    border-left-color:
+        #8e703d;
+
+    border-right-color:
+        #f3d98e;
+
+    border-radius: 50%;
+
+    transform:
+        rotate(-18deg);
+
+    z-index: 4;
+
+    box-shadow:
+        0 0 10px rgba(255,200,100,.5);
+
+}
+
+
+/* Back ring */
+
+.saturn-ring-back {
+
+    position: absolute;
+
+    width: 110px;
+
+    height: 35px;
+
+    top: 32px;
+
+    left: -5px;
+
+    border:
+
+        5px solid rgba(160,120,60,.6);
+
+    border-radius: 50%;
+
+    transform:
+        rotate(-18deg);
+
+    z-index: 1;
+
+}
+
+
+/* Saturn animation */
+
+.saturn {
+
+    animation:
+        saturnFloat 3s ease-in-out infinite;
+
+}
+
+@keyframes saturnFloat {
+
+    0%,
+    100% {
+        transform:
+            translateY(0)
+            rotate(-2deg);
+    }
+
+    50% {
+        transform:
+            translateY(-8px)
+            rotate(2deg);
+    }
+
+}
+
+
+/* =========================================================
+   BLACK HOLE CSS OBJECT
+========================================================= */
+
+.black-hole {
+
+    width: 105px;
+
+    height: 105px;
+
+    position: relative;
+
+    flex-shrink: 0;
+
+    animation:
+        blackHoleFloat 3s ease-in-out infinite;
+
+}
+
+@keyframes blackHoleFloat {
+
+    0%,
+    100% {
+        transform:
+            translateY(0);
+    }
+
+    50% {
+        transform:
+            translateY(-7px);
+    }
+
+}
+
+
+/* Accretion disk */
+
+.black-hole::before {
+
+    content: "";
+
+    position: absolute;
+
+    width: 120px;
+
+    height: 48px;
+
+    left: -7px;
+
+    top: 28px;
+
+    border-radius: 50%;
+
+    background:
+
+        conic-gradient(
+            from 0deg,
+            #ff2600,
+            #ff9500,
+            #ffe27a,
+            #ff4d00,
+            #8b00ff,
+            #ff2600
+        );
+
+    filter:
+        blur(4px);
+
+    animation:
+        diskSpin 2s linear infinite;
+
+    box-shadow:
+        0 0 30px #ff5c00;
+
+    z-index: 1;
+
+}
+
+
+/* Event horizon */
+
+.black-hole::after {
+
+    content: "";
+
+    position: absolute;
+
+    width: 65px;
+
+    height: 65px;
+
+    left: 20px;
+
+    top: 20px;
+
+    border-radius: 50%;
+
+    background:
+
+        radial-gradient(
+            circle,
+            #000 0%,
+            #000 55%,
+            #110011 70%,
+            #25002f 100%
+        );
+
+    box-shadow:
+
+        0 0 20px #ff5500,
+
+        0 0 45px rgba(255,60,0,.7),
+
+        0 0 80px rgba(140,0,255,.4);
+
+    z-index: 3;
+
+}
+
+
+/* Spin */
+
+@keyframes diskSpin {
+
+    from {
+        transform:
+            rotate(0deg);
+    }
+
+    to {
+        transform:
+            rotate(360deg);
+    }
+
+}
+
+
+/* =========================================================
+   MAIN GRID
+========================================================= */
+
+.main {
+
+    display: grid;
+
+    grid-template-columns:
+        minmax(400px, 1fr)
+        minmax(350px, 1fr);
+
+    gap: 25px;
+
+}
+
+
+/* =========================================================
+   PANELS
+========================================================= */
+
+.panel {
+
+    padding: 20px;
+
+    border-radius: 20px;
+
+    background:
+        rgba(0,0,0,.65);
+
+    border:
+        1px solid rgba(255,180,0,.2);
+
+    box-shadow:
+        0 0 40px rgba(255,100,0,.08);
+
+}
+
+
+/* =========================================================
+   STATUS
+========================================================= */
+
+.status {
+
+    padding: 13px;
+
+    margin-bottom: 18px;
+
+    border-radius: 10px;
+
+    text-align: center;
+
+    color: #ffd76a;
+
+    background:
+        rgba(255,170,0,.08);
+
+    border:
+        1px solid rgba(255,170,0,.2);
+
+}
+
+
+/* =========================================================
+   BOARD
+========================================================= */
+
+.board {
+
+    width: min(500px, 85vw);
+
+    aspect-ratio: 1;
+
+    margin: auto;
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, 1fr);
+
+    gap: 12px;
+
+    padding: 12px;
+
+    border-radius: 20px;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(255,170,0,.08),
+            #020202
+        );
+
+    border:
+        2px solid rgba(255,180,0,.35);
+
+}
+
+
+/* =========================================================
+   CELL
+========================================================= */
+
+.cell {
+
+    position: relative;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border-radius: 15px;
+
+    background:
+        rgba(255,255,255,.025);
+
+    border:
+        2px solid rgba(255,255,255,.12);
+
+    cursor: pointer;
+
+    overflow: hidden;
+
+    transition:
+        .2s;
+
+}
+
+.cell:hover {
+
+    border-color:
+        #ffb300;
+
+    box-shadow:
+        0 0 20px rgba(255,150,0,.3);
+
+    transform:
+        scale(.97);
+
+}
+
+
+/* =========================================================
+   SATURN PIECE
+========================================================= */
+
+.cell .saturn-piece {
+
+    width: 90px;
+
+    height: 90px;
+
+    transform:
+        scale(.8);
+
+}
+
+
+/* =========================================================
+   BLACK HOLE PIECE
+========================================================= */
+
+.cell .black-hole-piece {
+
+    width: 90px;
+
+    height: 90px;
+
+    transform:
+        scale(.8);
+
+}
+
+
+/* =========================================================
+   PIECE ANIMATION
+========================================================= */
+
+.cell .piece {
+
+    animation:
+        pieceEnter .65s cubic-bezier(.17,.67,.3,1.4);
+
+}
+
+@keyframes pieceEnter {
+
+    0% {
+
+        opacity: 0;
+
+        transform:
+            scale(0)
+            rotate(180deg);
+
+    }
+
+    70% {
+
+        transform:
+            scale(1.15)
+            rotate(-15deg);
+
+    }
+
+    100% {
+
+        opacity: 1;
+
+        transform:
+            scale(.8)
+            rotate(0deg);
+
+    }
+
+}
+
+
+/* =========================================================
+   SCANNING
+========================================================= */
+
+.cell.scanning {
+
+    border-color:
+        #00eaff;
+
+    box-shadow:
+        0 0 25px #00eaff;
+
+    animation:
+        scan 0.5s infinite alternate;
+
+}
+
+@keyframes scan {
+
+    from {
+        transform:
+            scale(1);
+    }
+
+    to {
+        transform:
+            scale(.94);
+    }
+
+}
+
+
+/* =========================================================
+   WINNER
+========================================================= */
+
+.cell.winner {
+
+    border-color:
+        white;
+
+    box-shadow:
+
+        0 0 25px #ffd000,
+
+        0 0 60px #ff7000,
+
+        inset 0 0 25px rgba(255,180,0,.3);
+
+    animation:
+        winPulse .7s infinite alternate;
+
+}
+
+@keyframes winPulse {
+
+    from {
+        transform:
+            scale(1);
+    }
+
+    to {
+        transform:
+            scale(1.06);
+    }
+
+}
+
+
+/* =========================================================
+   CONTROLS
+========================================================= */
+
+.controls {
+
+    display: flex;
+
+    flex-wrap: wrap;
+
+    justify-content: center;
+
+    gap: 10px;
+
+    margin-top: 20px;
+
+}
+
+button {
+
+    padding:
+        12px 17px;
+
+    color: #ffd76a;
+
+    background:
+        #090909;
+
+    border:
+        1px solid #ffae00;
+
+    border-radius: 8px;
+
+    font-family:
+        inherit;
+
+    font-weight: bold;
+
+    cursor: pointer;
+
+    transition: .2s;
+
+}
+
+button:hover {
+
+    color: #000;
+
+    background:
+        #ffae00;
+
+    box-shadow:
+        0 0 25px rgba(255,150,0,.5);
+
+    transform:
+        translateY(-2px);
+
+}
+
+
+/* =========================================================
+   ALGORITHM
+========================================================= */
+
+.algorithm {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 15px;
+
+}
+
+.box {
+
+    padding: 17px;
+
+    border-radius: 15px;
+
+    background:
+        rgba(0,0,0,.6);
+
+    border:
+        1px solid rgba(0,220,255,.2);
+
+}
+
+.box h2 {
+
+    color:
+        #00eaff;
+
+    margin-bottom: 10px;
+
+}
+
+.trace {
+
+    min-height: 100px;
+
+    padding: 15px;
+
+    line-height: 1.6;
+
+    color:
+        #bcefff;
+
+    background:
+        #02080b;
+
+    border-left:
+        4px solid #00eaff;
+
+    border-radius: 8px;
+
+}
+
+
+/* =========================================================
+   MINIMAX CODE
+========================================================= */
+
+.code {
+
+    padding: 15px;
+
+    overflow-x: auto;
+
+    background:
+        #010202;
+
+    border-radius: 10px;
+
+    color: #7fffd4;
+
+    line-height: 1.6;
+
+    font-size: .82rem;
+
+}
+
+
+/* =========================================================
+   STATS
+========================================================= */
+
+.stats {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, 1fr);
+
+    gap: 8px;
+
+}
+
+.stat {
+
+    padding: 12px;
+
+    text-align: center;
+
+    background:
+        rgba(255,255,255,.04);
+
+    border-radius: 8px;
+
+}
+
+.stat strong {
+
+    display: block;
+
+    margin-top: 5px;
+
+    font-size: 1.5rem;
+
+    color:
+        #ffd76a;
+
+}
+
+
+/* =========================================================
+   HISTORY
+========================================================= */
+
+.history {
+
+    max-height: 170px;
+
+    overflow-y: auto;
+
+}
+
+.move {
+
+    padding: 7px;
+
+    margin-bottom: 5px;
+
+    background:
+        rgba(255,255,255,.035);
+
+    border-radius: 5px;
+
+    color: #aaa;
+
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media(max-width: 950px) {
+
+    .main {
+
+        grid-template-columns:
+            1fr;
+
+    }
+
+}
+
+@media(max-width: 700px) {
+
+    .players {
+
+        grid-template-columns:
+            1fr;
+
+    }
+
+    .vs {
+
+        display: none;
+
+    }
+
+    .player-card {
+
+        min-height: 140px;
+
+    }
+
+    .board {
+
+        gap: 7px;
+
+        padding: 7px;
+
+    }
+
+    .stats {
+
+        grid-template-columns:
+            1fr;
+
+    }
+
+}
+
+</style>
+</head>
+
+
+<body>
+
+
+<div class="app">
+
+
+<!-- =====================================================
+     HEADER
+===================================================== -->
+
+<header>
+
+    <h1>
+        SATURN VS BLACK HOLE
+    </h1>
+
+    <p>
+        TIC-TAC-TOE • AI ALGORITHM LAB
+    </p>
+
+</header>
+
+
+<!-- =====================================================
+     PLAYERS
+===================================================== -->
+
+<section class="players">
+
+
+    <!-- SATURN -->
+
+    <div
+        id="saturnCard"
+        class="player-card active">
+
+        <div class="saturn">
+
+            <div class="saturn-ring-back"></div>
+
+            <div class="saturn-planet"></div>
+
+            <div class="saturn-ring"></div>
+
+        </div>
+
+        <div>
+
+            <h2>
+                SATURN
+            </h2>
+
+            <span>
+                Human Player • O
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <div class="vs">
+        VS
+    </div>
+
+
+    <!-- BLACK HOLE -->
+
+    <div
+        id="blackHoleCard"
+        class="player-card">
+
+        <div class="black-hole"></div>
+
+        <div>
+
+            <h2>
+                BLACK HOLE
+            </h2>
+
+            <span>
+                AI Opponent • X
+            </span>
+
+        </div>
+
+    </div>
+
+
+</section>
+
+
+<!-- =====================================================
+     MAIN
+===================================================== -->
+
+<div class="main">
+
+
+<!-- =====================================================
+     GAME
+===================================================== -->
+
+<section class="panel">
+
+
+    <div
+        id="status"
+        class="status">
+
+        Saturn's turn — choose a sector.
+
+    </div>
+
+
+    <div
+        id="board"
+        class="board">
+    </div>
+
+
+    <div class="controls">
+
+        <button onclick="startGame()">
+            ▶ START
+        </button>
+
+        <button onclick="stepGame()">
+            ⏭ STEP
+        </button>
+
+        <button onclick="pauseAI()">
+            ⏸ PAUSE
+        </button>
+
+        <button onclick="resetGame()">
+            🔄 RESET
+        </button>
+
+        <button onclick="newRound()">
+            🚀 NEW ROUND
+        </button>
+
+    </div>
+
+
+</section>
+
+
+<!-- =====================================================
+     ALGORITHM
+===================================================== -->
+
+<section class="algorithm">
+
+
+    <!-- TRACE -->
+
+    <div class="box">
+
+        <h2>
+            🧠 AI ALGORITHM TRACE
+        </h2>
+
+        <div
+            id="trace"
+            class="trace">
+
+            Waiting for Saturn's first move...
+
+        </div>
+
+    </div>
+
+
+    <!-- STATS -->
+
+    <div class="box">
+
+        <h2>
+            📊 AI STATISTICS
+        </h2>
+
+        <div class="stats">
+
+            <div class="stat">
+
+                MOVES
+
+                <strong id="moves">
+                    0
+                </strong>
+
+            </div>
+
+            <div class="stat">
+
+                NODES
+
+                <strong id="nodes">
+                    0
+                </strong>
+
+            </div>
+
+            <div class="stat">
+
+                STATE
+
+                <strong id="state">
+                    READY
+                </strong>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- MINIMAX -->
+
+    <div class="box">
+
+        <h2>
+            💻 MINIMAX
+        </h2>
+
+<pre class="code">
+function minimax(board, depth, isMaximizing) {
+
+    if (gameOver(board)) {
+        return score(board);
+    }
+
+    if (isMaximizing) {
+
+        let bestScore = -Infinity;
+
+        for (const move of emptyCells(board)) {
+
+            board[move] = BLACK_HOLE;
+
+            let score =
+                minimax(
+                    board,
+                    depth + 1,
+                    false
+                );
+
+            board[move] = null;
+
+            bestScore =
+                Math.max(
+                    bestScore,
+                    score
+                );
+        }
+
+        return bestScore;
+    }
+}
+</pre>
+
+    </div>
+
+
+    <!-- HISTORY -->
+
+    <div class="box">
+
+        <h2>
+            📜 MOVE HISTORY
+        </h2>
+
+        <div
+            id="history"
+            class="history">
+        </div>
+
+    </div>
+
+
+</section>
+
+
+</div>
+
+
+</div>
+
+
+<script>
+
+/* =========================================================
+   PLAYER OBJECTS
+========================================================= */
+
+const SATURN = {
+
+    name:
+        "Saturn",
+
+    symbol:
+        "O",
+
+    type:
+        "human"
+
+};
+
+
+const BLACK_HOLE = {
+
+    name:
+        "Black Hole",
+
+    symbol:
+        "X",
+
+    type:
+        "ai"
+
+};
+
+
+/* =========================================================
+   GAME STATE
+========================================================= */
+
+let board =
+    Array(9).fill(null);
+
+let currentPlayer =
+    SATURN;
+
+let gameRunning =
+    false;
+
+let gameFinished =
+    false;
+
+let aiTimer =
+    null;
+
+let moveCount =
+    0;
+
+let nodeCount =
+    0;
+
+
+/* =========================================================
+   WINNING PATTERNS
+========================================================= */
+
+const WINNING_PATTERNS = [
+
+    [0,1,2],
+
+    [3,4,5],
+
+    [6,7,8],
+
+    [0,3,6],
+
+    [1,4,7],
+
+    [2,5,8],
+
+    [0,4,8],
+
+    [2,4,6]
+
+];
+
+
+/* =========================================================
+   DOM
+========================================================= */
+
+const boardElement =
+    document.getElementById(
+        "board"
+    );
+
+const statusElement =
+    document.getElementById(
+        "status"
+    );
+
+const traceElement =
+    document.getElementById(
+        "trace"
+    );
+
+const historyElement =
+    document.getElementById(
+        "history"
+    );
+
+const movesElement =
+    document.getElementById(
+        "moves"
+    );
+
+const nodesElement =
+    document.getElementById(
+        "nodes"
+    );
+
+const stateElement =
+    document.getElementById(
+        "state"
+    );
+
+
+/* =========================================================
+   CREATE BOARD
+========================================================= */
+
+function createBoard() {
+
+    boardElement.innerHTML = "";
+
+    for (
+        let i = 0;
+        i < 9;
+        i++
+    ) {
+
+        const cell =
+            document.createElement(
+                "div"
+            );
+
+        cell.className =
+            "cell";
+
+        cell.dataset.index =
+            i;
+
+        cell.addEventListener(
+            "click",
+            () => humanMove(i)
+        );
+
+        boardElement.appendChild(
+            cell
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   HUMAN MOVE
+========================================================= */
+
+function humanMove(index) {
+
+    if (
+        !gameRunning ||
+        gameFinished
+    ) {
+        return;
+    }
+
+
+    if (
+        currentPlayer !== SATURN
+    ) {
+        return;
+    }
+
+
+    if (
+        board[index] !== null
+    ) {
+
+        traceElement.innerHTML =
+            `Sector ${index + 1} is already occupied.`;
+
+        return;
+
+    }
+
+
+    makeMove(
+        index,
+        SATURN
+    );
+
+
+    if (
+        !gameFinished
+    ) {
+
+        currentPlayer =
+            BLACK_HOLE;
+
+        updatePlayerCards();
+
+        statusElement.textContent =
+            "Black Hole AI is calculating...";
+
+        traceElement.innerHTML =
+            `<strong>AI THINKING</strong><br><br>
+             Black Hole is searching the game tree
+             using Minimax.`;
+
+        aiTimer =
+            setTimeout(
+                aiMove,
+                600
+            );
+
+    }
+
+}
+
+
+/* =========================================================
+   MAKE MOVE
+========================================================= */
+
+function makeMove(
+    index,
+    player
+) {
+
+    board[index] =
+        player;
+
+
+    moveCount++;
+
+    movesElement.textContent =
+        moveCount;
+
+
+    renderPiece(
+        index,
+        player
+    );
+
+
+    addHistory(
+        `${player.symbol} — ${player.name}
+         selected sector ${index + 1}`
+    );
+
+
+    const winner =
+        getWinner(
+            board
+        );
+
+
+    if (
+        winner
+    ) {
+
+        finishGame(
+            winner
+        );
+
+        return;
+
+    }
+
+
+    if (
+        board.every(
+            cell =>
+                cell !== null
+        )
+    ) {
+
+        finishDraw();
+
+        return;
+
+    }
+
+}
+
+
+/* =========================================================
+   RENDER PIECE
+========================================================= */
+
+function renderPiece(
+    index,
+    player
+) {
+
+    const cell =
+        boardElement.children[index];
+
+
+    const piece =
+        document.createElement(
+            "div"
+        );
+
+
+    piece.classList.add(
+        "piece"
+    );
+
+
+    if (
+        player === SATURN
+    ) {
+
+        piece.classList.add(
+            "saturn-piece"
+        );
+
+
+        piece.innerHTML = `
+
+            <div class="saturn">
+
+                <div class="saturn-ring-back"></div>
+
+                <div class="saturn-planet"></div>
+
+                <div class="saturn-ring"></div>
+
+            </div>
+
+        `;
+
+    }
+
+
+    if (
+        player === BLACK_HOLE
+    ) {
+
+        piece.classList.add(
+            "black-hole-piece"
+        );
+
+
+        piece.innerHTML = `
+
+            <div class="black-hole"></div>
+
+        `;
+
+    }
+
+
+    cell.appendChild(
+        piece
+    );
+
+}
+
+
+/* =========================================================
+   GET WINNER
+========================================================= */
+
+function getWinner(
+    state
+) {
+
+    for (
+        const pattern
+        of WINNING_PATTERNS
+    ) {
+
+        const [
+            a,
+            b,
+            c
+        ] =
+            pattern;
+
+
+        if (
+
+            state[a] &&
+            state[a] === state[b] &&
+            state[a] === state[c]
+
+        ) {
+
+            return {
+
+                player:
+                    state[a],
+
+                pattern:
+                    pattern
+
+            };
+
+        }
+
+    }
+
+
+    return null;
+
+}
+
+
+/* =========================================================
+   FINISH GAME
+========================================================= */
+
+function finishGame(
+    result
+) {
+
+    gameFinished =
+        true;
+
+    gameRunning =
+        false;
+
+
+    result.pattern.forEach(
+        index => {
+
+            boardElement
+                .children[index]
+                .classList.add(
+                    "winner"
+                );
+
+        }
+    );
+
+
+    stateElement.textContent =
+        "WIN";
+
+
+    if (
+        result.player === SATURN
+    ) {
+
+        statusElement.textContent =
+            "🪐 SATURN WINS!";
+
+        traceElement.innerHTML =
+
+            `<strong>SATURN VICTORY</strong><br><br>
+             The winning pattern was:
+             ${result.pattern.join(", ")}.<br><br>
+             The AI search has terminated.`;
+
+    }
+
+    else {
+
+        statusElement.textContent =
+            "🕳️ BLACK HOLE WINS!";
+
+        traceElement.innerHTML =
+
+            `<strong>AI VICTORY</strong><br><br>
+             The Black Hole found a winning
+             Minimax position.<br><br>
+             Winning pattern:
+             ${result.pattern.join(", ")}.`;
+
+    }
+
+}
+
+
+/* =========================================================
+   DRAW
+========================================================= */
+
+function finishDraw() {
+
+    gameFinished =
+        true;
+
+    gameRunning =
+        false;
+
+
+    stateElement.textContent =
+        "DRAW";
+
+
+    statusElement.textContent =
+        "COSMIC DRAW";
+
+
+    traceElement.innerHTML =
+
+        `<strong>DRAW</strong><br><br>
+         Every position is occupied and
+         neither player has three in a row.`;
+
+}
+
+
+/* =========================================================
+   AI MOVE
+========================================================= */
+
+function aiMove() {
+
+    aiTimer =
+        null;
+
+
+    if (
+        gameFinished ||
+        !gameRunning
+    ) {
+        return;
+    }
+
+
+    nodeCount =
+        0;
+
+
+    nodesElement.textContent =
+        "0";
+
+
+    traceElement.innerHTML =
+
+        `<strong>MINIMAX SEARCH</strong><br><br>
+         Evaluating possible Black Hole moves...`;
+
+
+    const best =
+        findBestMove();
+
+
+    if (
+        best.index !== -1
+    ) {
+
+        makeMove(
+            best.index,
+            BLACK_HOLE
+        );
+
+    }
+
+
+    if (
+        !gameFinished
+    ) {
+
+        currentPlayer =
+            SATURN;
+
+        updatePlayerCards();
+
+        statusElement.textContent =
+            "Saturn's turn — choose a sector";
+
+
+        traceElement.innerHTML =
+
+            `<strong>AI COMPLETE</strong><br><br>
+             Black Hole selected sector
+             ${best.index + 1}.<br><br>
+
+             Minimax score:
+             ${best.score}.<br><br>
+
+             Nodes evaluated:
+             ${nodeCount}.`;
+
+    }
+
+}
+
+
+/* =========================================================
+   FIND BEST MOVE
+========================================================= */
+
+function findBestMove() {
+
+    let bestScore =
+        -Infinity;
+
+    let bestIndex =
+        -1;
+
+
+    for (
+        let i = 0;
+        i < 9;
+        i++
+    ) {
+
+        if (
+            board[i] === null
+        ) {
+
+            board[i] =
+                BLACK_HOLE;
+
+
+            const score =
+                minimax(
+                    board,
+                    0,
+                    false
+                );
+
+
+            board[i] =
+                null;
+
+
+            if (
+                score > bestScore
+            ) {
+
+                bestScore =
+                    score;
+
+                bestIndex =
+                    i;
+
+            }
+
+        }
+
+    }
+
+
+    return {
+
+        index:
+            bestIndex,
+
+        score:
+            bestScore
+
+    };
+
+}
+
+
+/* =========================================================
+   MINIMAX
+========================================================= */
+
+function minimax(
+    state,
+    depth,
+    maximizing
+) {
+
+    nodeCount++;
+
+    nodesElement.textContent =
+        nodeCount;
+
+
+    const result =
+        getWinner(
+            state
+        );
+
+
+    if (
+        result
+    ) {
+
+        if (
+            result.player ===
+            BLACK_HOLE
+        ) {
+
+            return 10 - depth;
+
+        }
+
+
+        if (
+            result.player ===
+            SATURN
+        ) {
+
+            return depth - 10;
+
+        }
+
+    }
+
+
+    if (
+        state.every(
+            cell =>
+                cell !== null
+        )
+    ) {
+
+        return 0;
+
+    }
+
+
+    if (
+        maximizing
+    ) {
+
+        let best =
+            -Infinity;
+
+
+        for (
+            let i = 0;
+            i < 9;
+            i++
+        ) {
+
+            if (
+                state[i] === null
+            ) {
+
+                state[i] =
+                    BLACK_HOLE;
+
+
+                const score =
+                    minimax(
+                        state,
+                        depth + 1,
+                        false
+                    );
+
+
+                state[i] =
+                    null;
+
+
+                best =
+                    Math.max(
+                        best,
+                        score
+                    );
+
+            }
+
+        }
+
+
+        return best;
+
+    }
+
+
+    else {
+
+        let best =
+            Infinity;
+
+
+        for (
+            let i = 0;
+            i < 9;
+            i++
+        ) {
+
+            if (
+                state[i] === null
+            ) {
+
+                state[i] =
+                    SATURN;
+
+
+                const score =
+                    minimax(
+                        state,
+                        depth + 1,
+                        true
+                    );
+
+
+                state[i] =
+                    null;
+
+
+                best =
+                    Math.min(
+                        best,
+                        score
+                    );
+
+            }
+
+        }
+
+
+        return best;
+
+    }
+
+}
+
+
+/* =========================================================
+   STEP GAME
+========================================================= */
+
+function stepGame() {
+
+    if (
+        !gameRunning
+    ) {
+
+        startGame();
+
+        return;
+
+    }
+
+
+    if (
+        currentPlayer === SATURN
+    ) {
+
+        traceElement.innerHTML =
+
+            `<strong>STEP MODE</strong><br><br>
+             Saturn is the human player.<br>
+             Click any empty square to make
+             the next move.`;
+
+    }
+
+    else {
+
+        pauseAI();
+
+        aiMove();
+
+    }
+
+}
+
+
+/* =========================================================
+   START
+========================================================= */
+
+function startGame() {
+
+    if (
+        gameFinished
+    ) {
+
+        newRound();
+
+        return;
+
+    }
+
+
+    gameRunning =
+        true;
+
+
+    stateElement.textContent =
+        "RUNNING";
+
+
+    currentPlayer =
+        SATURN;
+
+
+    updatePlayerCards();
+
+
+    statusElement.textContent =
+        "Saturn's turn — choose a sector";
+
+
+    traceElement.innerHTML =
+
+        `<strong>ALGORITHM STARTED</strong><br><br>
+         Saturn controls O.<br>
+         Black Hole controls X.<br><br>
+         The AI will use Minimax after
+         each Saturn move.`;
+
+}
+
+
+/* =========================================================
+   PAUSE
+========================================================= */
+
+function pauseAI() {
+
+    if (
+        aiTimer
+    ) {
+
+        clearTimeout(
+            aiTimer
+        );
+
+        aiTimer =
+            null;
+
+    }
+
+
+    traceElement.innerHTML =
+
+        `<strong>PAUSED</strong><br><br>
+         The Black Hole AI has been paused.`;
+
+}
+
+
+/* =========================================================
+   UPDATE PLAYER CARDS
+========================================================= */
+
+function updatePlayerCards() {
+
+    document
+        .getElementById(
+            "saturnCard"
+        )
+        .classList.toggle(
+            "active",
+            currentPlayer === SATURN
+        );
+
+
+    document
+        .getElementById(
+            "blackHoleCard"
+        )
+        .classList.toggle(
+            "active",
+            currentPlayer === BLACK_HOLE
+        );
+
+}
+
+
+/* =========================================================
+   RESET
+========================================================= */
+
+function resetGame() {
+
+    pauseAI();
+
+
+    board =
+        Array(9).fill(null);
+
+
+    currentPlayer =
+        SATURN;
+
+
+    gameRunning =
+        false;
+
+
+    gameFinished =
+        false;
+
+
+    moveCount =
+        0;
+
+
+    nodeCount =
+        0;
+
+
+    movesElement.textContent =
+        "0";
+
+
+    nodesElement.textContent =
+        "0";
+
+
+    stateElement.textContent =
+        "READY";
+
+
+    statusElement.textContent =
+        "Saturn's turn — choose a sector";
+
+
+    traceElement.textContent =
+        "Waiting for Saturn's first move...";
+
+
+    historyElement.innerHTML =
+        "";
+
+
+    createBoard();
+
+
+    updatePlayerCards();
+
+}
+
+
+/* =========================================================
+   NEW ROUND
+========================================================= */
+
+function newRound() {
+
+    resetGame();
+
+    startGame();
+
+}
+
+
+/* =========================================================
+   HISTORY
+========================================================= */
+
+function addHistory(
+    message
+) {
+
+    const item =
+        document.createElement(
+            "div"
+        );
+
+
+    item.className =
+        "move";
+
+
+    item.textContent =
+        `${moveCount}. ${message}`;
+
+
+    historyElement.prepend(
+        item
+    );
+
+}
+
+
+/* =========================================================
+   INITIALIZE
+========================================================= */
+
+createBoard();
+
+updatePlayerCards();
+
+</script>
+
+</body>
+</html>
