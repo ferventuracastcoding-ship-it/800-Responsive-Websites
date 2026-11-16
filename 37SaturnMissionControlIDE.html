@@ -1,0 +1,609 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Saturn Mission Control IDE</title>
+<style>
+:root{
+  --bg:#b9b9b9;--panel:#e6e6e6;--panel2:#f5f5f5;
+  --line:#929292;--blue:#2458a6;--blue2:#3987e8;
+  --gold:#e5b66a;--text:#252525;--green:#21864b;
+}
+*{box-sizing:border-box}
+body{
+ margin:0;background:#777;color:var(--text);
+ font:13px Tahoma,Arial,sans-serif;padding:18px;
+}
+button,input,select{font:inherit}
+button{cursor:pointer}
+button:focus-visible,input:focus-visible,select:focus-visible{
+ outline:2px solid #3987e8;outline-offset:2px
+}
+.frame{
+ max-width:1500px;min-height:95vh;margin:auto;
+ background:var(--bg);border:2px solid #444;
+ box-shadow:0 12px 35px #222;display:flex;flex-direction:column;
+}
+.titlebar{
+ background:linear-gradient(#4381d0,#17428d);color:white;
+ display:flex;align-items:center;justify-content:space-between;
+ padding:9px 12px;font-weight:bold;gap:12px;
+}
+.window-controls{display:flex;gap:4px}
+.window-controls button{width:27px;height:22px;border:2px outset white}
+.menu{display:flex;flex-wrap:wrap;padding:3px 6px;border-bottom:1px solid #777}
+.menu button{border:0;background:transparent;padding:7px 12px}
+.menu button:hover{background:var(--blue);color:white}
+.toolbar{display:flex;gap:6px;flex-wrap:wrap;padding:9px;
+ background:#eee;border-bottom:2px solid #888}
+.tool{background:linear-gradient(#fff,#d4d4d4);border:2px outset #fff;
+ padding:7px 12px;color:#222}
+.tool:active{border-style:inset}
+.tool.primary{background:linear-gradient(#4a8ce0,#2458a6);color:white}
+.statusline{padding:5px 10px;background:#ddd;border-bottom:1px solid #888;
+ font-size:11px;display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.layout{display:grid;grid-template-columns:225px minmax(0,1fr);flex:1;min-height:0}
+.sidebar{background:#ededed;border-right:2px solid #999;padding:12px;min-width:0}
+.side-title{font-weight:bold;color:#164889;margin:5px 0 12px}
+.tree{padding:0;margin:0;list-style:none}
+.tree li{padding:8px 5px;cursor:pointer;border:1px solid transparent}
+.tree li:hover,.tree li.active{background:#d3e5fb;border-color:#8db5eb}
+.tree .indent{padding-left:23px}
+.sidebox{border:1px solid #aaa;background:#f8f8f8;padding:10px;margin-top:15px}
+.sidebox h4{margin:0 0 8px;color:#174889}
+.content{padding:12px;min-width:0;overflow:hidden}
+.section-head{display:flex;align-items:center;justify-content:space-between;
+ gap:8px;flex-wrap:wrap;margin-bottom:10px}
+h2{font-size:17px;margin:0 0 10px;color:#303030}
+h3{font-size:13px;margin:0}
+.muted{color:#686868;font-size:11px}
+.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.panel{background:var(--panel);border:2px groove white;padding:12px;margin-bottom:12px;min-width:0}
+.metric{background:linear-gradient(#fafafa,#dedede);border:1px solid #aaa;
+ padding:12px;position:relative;overflow:hidden;min-width:0}
+.metric:after{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:#326ab7}
+.metric small{display:block;color:#555;font-size:10px;text-transform:uppercase;letter-spacing:.5px}
+.metric strong{font-size:24px;display:block;margin:7px 0 3px;color:#174889}
+.metric span{font-size:10px;color:#666}
+.workbench{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(220px,1fr);gap:12px}
+.visual{position:relative;background:#090f20;border:3px inset #999;overflow:hidden;min-height:360px}
+#space{width:100%;height:100%;min-height:360px;display:block}
+.visual-label{position:absolute;color:#c4d8ff;font:10px Consolas,monospace;pointer-events:none}
+.vtop{top:12px;left:12px}
+.vbottom{bottom:12px;left:12px}
+.vright{top:12px;right:12px;text-align:right}
+.legend{display:flex;gap:10px;flex-wrap:wrap;padding:9px;background:#111827;color:#ddd;font-size:10px}
+.dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:4px}
+.controls{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.control-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.control-grid button{width:100%;text-align:left;padding:9px 7px}
+label{font-size:11px;color:#555;display:block;margin:9px 0 4px}
+input,select{width:100%;padding:8px;border:2px inset #ddd;background:white;min-width:0}
+.progress{height:9px;background:#c6c6c6;border:1px solid #999;margin:7px 0 12px;overflow:hidden}
+.progress span{display:block;height:100%;width:75%;background:#2777cc;transition:width .3s}
+.progress.gold span{background:#c9983f}
+.readout{display:flex;justify-content:space-between;gap:10px;padding:6px 0;border-bottom:1px solid #ccc;font-size:11px}
+.readout strong{font-family:Consolas,monospace;color:#164889;text-align:right}
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;background:white;white-space:nowrap}
+th{background:#2c5b9d;color:white;text-align:left}
+th,td{padding:9px 10px;border:1px solid #aaa;font-size:11px}
+tr.selected td{background:#e0ecfb}
+.pill{padding:4px 7px;border:1px solid #aaa;background:#e8e8e8;font-size:10px;display:inline-block}
+.pill.ok{background:#c5edce;color:#16552a}
+.pill.warn{background:#fff0bd;color:#785100}
+.pill.off{background:#f4cece;color:#8b2222}
+.editor{background:#171c24;color:#d7e0ec;padding:13px;font:12px/1.8 Consolas,monospace;overflow:auto;min-height:180px;white-space:pre-wrap}
+.kw{color:#8db8ff}.str{color:#e6c07b}.comment{color:#83a68c}
+.console{background:#111;color:#9effa5;font:11px/1.8 Consolas,monospace;
+ border:3px inset #777;padding:10px;height:145px;overflow:auto}
+.console .warn{color:#ffcf79}.console .error{color:#ff7777}
+.tabs{display:flex;gap:2px;border-bottom:1px solid #999;margin-bottom:10px;flex-wrap:wrap}
+.tab{padding:8px 10px;background:#d3d3d3;border:1px solid #999;border-bottom:0;cursor:pointer}
+.tab.active{background:#f8f8f8;font-weight:bold}
+.footer{padding:7px 10px;background:#ddd;border-top:2px solid #999;font-size:10px;
+ display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.hidden{display:none!important}
+.toast{position:fixed;bottom:20px;right:20px;background:#173e77;color:white;
+ padding:12px 18px;box-shadow:0 4px 20px #444;z-index:10;max-width:90vw}
+@media(max-width:1000px){
+ .layout{grid-template-columns:180px minmax(0,1fr)}
+ .grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .workbench{grid-template-columns:1fr}
+}
+@media(max-width:650px){
+ body{padding:0}.frame{border:0}.layout{grid-template-columns:1fr}
+ .sidebar{border-right:0;border-bottom:2px solid #999}
+ .tree{display:grid;grid-template-columns:1fr 1fr}
+ .content{padding:8px}.grid{gap:6px}.metric{padding:9px}
+ .metric strong{font-size:20px}.visual,#space{min-height:300px}
+}
+</style>
+</head>
+<body>
+<div class="frame">
+ <header class="titlebar">
+  <div>☕ Eclipse IDE — Saturn Exploration Mission Suite</div>
+  <div class="window-controls">
+   <button aria-label="Minimize" onclick="log('Window minimized to workspace.','warn')">_</button>
+   <button aria-label="Maximize" onclick="document.querySelector('.frame').requestFullscreen?.()">□</button>
+   <button aria-label="Close" onclick="resetSim()">×</button>
+  </div>
+ </header>
+ <nav class="menu">
+  <button onclick="newMission()">File</button><button onclick="editMission()">Edit</button>
+  <button onclick="toggleSection('metrics')">View</button>
+  <button onclick="showTab('editor')">Project</button>
+  <button onclick="runMission()">Run</button><button onclick="togglePause()">Debug</button>
+  <button onclick="showHelp()">Help</button>
+ </nav>
+ <div class="toolbar">
+  <button class="tool" onclick="newMission()">📄 New Mission</button>
+  <button class="tool" onclick="saveMission()">💾 Save State</button>
+  <button class="tool primary" onclick="runMission()">▶ Execute</button>
+  <button class="tool" onclick="deployProbe()">🛰 Deploy Probe</button>
+  <button class="tool" onclick="togglePause()">Ⅱ Pause / Resume</button>
+  <button class="tool" onclick="resetSim()">↻ Reset</button>
+  <button class="tool" onclick="toggleRings()">◎ Ring Display</button>
+ </div>
+ <div class="statusline">
+  <span id="status">● SYSTEM READY | Saturn orbital simulation initialized</span>
+  <span id="clock">MISSION ELAPSED: 00:00:00</span>
+ </div>
+ <div class="layout">
+  <aside class="sidebar">
+   <div class="side-title">▾ PROJECT EXPLORER</div>
+   <ul class="tree">
+    <li class="active" onclick="showTab('overview')">📁 SaturnMission</li>
+    <li class="indent" onclick="showTab('editor')">☕ SaturnMission.java</li>
+    <li class="indent" onclick="showTab('editor')">📄 orbital_mechanics.xml</li>
+    <li class="indent" onclick="showTab('editor')">📄 ring_spectroscopy.dat</li>
+    <li class="indent" onclick="showTab('telemetry')">📊 Telemetry</li>
+    <li class="indent" onclick="showTab('missions')">🛰 Probe Fleet</li>
+    <li class="indent" onclick="showTab('science')">🔬 Science Lab</li>
+    <li class="indent" onclick="showTab('console')">▣ System Console</li>
+   </ul>
+   <div class="sidebox">
+    <h4>MISSION TARGET</h4>
+    <div style="font-size:25px">🪐</div>
+    <b>Saturn</b>
+    <div class="muted">Gas giant · Solar System</div>
+    <div class="readout"><span>Mean radius</span><strong>58,232 km</strong></div>
+    <div class="readout"><span>Known moons</span><strong>146+</strong></div>
+    <div class="readout"><span>Ring system</span><strong>ACTIVE</strong></div>
+   </div>
+   <div class="sidebox">
+    <h4>MISSION MODULES</h4>
+    <div class="readout"><span>Navigation</span><strong>ONLINE</strong></div>
+    <div class="readout"><span>Imaging array</span><strong>ONLINE</strong></div>
+    <div class="readout"><span>Deep Space Net</span><strong id="sideSignal">98%</strong></div>
+    <div class="readout"><span>Power bus</span><strong>STABLE</strong></div>
+   </div>
+   <div class="sidebox">
+    <h4>SIMULATION SPEED</h4>
+    <select id="speed" onchange="setSpeed(this.value)">
+     <option value="1">1× Real Time</option>
+     <option value="2">2× Accelerated</option>
+     <option value="5">5× Accelerated</option>
+     <option value="10">10× Accelerated</option>
+    </select>
+   </div>
+  </aside>
+  <main class="content">
+   <div class="section-head">
+    <div><h2>🪐 SATURN MISSION CONTROL</h2>
+    <div class="muted">Planetary science, orbital navigation & autonomous probe operations</div></div>
+    <span class="pill ok" id="missionState">SIMULATION READY</span>
+   </div>
+   <section id="metrics" class="grid panel" style="padding:10px">
+    <div class="metric"><small>Orbital altitude</small><strong id="altitude">1,200</strong><span>km above cloud tops</span></div>
+    <div class="metric"><small>Orbital velocity</small><strong id="velocity">18.4</strong><span>km/s · simulated</span></div>
+    <div class="metric"><small>Probe fuel</small><strong id="fuel">84%</strong><span>propulsion reserves</span></div>
+    <div class="metric"><small>Signal strength</small><strong id="signal">98%</strong><span id="signalText">Deep Space Network</span></div>
+   </section>
+   <div class="tabs">
+    <button class="tab active" data-tab="overview" onclick="showTab('overview')">Mission View</button>
+    <button class="tab" data-tab="telemetry" onclick="showTab('telemetry')">Telemetry</button>
+    <button class="tab" data-tab="editor" onclick="showTab('editor')">Java Editor</button>
+    <button class="tab" data-tab="missions" onclick="showTab('missions')">Probe Fleet</button>
+    <button class="tab" data-tab="science" onclick="showTab('science')">Science Lab</button>
+    <button class="tab" data-tab="console" onclick="showTab('console')">Console</button>
+   </div>
+   <section id="view-overview">
+    <div class="workbench">
+     <div class="panel">
+      <div class="section-head"><h3>LIVE ORBITAL VISUALIZER</h3><span class="pill ok">ANIMATED</span></div>
+      <div class="visual">
+       <canvas id="space" aria-label="Animated Saturn and orbiting spacecraft visualization"></canvas>
+       <div class="visual-label vtop">SYS.SATURN // NAV-VIS 2.8</div>
+       <div class="visual-label vright" id="vizMode">RINGS: ON<br>CAMERA: ORBITAL</div>
+       <div class="visual-label vbottom" id="vizCoords">X: 000.0 | Y: 000.0<br>TRAJECTORY: NOMINAL</div>
+      </div>
+      <div class="legend">
+       <span><i class="dot" style="background:#dfb66b"></i>Saturn</span>
+       <span><i class="dot" style="background:#86c5ff"></i>Probe</span>
+       <span><i class="dot" style="background:#a8b8d8"></i>Moon orbit</span>
+       <span><i class="dot" style="background:#ffbb60"></i>Active trajectory</span>
+      </div>
+      <div class="controls">
+       <button class="tool primary" onclick="runMission()">▶ Start Mission</button>
+       <button class="tool" onclick="deployProbe()">🛰 Deploy Probe</button>
+       <button class="tool" onclick="togglePause()">Ⅱ Pause</button>
+       <button class="tool" onclick="toggleRings()">◎ Rings On/Off</button>
+       <button class="tool" onclick="resetSim()">↻ Reset</button>
+      </div>
+     </div>
+     <div>
+      <div class="panel">
+       <h3>FLIGHT DYNAMICS</h3>
+       <div class="readout"><span>Mission elapsed</span><strong id="elapsed">00:00:00</strong></div>
+       <div class="readout"><span>Orbit phase</span><strong id="phase">001°</strong></div>
+       <div class="readout"><span>Probe count</span><strong id="probeCount">01</strong></div>
+       <div class="readout"><span>Trajectory</span><strong id="trajectory">NOMINAL</strong></div>
+       <label>Target orbit altitude</label>
+       <input type="range" id="orbitTarget" min="500" max="10000" value="1200" step="100"
+        oninput="setTarget(this.value)">
+       <div class="readout"><span>Target</span><strong id="targetLabel">1,200 km</strong></div>
+       <button class="tool" style="width:100%;margin-top:8px" onclick="adjustOrbit()">↗ Execute Orbit Adjustment</button>
+      </div>
+      <div class="panel">
+       <h3>SPACECRAFT SYSTEMS</h3>
+       <label>Power bus</label><div class="progress"><span style="width:91%"></span></div>
+       <label>Propulsion reserves</label><div class="progress gold"><span id="fuelBar" style="width:84%"></span></div>
+       <label>Communications</label><div class="progress"><span id="signalBar" style="width:98%"></span></div>
+       <div class="readout"><span>Thermal control</span><strong>STABLE</strong></div>
+       <div class="readout"><span>Navigation AI</span><strong>ONLINE</strong></div>
+      </div>
+     </div>
+    </div>
+    <div class="panel">
+     <div class="section-head"><h3>RECENT MISSION EVENTS</h3>
+      <button class="tool" onclick="clearConsole()">Clear Log</button></div>
+     <div id="eventFeed" class="console" style="height:110px"></div>
+    </div>
+   </section>
+   <section id="view-telemetry" class="hidden">
+    <div class="panel">
+     <div class="section-head"><h3>ORBITAL TELEMETRY STREAM</h3><span class="pill ok" id="telemetryStatus">STREAM READY</span></div>
+     <div class="grid" style="margin-bottom:15px">
+      <div class="metric"><small>Current altitude</small><strong id="tAlt">1,200</strong><span>km</span></div>
+      <div class="metric"><small>Velocity</small><strong id="tVel">18.4</strong><span>km/s</span></div>
+      <div class="metric"><small>Orbital phase</small><strong id="tPhase">001°</strong><span>degrees</span></div>
+      <div class="metric"><small>Mission time</small><strong id="tTime">0</strong><span>simulated seconds</span></div>
+     </div>
+     <div style="height:230px;background:#121b2b;padding:10px">
+      <canvas id="chart" style="width:100%;height:100%"></canvas>
+     </div>
+     <p class="muted">Illustrative simulation telemetry, not live spacecraft data or validated flight predictions.</p>
+     <button class="tool" onclick="exportTelemetry()">⬇ Export Telemetry CSV</button>
+    </div>
+   </section>
+   <section id="view-editor" class="hidden">
+    <div class="panel">
+     <div class="section-head"><h3>SaturnMission.java</h3><span class="pill">JAVA SOURCE</span></div>
+     <div class="editor" contenteditable="true" spellcheck="false" id="codeEditor"><span class="comment">// Saturn Exploration Mission Controller</span>
+<span class="kw">public class</span> SaturnMission {
+    <span class="kw">private double</span> altitude = 1200.0;
+    <span class="kw">private double</span> velocity = 18.4;
+    <span class="kw">private int</span> probeCount = 1;
+
+    <span class="kw">public void</span> initialize() {
+        System.out.println(<span class="str">"Connecting to Saturn orbiter..."</span>);
+        System.out.println(<span class="str">"Loading orbital navigation..."</span>);
+        System.out.println(<span class="str">"Science instruments ready."</span>);
+    }
+
+    <span class="kw">public void</span> deployProbe() {
+        probeCount++;
+        System.out.println(<span class="str">"Probe deployment requested."</span>);
+    }
+
+    <span class="kw">public void</span> analyzeRings() {
+        System.out.println(<span class="str">"Ring spectroscopy started."</span>);
+    }
+}</div>
+     <p class="muted">Editable example source. Run invokes the browser-based simulation, not a Java compiler.</p>
+     <div class="controls">
+      <button class="tool primary" onclick="runMission()">▶ Run Configuration</button>
+      <button class="tool" onclick="saveMission()">💾 Save Configuration</button>
+      <button class="tool" onclick="log('Static analysis complete: source loaded; Java compilation is not enabled.','warn')">🔎 Analyze</button>
+      <button class="tool" onclick="document.getElementById('codeEditor').innerText=defaultCode;log('Editor source reset.')">↻ Restore Source</button>
+     </div>
+    </div>
+   </section>
+   <section id="view-missions" class="hidden">
+    <div class="panel">
+     <div class="section-head"><h3>PROBE FLEET MANAGEMENT</h3><button class="tool primary" onclick="deployProbe()">+ Deploy Probe</button></div>
+     <div class="table-wrap"><table><thead><tr><th>Vehicle ID</th><th>Mission</th><th>Altitude</th><th>Health</th><th>Status</th><th>Action</th></tr></thead>
+     <tbody id="fleetBody"></tbody></table></div>
+    </div>
+    <div class="panel">
+     <h3>REGISTER NEW MISSION</h3>
+     <label for="missionName">Mission designation</label><input id="missionName" value="Titan Reconnaissance">
+     <label for="missionType">Mission profile</label>
+     <select id="missionType"><option>Orbital Survey</option><option>Titan Reconnaissance</option><option>Ring Spectroscopy</option><option>Magnetosphere Study</option><option>Moon Flyby</option></select>
+     <label for="commander">Mission operator</label><input id="commander" placeholder="Enter operator or AI designation">
+     <button class="tool primary" style="margin-top:10px" onclick="registerMission()">Register Mission</button>
+    </div>
+   </section>
+   <section id="view-science" class="hidden">
+    <div class="grid" style="margin-bottom:12px">
+     <div class="metric"><small>Ring analysis</small><strong id="ringResult">READY</strong><span>Spectrometer</span></div>
+     <div class="metric"><small>Titan radar</small><strong id="titanResult">IDLE</strong><span>Surface mapping</span></div>
+     <div class="metric"><small>Magnetosphere</small><strong id="magResult">READY</strong><span>Plasma analyzer</span></div>
+     <div class="metric"><small>Data packets</small><strong id="dataPackets">0000</strong><span>Simulated records</span></div>
+    </div>
+    <div class="panel"><h3>SCIENTIFIC INSTRUMENT CONTROL</h3>
+     <div class="control-grid" style="margin-top:12px">
+      <button class="tool" onclick="science('rings')">🔬 Analyze Ring Composition</button>
+      <button class="tool" onclick="science('titan')">🌒 Scan Titan</button>
+      <button class="tool" onclick="science('mag')">🧲 Measure Magnetosphere</button>
+      <button class="tool" onclick="science('enceladus')">💧 Sample Enceladus Plumes</button>
+      <button class="tool" onclick="science('image')">📷 Capture Planetary Image</button>
+      <button class="tool" onclick="science('gravity')">📡 Gravity Experiment</button>
+     </div>
+    </div>
+    <div class="panel"><h3>SCIENCE RESULTS</h3><div id="scienceResults" class="console"></div></div>
+   </section>
+   <section id="view-console" class="hidden">
+    <div class="panel">
+     <div class="section-head"><h3>MISSION CONSOLE</h3><button class="tool" onclick="clearConsole()">Clear</button></div>
+     <div id="fullConsole" class="console" style="height:300px"></div>
+     <div class="controls">
+      <button class="tool" onclick="runMission()">run mission</button>
+      <button class="tool" onclick="science('rings')">analyze rings</button>
+      <button class="tool" onclick="deployProbe()">deploy probe</button>
+      <button class="tool" onclick="resetSim()">reset simulation</button>
+     </div>
+    </div>
+   </section>
+  </main>
+ </div>
+ <footer class="footer">
+  <span>Ready | SaturnMission IDE | Java-inspired workspace</span>
+  <span>SIMULATION ONLY · NOT CONNECTED TO NASA TELEMETRY</span>
+ </footer>
+</div>
+<div id="toast" class="toast hidden" role="status"></div>
+<script>
+const $=id=>document.getElementById(id);
+const defaultCode=`// Saturn Exploration Mission Controller
+public class SaturnMission {
+    private double altitude = 1200.0;
+    private double velocity = 18.4;
+    private int probeCount = 1;
+
+    public void initialize() {
+        System.out.println("Connecting to Saturn orbiter...");
+        System.out.println("Loading orbital navigation...");
+        System.out.println("Science instruments ready.");
+    }
+
+    public void deployProbe() {
+        probeCount++;
+        System.out.println("Probe deployment requested.");
+    }
+
+    public void analyzeRings() {
+        System.out.println("Ring spectroscopy started.");
+    }
+}`;
+let running=false,paused=false,ringsOn=true,speed=1,elapsed=0;
+let altitude=1200,fuel=84,signal=98,phase=1,probes=1,packets=0;
+let targetAltitude=1200,missions=[],events=[],samples=[];
+let toastTimer=null,lastFrame=0,animationTime=0;
+const canvas=$('space'),ctx=canvas.getContext('2d');
+const chart=$('chart'),cctx=chart.getContext('2d');
+function log(message,type=''){
+ const time=new Date().toLocaleTimeString();
+ const line={time,message,type};events.push(line);if(events.length>150)events.shift();
+ const html=events.slice(-45).map(e=>`<div class="${e.type}"><span style="color:#718a80">[${e.time}]</span> ${esc(e.message)}</div>`).join('');
+ $('eventFeed').innerHTML=html;$('fullConsole').innerHTML=events.map(e=>`<div class="${e.type}"><span style="color:#718a80">[${e.time}]</span> ${esc(e.message)}</div>`).join('');
+ $('eventFeed').scrollTop=$('eventFeed').scrollHeight;$('fullConsole').scrollTop=$('fullConsole').scrollHeight;
+}
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function notify(s){$('toast').textContent=s;$('toast').classList.remove('hidden');clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('toast').classList.add('hidden'),2600)}
+function showTab(tab){
+ document.querySelectorAll('[id^="view-"]').forEach(el=>el.classList.add('hidden'));
+ $('view-'+tab).classList.remove('hidden');
+ document.querySelectorAll('.tab').forEach(el=>el.classList.toggle('active',el.dataset.tab===tab));
+ if(tab==='telemetry')drawChart();
+ if(tab==='missions')renderFleet();
+}
+function toggleSection(id){$(id).classList.toggle('hidden')}
+function setSpeed(v){speed=Number(v);log(`Simulation time acceleration set to ${speed}×.`)}
+function setTarget(v){targetAltitude=Number(v);$('targetLabel').textContent=Number(v).toLocaleString()+' km'}
+function runMission(){
+ if(running&&!paused){log('Mission simulation is already running.','warn');return}
+ running=true;paused=false;
+ $('missionState').textContent='MISSION ACTIVE';$('missionState').className='pill ok';
+ $('status').textContent='● FLIGHT ACTIVE | Orbital simulation running';
+ $('telemetryStatus').textContent='STREAMING';log('Mission execution started. Orbital dynamics engaged.');notify('Saturn mission simulation running');
+}
+function togglePause(){
+ if(!running){runMission();return}
+ paused=!paused;
+ $('status').textContent=paused?'Ⅱ SIMULATION PAUSED':'● FLIGHT ACTIVE | Orbital simulation running';
+ $('missionState').textContent=paused?'PAUSED':'MISSION ACTIVE';
+ log(paused?'Simulation paused by operator.':'Simulation resumed.');
+}
+function resetSim(){
+ running=false;paused=false;elapsed=0;altitude=1200;fuel=84;signal=98;phase=1;probes=1;packets=0;
+ targetAltitude=1200;$('orbitTarget').value=1200;$('targetLabel').textContent='1,200 km';
+ $('missionState').textContent='SIMULATION READY';$('missionState').className='pill';
+ $('status').textContent='● SYSTEM READY | Simulation reset';
+ log('Simulation reset. Orbiter returned to nominal initial state.');updateMetrics();notify('Simulation reset');
+}
+function deployProbe(){
+ if(fuel<5){log('Deployment aborted: insufficient propulsion reserve.','error');notify('Insufficient fuel');return}
+ probes++;fuel=Math.max(0,fuel-2);packets+=12;
+ missions.push({id:'SAT-'+String(probes).padStart(2,'0'),name:'Auxiliary Science Probe',altitude:Math.round(altitude),health:100,status:'DEPLOYED'});
+ log(`Probe SAT-${String(probes).padStart(2,'0')} deployed. Telemetry link established.`);
+ updateMetrics();renderFleet();notify('Probe deployment successful');
+}
+function adjustOrbit(){
+ if(fuel<3){log('Orbit correction denied: fuel below safe threshold.','error');return}
+ const old=altitude;altitude=targetAltitude;fuel=Math.max(0,fuel-3);
+ log(`Orbit adjustment completed: ${old.toLocaleString()} → ${altitude.toLocaleString()} km.`);
+ updateMetrics();notify('Orbit adjustment simulated');
+}
+function toggleRings(){ringsOn=!ringsOn;$('vizMode').innerHTML=`RINGS: ${ringsOn?'ON':'OFF'}<br>CAMERA: ORBITAL`;log(`Saturn ring visualization ${ringsOn?'enabled':'disabled'}.`)}
+function newMission(){showTab('missions');$('missionName').focus();log('New mission registration opened.')}
+function editMission(){showTab('editor');log('Source editor selected.')}
+function saveMission(){
+ const data={altitude,fuel,signal,phase,probes,elapsed,targetAltitude,code:$('codeEditor').innerText,missions};
+ const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+ const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='saturn-mission-state.json';a.click();URL.revokeObjectURL(url);
+ log('Mission state exported to JSON.');notify('Mission state saved to file');
+}
+function registerMission(){
+ const name=$('missionName').value.trim(),type=$('missionType').value,operator=$('commander').value.trim()||'AUTONOMOUS AI';
+ if(!name){notify('Enter a mission designation');return}
+ missions.push({id:'SAT-'+String(probes+missions.length+1).padStart(2,'0'),name,type,operator,altitude:Math.round(altitude),health:100,status:'PLANNED'});
+ log(`Mission registered: ${name} / ${type} / ${operator}`);renderFleet();notify('Mission registered');$('missionName').value='';
+}
+function renderFleet(){
+ const all=[{id:'SAT-01',name:'Primary Saturn Orbiter',altitude:Math.round(altitude),health:100,status:running?'ACTIVE':'STANDBY'},...missions];
+ $('probeCount').textContent=String(all.length).padStart(2,'0');
+ $('fleetBody').innerHTML=all.map((m,i)=>`<tr><td>${esc(m.id)}</td><td>${esc(m.name)}</td><td>${Number(m.altitude||altitude).toLocaleString()} km</td><td>${m.health||100}%</td><td><span class="pill ${m.status==='ACTIVE'?'ok':m.status==='PLANNED'?'warn':''}">${esc(m.status||'DEPLOYED')}</span></td><td><button class="tool" onclick="inspectProbe(${i})">Inspect</button></td></tr>`).join('');
+}
+function inspectProbe(i){
+ const m=[{id:'SAT-01',name:'Primary Saturn Orbiter',altitude,health:100,status:running?'ACTIVE':'STANDBY'},...missions][i];
+ log(`Inspection ${m.id}: ${m.name}; altitude ${Math.round(m.altitude)} km; health ${m.health}%.`);
+ notify(`${m.id}: diagnostics recorded`);
+}
+function science(kind){
+ const actions={
+ rings:['ringResult','Ring spectroscopy initialized. Particle composition and reflected-light bands sampled.'],
+ titan:['titanResult','Titan radar mapping initiated. Simulated surface returns received.'],
+ mag:['magResult','Magnetometer sweep complete. Saturnian plasma environment sampled.'],
+ enceladus:['ringResult','Enceladus plume observation scheduled. Ice-particle analysis simulated.'],
+ image:['titanResult','Planetary camera exposure completed. Synthetic image packet stored.'],
+ gravity:['magResult','Gravity experiment complete. Orbital perturbation sample recorded.']
+ };
+ const [id,msg]=actions[kind];$(id).textContent='DONE';packets+=Math.floor(10+Math.random()*35);$('dataPackets').textContent=String(packets).padStart(4,'0');
+ $('scienceResults').innerHTML+=`<div>[${new Date().toLocaleTimeString()}] ${esc(msg)}</div>`;
+ log(msg);notify('Science operation completed');
+}
+function clearConsole(){events=[];$('eventFeed').innerHTML='';$('fullConsole').innerHTML='';log('Console cleared.')}
+function showHelp(){notify('Select a workspace tab, then use the mission controls to simulate operations.');log('Help: mission controls operate a local illustrative simulation.')}
+function updateMetrics(){
+ const fmt=n=>Math.round(n).toLocaleString();
+ $('altitude').textContent=fmt(altitude);$('velocity').textContent=(18.4+(1200-altitude)*.0001).toFixed(2);
+ $('fuel').textContent=Math.round(fuel)+'%';$('signal').textContent=Math.round(signal)+'%';
+ $('sideSignal').textContent=Math.round(signal)+'%';$('fuelBar').style.width=fuel+'%';$('signalBar').style.width=signal+'%';
+ $('phase').textContent=String(Math.floor(phase)%360).padStart(3,'0')+'°';
+ $('elapsed').textContent=formatTime(elapsed);$('clock').textContent='MISSION ELAPSED: '+formatTime(elapsed);
+ $('vizCoords').innerHTML=`X: ${(Math.cos(phase*Math.PI/180)*altitude/10).toFixed(1)} | Y: ${(Math.sin(phase*Math.PI/180)*altitude/10).toFixed(1)}<br>TRAJECTORY: ${running?'NOMINAL':'STANDBY'}`;
+ $('tAlt').textContent=fmt(altitude);$('tVel').textContent=(18.4+(1200-altitude)*.0001).toFixed(2);
+ $('tPhase').textContent=Math.floor(phase)%360+'°';$('tTime').textContent=Math.floor(elapsed);
+ $('trajectory').textContent=Math.abs(altitude-targetAltitude)<50?'NOMINAL':'ADJUSTING';
+}
+function formatTime(s){s=Math.floor(s);return [Math.floor(s/3600),Math.floor(s/60)%60,s%60].map(v=>String(v).padStart(2,'0')).join(':')}
+function exportTelemetry(){
+ const rows=[['elapsed_seconds','altitude_km','fuel_percent','signal_percent','phase_deg'],...samples.map(s=>[s.t,s.alt,s.fuel,s.signal,s.phase])];
+ const csv=rows.map(r=>r.join(',')).join('\n'),blob=new Blob([csv],{type:'text/csv'});
+ const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='saturn-telemetry.csv';a.click();URL.revokeObjectURL(url);notify('Telemetry CSV exported');
+}
+function drawChart(){
+ const r=chart.getBoundingClientRect(),dpr=window.devicePixelRatio||1;
+ if(!r.width||!r.height)return;chart.width=r.width*dpr;chart.height=r.height*dpr;cctx.setTransform(dpr,0,0,dpr,0,0);
+ cctx.clearRect(0,0,r.width,r.height);cctx.strokeStyle='#293d55';cctx.lineWidth=1;
+ for(let i=1;i<5;i++){let y=i*r.height/5;cctx.beginPath();cctx.moveTo(0,y);cctx.lineTo(r.width,y);cctx.stroke()}
+ const data=samples.slice(-90);if(data.length<2){cctx.fillStyle='#bac8d8';cctx.font='12px Consolas';cctx.fillText('Awaiting telemetry samples…',15,25);return}
+ const min=Math.min(...data.map(s=>s.alt))-100,max=Math.max(...data.map(s=>s.alt))+100;
+ cctx.beginPath();data.forEach((s,i)=>{let x=i/(data.length-1)*r.width,y=r.height-((s.alt-min)/(max-min||1))*r.height;i?cctx.lineTo(x,y):cctx.moveTo(x,y)});
+ cctx.strokeStyle='#e5b66a';cctx.lineWidth=2;cctx.stroke();
+ cctx.fillStyle='#d8e5f6';cctx.font='10px Consolas';cctx.fillText('ORBITAL ALTITUDE (KM)',10,13);
+}
+function resizeCanvas(c,context){
+ const r=c.getBoundingClientRect(),dpr=window.devicePixelRatio||1;
+ if(!r.width||!r.height)return;
+ if(c.width!==Math.round(r.width*dpr)||c.height!==Math.round(r.height*dpr)){c.width=Math.round(r.width*dpr);c.height=Math.round(r.height*dpr)}
+ context.setTransform(dpr,0,0,dpr,0,0);
+}
+function starfield(w,h){
+ let seed=31;const rand=()=>{seed=(seed*16807)%2147483647;return seed/2147483647};
+ for(let i=0;i<180;i++){let x=rand()*w,y=rand()*h,rad=rand()*1.25+.2;
+ ctx.globalAlpha=.25+rand()*.65;ctx.fillStyle='#d9e7ff';ctx.beginPath();ctx.arc(x,y,rad,0,Math.PI*2);ctx.fill()}
+ ctx.globalAlpha=1;
+}
+function drawSaturn(now){
+ const rect=canvas.getBoundingClientRect();if(!rect.width||!rect.height)return;
+ resizeCanvas(canvas,ctx);const w=rect.width,h=rect.height;
+ ctx.clearRect(0,0,w,h);
+ const bg=ctx.createLinearGradient(0,0,w,h);bg.addColorStop(0,'#10192e');bg.addColorStop(.6,'#090f1e');bg.addColorStop(1,'#1c1930');ctx.fillStyle=bg;ctx.fillRect(0,0,w,h);
+ starfield(w,h);
+ const cx=w*.5,cy=h*.52,R=Math.min(w*.24,h*.25,94),t=now*.00012;
+ // Orbital paths
+ ctx.strokeStyle='#5a6687';ctx.lineWidth=1;
+ [R*1.5,R*1.95,R*2.5].forEach((rr,i)=>{ctx.beginPath();ctx.ellipse(cx,cy,rr,rr*.39,-.12,0,Math.PI*2);ctx.stroke()});
+ // Ring back half
+ if(ringsOn){
+  ctx.save();ctx.translate(cx,cy);ctx.rotate(-.12);
+  const rx=R*1.8,ry=R*.56;
+  ctx.beginPath();ctx.ellipse(0,0,rx,ry,0,Math.PI,Math.PI*2);ctx.strokeStyle='#90734e';ctx.lineWidth=R*.23;ctx.stroke();
+  ctx.beginPath();ctx.ellipse(0,0,R*1.8,R*.56,0,Math.PI,Math.PI*2);ctx.strokeStyle='#cfad79';ctx.lineWidth=R*.12;ctx.stroke();
+  ctx.restore();
+ }
+ // Saturn body with shaded sphere
+ const planet=ctx.createRadialGradient(cx-R*.38,cy-R*.42,R*.08,cx,cy,R*1.1);
+ planet.addColorStop(0,'#f8dfaa');planet.addColorStop(.45,'#d9ad69');planet.addColorStop(.8,'#a97542');planet.addColorStop(1,'#573b38');
+ ctx.beginPath();ctx.arc(cx,cy,R,0,Math.PI*2);ctx.fillStyle=planet;ctx.fill();
+ // Atmospheric bands clipped to the sphere
+ ctx.save();ctx.beginPath();ctx.arc(cx,cy,R,0,Math.PI*2);ctx.clip();
+ for(let i=-5;i<=5;i++){
+  const yy=cy+i*R*.16;ctx.fillStyle=i%2?'rgba(105,63,46,.18)':'rgba(255,231,173,.26)';
+  ctx.fillRect(cx-R,yy,R*2,R*.055);
+ }
+ ctx.restore();
+ // Ring foreground
+ if(ringsOn){
+  ctx.save();ctx.translate(cx,cy);ctx.rotate(-.12);
+  ctx.beginPath();ctx.ellipse(0,0,R*1.8,R*.56,0,0,Math.PI);ctx.strokeStyle='#d9ba82';ctx.lineWidth=R*.24;ctx.stroke();
+  ctx.beginPath();ctx.ellipse(0,0,R*1.62,R*.48,0,0,Math.PI);ctx.strokeStyle='#8f795f';ctx.lineWidth=R*.04;ctx.stroke();
+  ctx.beginPath();ctx.ellipse(0,0,R*1.45,R*.41,0,0,Math.PI);ctx.strokeStyle='#ead6ad';ctx.lineWidth=R*.045;ctx.stroke();
+  ctx.restore();
+ }
+ // Titan
+ const tx=cx+Math.cos(t*.48+.6)*R*2.5,ty=cy+Math.sin(t*.48+.6)*R*.97;
+ ctx.beginPath();ctx.arc(tx,ty,5,0,Math.PI*2);ctx.fillStyle='#d7a75d';ctx.fill();
+ // Probe on its orbit
+ const px=cx+Math.cos(t*1.8+phase*.017)*R*1.96,py=cy+Math.sin(t*1.8+phase*.017)*R*.77;
+ ctx.save();ctx.translate(px,py);ctx.rotate(t);
+ ctx.fillStyle='#83c9ff';ctx.fillRect(-4,-3,8,6);
+ ctx.fillStyle='#b7dfff';ctx.fillRect(-10,-2,5,4);ctx.fillRect(5,-2,5,4);
+ ctx.strokeStyle='#83c9ff';ctx.beginPath();ctx.moveTo(0,-3);ctx.lineTo(0,-8);ctx.stroke();ctx.restore();
+ ctx.fillStyle='#d6e6ff';ctx.font='11px Consolas';ctx.fillText('SATURN',cx-R*.4,cy+R+22);
+ ctx.fillStyle='#8ecbff';ctx.fillText('SAT-'+String(probes).padStart(2,'0'),px+9,py-8);
+ ctx.fillStyle='#e4c891';ctx.fillText('TITAN',tx+8,ty-5);
+ // HUD corners
+ ctx.strokeStyle='rgba(120,170,235,.65)';ctx.lineWidth=1;
+ [[8,8,1,1],[w-8,8,-1,1],[8,h-8,1,-1],[w-8,h-8,-1,-1]].forEach(([x,y,sx,sy])=>{ctx.beginPath();ctx.moveTo(x+sx*18,y);ctx.lineTo(x,y);ctx.lineTo(x,y+sy*18);ctx.stroke()});
+ if(running&&!paused&&now-lastFrame>0){
+  const dt=Math.min((now-lastFrame)/1000,.08)*speed;
+  elapsed+=dt;phase=(phase+dt*3.6)%360;
+  if(Math.abs(targetAltitude-altitude)>2){altitude+=Math.sign(targetAltitude-altitude)*Math.min(Math.abs(targetAltitude-altitude),dt*15);fuel=Math.max(0,fuel-dt*.003)}
+  signal=94+Math.sin(elapsed*.07)*4;
+  if(Math.floor(elapsed)!==Math.floor(elapsed-dt)){
+   samples.push({t:Math.floor(elapsed),alt:Math.round(altitude),fuel:Math.round(fuel),signal:Math.round(signal),phase:Math.round(phase)});
+   if(samples.length>300)samples.shift();
+  }
+  updateMetrics();
+ }
+ lastFrame=now;
+ if($('view-telemetry')&&!$('view-telemetry').classList.contains('hidden'))drawChart();
+ requestAnimationFrame(drawSaturn);
+}
+function start(){
+ log('Saturn Mission IDE initialized.');log('Orbital visualization loaded.');log('Navigation, telemetry and science instruments ready.');
+ missions=[{id:'SAT-02',name:'Ring Spectroscopy Probe',altitude:1800,health:97,status:'STANDBY'},{id:'SAT-03',name:'Titan Survey Relay',altitude:3500,health:100,status:'STANDBY'}];
+ updateMetrics();renderFleet();requestAnimationFrame(drawSaturn);
+}
+window.addEventListener('resize',()=>{drawChart()});
+start();
+</script>
+</body>
+</html>
