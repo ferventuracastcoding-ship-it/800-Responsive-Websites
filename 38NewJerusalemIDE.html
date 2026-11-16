@@ -1,0 +1,164 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>New Jerusalem IDE — City Builder</title>
+<style>
+:root{--face:#c8c8c4;--light:#fff;--shade:#555;--blue:#102d91;--ink:#171717;--green:#00f47a}
+*{box-sizing:border-box}body{margin:0;padding:12px;background:#74766f;color:var(--ink);font:13px Tahoma,Arial,sans-serif}
+button,input,select{font:inherit}button{background:var(--face);border:2px solid;border-color:#fff #555 #555 #fff;padding:7px 9px;cursor:pointer}button:active{border-color:#555 #fff #fff #555;transform:translate(1px,1px)}button:hover{background:#e5e5df}button:focus-visible,input:focus-visible,select:focus-visible{outline:2px dotted #092c8c;outline-offset:2px}
+.app{max-width:1550px;margin:auto;background:var(--face);border:3px solid;border-color:#fff #454545 #454545 #fff;box-shadow:7px 8px 0 #0005;min-height:calc(100vh - 24px);display:flex;flex-direction:column}
+.titlebar{background:linear-gradient(90deg,#07166c,#3c59bf);color:white;font-weight:bold;padding:7px 10px;display:flex;justify-content:space-between;align-items:center;gap:8px}.windowbuttons{display:flex;gap:4px}.windowbuttons button{padding:0;width:24px;height:21px;font-weight:bold}
+.menubar,.toolbar{display:flex;gap:3px;flex-wrap:wrap;padding:5px;border-bottom:1px solid #888}.menubar button{border:1px solid transparent;background:transparent;box-shadow:none;padding:6px 10px}.menubar button:hover{background:var(--blue);color:white}.toolbar{padding:8px;border-bottom:2px solid #888}
+.workspace{display:grid;grid-template-columns:210px minmax(0,1fr) 250px;flex:1;min-height:650px}.sidebar,.inspector{padding:8px;background:#d0d0d0;min-width:0}.sidebar{border-right:2px solid #888}.inspector{border-left:2px solid #888}.center{padding:8px;min-width:0;display:flex;flex-direction:column}
+.section{border:2px groove white;background:#ddd;margin-bottom:9px;min-width:0}.section-title{font-weight:bold;padding:6px;background:#b9b9b9;border-bottom:1px solid #888}.tree{padding:5px}.tree button{display:block;width:100%;text-align:left;border:1px solid transparent;background:transparent;box-shadow:none;padding:6px 3px}.tree button:hover,.tree button.active{background:#17399b;color:white}
+.tabbar{display:flex;gap:3px;flex-wrap:wrap;border-bottom:2px solid #888;margin-bottom:8px}.tab{padding:7px 10px;background:#bdbdbd;border:2px solid;border-color:#fff #777 #777 #fff}.tab.active{background:#e0e0e0;border-bottom-color:#e0e0e0;margin-bottom:-2px;font-weight:bold}
+.panel{border:2px groove white;background:#ddd;padding:9px;margin-bottom:9px}.panel h2{font-size:14px;margin:0 0 8px;padding-bottom:7px;border-bottom:1px solid #aaa}
+.gridwrap{background:#aeb4b4;border:2px inset #999;padding:8px;display:flex;justify-content:center;align-items:center;overflow:auto;min-height:350px}canvas{display:block;width:min(100%,min(66vh,660px));height:auto;image-rendering:pixelated;cursor:crosshair;touch-action:manipulation}
+.gridmeta{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-top:7px;color:#444;font-size:11px}
+.addgrid{display:grid;grid-template-columns:1fr 1fr;gap:5px;padding:8px}.addgrid button{text-align:left;min-height:36px}.addgrid button span{display:block;font-size:10px;color:#555;margin-top:2px}.controls{padding:8px;display:grid;gap:8px}.controls label{display:flex;flex-direction:column;gap:4px}.controls select,.controls input[type=text]{padding:6px;width:100%;border:2px inset #aaa;background:white}
+.legend{display:grid;grid-template-columns:14px 1fr;gap:6px;padding:8px;align-items:center;font-size:11px}.swatch{height:13px;border:1px solid #555}
+.info{padding:8px;line-height:1.9}.info b{color:#17358e}.consolebox{border:2px groove white;margin:0 8px 8px}.console-title{background:linear-gradient(90deg,#07166c,#3c59bf);color:white;font-weight:bold;padding:6px}.console{background:#050805;color:#00f47a;font:12px/1.5 Consolas,"Courier New",monospace;padding:8px;height:105px;overflow:auto}.console div{white-space:pre-wrap;overflow-wrap:anywhere}
+.statusbar{border-top:2px solid #888;padding:7px 9px;display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}.led{display:inline-block;width:9px;height:9px;background:#1ba449;border-radius:50%;margin-right:6px}
+.modal{display:none;position:fixed;inset:0;background:#0008;align-items:center;justify-content:center;padding:18px;z-index:20}.modal.open{display:flex}.dialog{width:min(440px,100%);background:#c8c8c4;border:3px solid;border-color:#fff #444 #444 #fff;box-shadow:7px 7px #0005}.dialog-head{background:linear-gradient(90deg,#07166c,#3c59bf);color:white;font-weight:bold;padding:8px}.dialog-body{padding:14px;line-height:1.5;white-space:pre-line}.dialog-actions{display:flex;justify-content:flex-end;gap:8px;padding:0 14px 14px}
+@media(max-width:1050px){.workspace{grid-template-columns:180px minmax(0,1fr)}.inspector{grid-column:1/-1;border-left:0;border-top:2px solid #888;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.inspector .section{margin:0}}
+@media(max-width:700px){body{padding:4px}.workspace{grid-template-columns:1fr}.sidebar{border-right:0;border-bottom:2px solid #888}.tree{display:grid;grid-template-columns:1fr 1fr}.inspector{grid-template-columns:1fr}.center{padding:5px}.gridwrap{min-height:260px}canvas{width:min(100%,82vw)}}
+</style>
+</head>
+<body>
+<div class="app">
+<header class="titlebar"><span>▣ New Jerusalem IDE — Pixel City Builder</span><div class="windowbuttons"><button id="minimize" title="Collapse workspace">_</button><button id="compact" title="Toggle width">□</button><button id="about">X</button></div></header>
+<nav class="menubar">
+<button data-act="new">File</button><button data-act="edit">Edit</button><button data-act="view">View</button><button data-act="generate">Project</button><button data-act="animate">Run</button><button data-act="export">Tools</button><button data-act="help">Help</button>
+</nav>
+<div class="toolbar">
+<button data-act="generate">▶ Generate City</button><button data-act="animate">✨ Animate Light</button><button data-act="grid">▦ Grid Lines</button><button data-act="undo">↶ Undo</button><button data-act="clear">⌫ Clear Additions</button><button data-act="save">💾 Save Map</button><button data-act="export">⇩ Export PNG</button><button data-act="reset">↺ Reset</button>
+</div>
+<div class="workspace" id="workspace">
+<aside class="sidebar">
+ <div class="section"><div class="section-title">▾ Project Explorer</div><div class="tree">
+ <button class="active" data-act="selectProject">📁 NewJerusalemProject</button><button>　📁 src</button><button>　　📄 Main.java</button><button>　　📄 GridVisualizer.java</button><button>　　📄 CityBuilder.java</button><button>　📁 maps</button><button data-act="generate">　　▦ city_40x40.map</button><button data-act="legend">　📄 legend.txt</button><button data-act="help">　📁 documentation</button>
+ </div></div>
+ <div class="section"><div class="section-title">▾ City Statistics</div><div class="info">Grid: <b id="gridStat">40 × 40</b><br>Cells: <b id="cellStat">1,600</b><br>Additions: <b id="additionStat">0</b><br>Selected: <b id="selectedStat">None</b><br>Layers: <b>9 tile types</b></div></div>
+ <div class="section"><div class="section-title">▾ Quick Tools</div><div style="padding:7px;display:grid;grid-template-columns:1fr 1fr;gap:5px"><button data-act="generate">Build</button><button data-act="grid">Grid</button><button data-act="undo">Undo</button><button data-act="export">PNG</button></div></div>
+</aside>
+<main class="center">
+ <div class="tabbar"><button class="tab active">▦ City Visualizer</button><button class="tab" data-act="legend">Legend</button><button class="tab" data-act="help">Readme.txt</button></div>
+ <div class="panel" style="flex:1;display:flex;flex-direction:column">
+  <h2>NEW JERUSALEM — Pixel Construction View <span id="mapLabel" style="float:right;font-weight:normal">40 × 40 / 1,600 cells</span></h2>
+  <div class="gridwrap"><canvas id="map" width="800" height="800" aria-label="Interactive pixel grid showing a symbolic New Jerusalem city"></canvas></div>
+  <div class="gridmeta"><span>Click a tile to inspect it. Add tools place objects on the map.</span><span id="cursor">Selected tile: none</span></div>
+ </div>
+ <div class="panel" style="margin-bottom:0"><b>Inspector:</b> <span id="tileInfo">Select a tile or choose an Add button to place a new feature.</span></div>
+</main>
+<aside class="inspector">
+ <div class="section"><div class="section-title">▾ Add to Dashboard — 10 Tools</div><div class="addgrid">
+ <button data-add="gold">🟨 Add Gold<span>Golden tiles</span></button>
+ <button data-add="rover">🤖 Add Rover<span>Exploration unit</span></button>
+ <button data-add="tree">🌳 Add Tree of Life<span>Living landmark</span></button>
+ <button data-add="river">🌊 Add River<span>Water tiles</span></button>
+ <button data-add="gate">🏛 Add Gate<span>City entrance</span></button>
+ <button data-add="temple">✨ Add Temple<span>Sacred center</span></button>
+ <button data-add="garden">🌿 Add Garden<span>Green space</span></button>
+ <button data-add="tower">🗼 Add Tower<span>City structure</span></button>
+ <button data-add="star">⭐ Add Star<span>Light marker</span></button>
+ <button data-add="path">🟫 Add Path<span>Golden road</span></button>
+ </div></div>
+ <div class="section"><div class="section-title">▾ Visualizer Settings</div><div class="controls">
+ <label>Grid Resolution<select id="resolution"><option value="40">40 × 40 — Standard</option><option value="32">32 × 32 — Compact</option><option value="48">48 × 48 — Detailed</option></select></label>
+ <label>Color Theme<select id="theme"><option value="biblical">Biblical Pixel Art</option><option value="golden">Golden City</option><option value="night">Night Vision</option><option value="parchment">Ancient Parchment</option></select></label>
+ <label>Canvas Zoom<input id="zoom" type="range" min="60" max="100" value="100"></label>
+ <label class="check"><span><input id="showGrid" type="checkbox" checked> Show grid lines</span></label>
+ <label class="check"><span><input id="showMarkers" type="checkbox" checked> Show object icons</span></label>
+ <label class="check"><span><input id="glow" type="checkbox" checked> Sacred light glow</span></label>
+ </div></div>
+ <div class="section"><div class="section-title">▾ Palette Legend</div><div class="legend" id="legend"></div></div>
+</aside>
+</div>
+<section class="consolebox"><div class="console-title">Console — City Builder Output</div><div class="console" id="console" aria-live="polite"></div></section>
+<footer class="statusbar"><span><i class="led"></i><span id="status">Ready</span></span><span>New Jerusalem IDE | Builder 2.0 | Browser Local</span></footer>
+</div>
+<div class="modal" id="modal"><div class="dialog"><div class="dialog-head" id="modalTitle">New Jerusalem IDE</div><div class="dialog-body" id="modalBody"></div><div class="dialog-actions"><button id="modalClose">Close</button><button id="modalOK">OK</button></div></div></div>
+<script>
+(()=> {
+const $=id=>document.getElementById(id),canvas=$("map"),ctx=canvas.getContext("2d");
+const palettes={
+ biblical:{sky:"#123b8e",water:"#278bd4",gold:"#f2c82d",light:"#fff5c8",green:"#2b9b45",wall:"#b7b9b6",red:"#d9432c",dark:"#14264c",earth:"#c8873e"},
+ golden:{sky:"#182c63",water:"#5e9ed0",gold:"#ffd34f",light:"#fff6d4",green:"#44864b",wall:"#e1c87a",red:"#d95337",dark:"#101d42",earth:"#b98c50"},
+ night:{sky:"#081d40",water:"#176b9b",gold:"#e9bf4a",light:"#c8fff0",green:"#176a51",wall:"#7d8a98",red:"#b54c5a",dark:"#061329",earth:"#6f654b"},
+ parchment:{sky:"#cbbd91",water:"#759a9e",gold:"#d8a62e",light:"#fff0c2",green:"#667d49",wall:"#9e8e70",red:"#a84a32",dark:"#554b3d",earth:"#b28b5c"}
+};
+const names={sky:"Outer sky",water:"River of Life",gold:"Gold / foundations",light:"Sacred light",green:"Garden / life",wall:"Wall / gate",red:"Temple",dark:"Shadow",earth:"Path / ground"};
+const objectDefs={
+ gold:{icon:"◆",tile:"gold",name:"Gold",color:"#f2c82d"},rover:{icon:"🤖",tile:"wall",name:"Rover",color:"#d8d8d8"},
+ tree:{icon:"♣",tile:"green",name:"Tree of Life",color:"#22d85d"},river:{icon:"≈",tile:"water",name:"River",color:"#278bd4"},
+ gate:{icon:"Π",tile:"gold",name:"Gate",color:"#fff0a1"},temple:{icon:"✦",tile:"red",name:"Temple",color:"#ff5645"},
+ garden:{icon:"♣",tile:"green",name:"Garden",color:"#36b75c"},tower:{icon:"▥",tile:"wall",name:"Tower",color:"#e1e1d5"},
+ star:{icon:"✧",tile:"light",name:"Star",color:"#fff5c8"},path:{icon:"▪",tile:"earth",name:"Path",color:"#c8873e"}
+};
+let n=40,grid=[],objects=[],history=[],showGrid=true,showMarkers=true,glow=true,selected=null,activeAdd=null,animating=false,phase=0;
+function log(s){let d=document.createElement("div");d.textContent="> "+s;$("console").append(d);$("console").scrollTop=$("console").scrollHeight;while($("console").children.length>70)$("console").firstChild.remove()}
+function status(s){$("status").textContent=s}
+function rand(x,y){let v=Math.sin(x*127.1+y*311.7+17.3)*43758.5453;return v-Math.floor(v)}
+function snapshot(){history.push({grid:grid.map(r=>r.slice()),objects:objects.map(o=>({...o}))});if(history.length>30)history.shift()}
+function build(size=n){
+ n=size;grid=Array.from({length:n},()=>Array(n).fill("sky"));objects=[];
+ let c=(n-1)/2;
+ for(let y=0;y<n;y++)for(let x=0;x<n;x++){
+  let d=Math.max(Math.abs(x-c),Math.abs(y-c));
+  grid[y][x]=d>n*.45?"water":d>n*.405?"green":d>n*.365?"wall":d>n*.33?"earth":"green";
+ }
+ for(let y=0;y<n;y++)for(let x=0;x<n;x++){let dx=x-c,dy=y-c;if(((Math.abs(dx)<n*.035)||(Math.abs(dy)<n*.035))&&Math.max(Math.abs(dx),Math.abs(dy))<n*.34&&Math.max(Math.abs(dx),Math.abs(dy))>n*.095)grid[y][x]="water"}
+ let half=Math.round(n*.17),inner=Math.round(n*.125);
+ for(let y=Math.floor(c)-half;y<=Math.floor(c)+half;y++)for(let x=Math.floor(c)-half;x<=Math.floor(c)+half;x++)if(x>=0&&y>=0&&x<n&&y<n)grid[y][x]=Math.max(Math.abs(x-c),Math.abs(y-c))>inner?"gold":(rand(x,y)>.8?"light":"earth");
+ let t=Math.max(2,Math.round(n*.055));for(let y=Math.floor(c)-t;y<=Math.floor(c)+t;y++)for(let x=Math.floor(c)-t;x<=Math.floor(c)+t;x++)if(x>=0&&y>=0&&x<n&&y<n)grid[y][x]=(Math.abs(x-c)<=1&&Math.abs(y-c)<=1)?"red":(rand(x,y)>.35?"light":"gold");
+ for(let y=0;y<n;y++)for(let x=0;x<n;x++){let d=Math.max(Math.abs(x-c),Math.abs(y-c));if(d>n*.19&&d<n*.35&&rand(x+41,y-9)>.91)grid[y][x]="light";if(grid[y][x]==="sky"&&rand(x+7,y+11)>.91)grid[y][x]="light"}
+ const mid=Math.floor(n/2);objects.push({x:mid,y:mid,kind:"temple"},{x:mid,y:Math.max(1,Math.floor(n*.28)),kind:"tree"},{x:Math.max(1,Math.floor(n*.25)),y:mid,kind:"gate"},{x:Math.min(n-2,Math.floor(n*.75)),y:mid,kind:"gate"});
+ selected=null;updateStats();draw();log("Built symbolic city grid "+n+" × "+n+" ("+n*n+" cells).");status("City generated");
+}
+function draw(){
+ const p=palettes[$("theme").value]||palettes.biblical,cell=canvas.width/n;ctx.clearRect(0,0,canvas.width,canvas.height);
+ for(let y=0;y<n;y++)for(let x=0;x<n;x++){ctx.fillStyle=p[grid[y][x]]||p.sky;ctx.fillRect(x*cell,y*cell,cell,cell)}
+ if(glow){ctx.save();ctx.shadowColor=p.gold;ctx.shadowBlur=animating?10:4;ctx.fillStyle="rgba(255,245,200,.22)";ctx.fillRect(canvas.width*.38,canvas.height*.38,canvas.width*.24,canvas.height*.24);ctx.restore()}
+ if(showGrid){ctx.beginPath();ctx.strokeStyle="rgba(8,16,30,.58)";ctx.lineWidth=Math.max(1,cell*.05);for(let i=0;i<=n;i++){let q=i*cell;ctx.moveTo(q,0);ctx.lineTo(q,canvas.height);ctx.moveTo(0,q);ctx.lineTo(canvas.width,q)}ctx.stroke()}
+ if(showMarkers){ctx.textAlign="center";ctx.textBaseline="middle";ctx.font="bold "+Math.max(11,cell*.9)+"px Tahoma";objects.forEach(o=>{let def=objectDefs[o.kind];if(!def)return;ctx.fillStyle=def.color;ctx.strokeStyle="#18213a";ctx.lineWidth=Math.max(1,cell*.06);ctx.strokeText(def.icon,(o.x+.5)*cell,(o.y+.5)*cell);ctx.fillText(def.icon,(o.x+.5)*cell,(o.y+.5)*cell)});}
+ if(selected){ctx.strokeStyle="#fff";ctx.lineWidth=Math.max(2,cell*.15);ctx.strokeRect(selected.x*cell+1,selected.y*cell+1,cell-2,cell-2)}
+ updateStats();
+}
+function updateStats(){$("gridStat").textContent=n+" × "+n;$("cellStat").textContent=(n*n).toLocaleString();$("additionStat").textContent=objects.length;$("selectedStat").textContent=selected?selected.x+", "+selected.y:"None";$("mapLabel").textContent=n+" × "+n+" / "+(n*n).toLocaleString()+" cells"}
+function legend(){let p=palettes[$("theme").value],el=$("legend");el.replaceChildren();Object.keys(names).forEach(k=>{let s=document.createElement("span");s.className="swatch";s.style.background=p[k];let t=document.createElement("span");t.textContent=names[k];el.append(s,t)})}
+function addObject(kind,x,y){if(!objectDefs[kind])return;snapshot();if(x==null||y==null){x=Math.floor(n/2+(Math.random()-.5)*n*.42);y=Math.floor(n/2+(Math.random()-.5)*n*.42)}x=Math.max(0,Math.min(n-1,x));y=Math.max(0,Math.min(n-1,y));grid[y][x]=objectDefs[kind].tile;objects.push({x,y,kind});selected={x,y};activeAdd=null;draw();$("tileInfo").textContent="Added "+objectDefs[kind].name+" at ("+x+", "+y+").";$("cursor").textContent="Selected tile: ("+x+", "+y+")";log("Added "+objectDefs[kind].name+" at ["+x+", "+y+"].");status(objectDefs[kind].name+" added")}
+function showModal(title,body,ok){$("modalTitle").textContent=title;$("modalBody").textContent=body;$("modal").classList.add("open");$("modalOK").onclick=()=>{ $("modal").classList.remove("open");if(ok)ok()}}
+function action(a){
+ if(a==="generate"){snapshot();build(n);legend();return}
+ if(a==="new"){showModal("New City Map","Rebuild the city from the default symbolic layout? This clears custom additions.",()=>{history=[];build(n);legend()});return}
+ if(a==="animate"){animating=!animating;status(animating?"Light animation running":"Animation paused");log(animating?"Sacred light animation started.":"Animation paused.");return}
+ if(a==="grid"){showGrid=!showGrid;$("showGrid").checked=showGrid;draw();return}
+ if(a==="undo"){let h=history.pop();if(h){grid=h.grid;objects=h.objects;draw();log("Undid last map edit.");status("Undo complete")}else log("No map edits to undo.");return}
+ if(a==="clear"){showModal("Clear Additions","Remove all placed objects and restore the base city map?",()=>{snapshot();build(n);legend();log("Custom additions cleared.")});return}
+ if(a==="reset"){history=[];$("resolution").value="40";$("theme").value="biblical";$("showGrid").checked=true;$("showMarkers").checked=true;$("glow").checked=true;showGrid=showMarkers=glow=true;animating=false;build(40);legend();log("Dashboard reset to default.");return}
+ if(a==="save"){let data=JSON.stringify({size:n,grid,objects},null,2),blob=new Blob([data],{type:"application/json"}),url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download="new_jerusalem_map.json";a.click();URL.revokeObjectURL(url);log("Saved city layout as JSON.");status("Map saved");return}
+ if(a==="export"){let a=document.createElement("a");a.download="new_jerusalem_"+n+"x"+n+".png";a.href=canvas.toDataURL("image/png");a.click();log("Exported visualizer as PNG.");status("PNG exported");return}
+ if(a==="legend"){showModal("Tile Legend","Gold — city foundations and roads\nSacred light — luminous details\nBlue — River of Life / surrounding water\nGreen — gardens and living land\nGray — walls and gates\nRed — temple center\nDark blue — outer sky\nBrown — path and ground");return}
+ if(a==="help"||a==="about"){showModal("New Jerusalem IDE — Help","This is a symbolic pixel-art city builder inspired by New Jerusalem imagery. It is an artistic interpretation, not a literal map.\n\nChoose any of the ten Add tools, then click a grid cell to place the feature. If you click an Add tool again without placing it, the feature is placed automatically. Use Undo to reverse edits, Save Map to export JSON, and Export PNG to save an image.");return}
+ if(a==="view"){$("showGrid").checked=!showGrid;showGrid=$("showGrid").checked;draw();return}
+ if(a==="edit"){showModal("Edit Mode","Select one of the ten Add tools, then click any cell to place that item. Click a tile without an active tool to inspect it.");return}
+ if(a==="selectProject"){log("Project NewJerusalemProject selected.");return}
+}
+document.addEventListener("click",e=>{let b=e.target.closest("[data-act]");if(b)action(b.dataset.act);let add=e.target.closest("[data-add]");if(add){activeAdd=add.dataset.add;log("Placement tool selected: "+objectDefs[activeAdd].name+". Click a grid cell to place it.");status("Place "+objectDefs[activeAdd].name)}});
+canvas.addEventListener("click",e=>{let r=canvas.getBoundingClientRect(),x=Math.floor((e.clientX-r.left)/r.width*n),y=Math.floor((e.clientY-r.top)/r.height*n);if(x<0||y<0||x>=n||y>=n)return;if(activeAdd){addObject(activeAdd,x,y);return}selected={x,y};let kind=grid[y][x],obj=objects.filter(o=>o.x===x&&o.y===y).map(o=>objectDefs[o.kind].name).join(", ");$("cursor").textContent="Selected tile: ("+x+", "+y+")";$("tileInfo").textContent="("+x+", "+y+") — "+(names[kind]||kind)+(obj?" | Objects: "+obj:"")+" | tile type: "+kind;draw();log("Inspected cell ["+x+","+y+"] — "+kind+".")});
+$("resolution").onchange=()=>{snapshot();build(Number($("resolution").value));legend()};
+$("theme").onchange=()=>{legend();draw();log("Theme changed to "+$("theme").selectedOptions[0].text)};
+$("showGrid").onchange=()=>{showGrid=$("showGrid").checked;draw()};$("showMarkers").onchange=()=>{showMarkers=$("showMarkers").checked;draw()};$("glow").onchange=()=>{glow=$("glow").checked;draw()};
+$("zoom").oninput=()=>{canvas.style.width=$("zoom").value+"%";};
+$("modalClose").onclick=()=>$("modal").classList.remove("open");$("about").onclick=()=>action("help");
+$("minimize").onclick=()=>{$("workspace").hidden=!$("workspace").hidden;status($("workspace").hidden?"Workspace collapsed":"Ready")};
+$("compact").onclick=()=>{let app=document.querySelector(".app");app.style.maxWidth=app.style.maxWidth==="1150px"?"1550px":"1150px"};
+function loop(){if(animating){phase++;if(phase%4===0){glow=!glow;draw()}}requestAnimationFrame(loop)}
+build(40);legend();log("Initializing New Jerusalem City Builder...");log("Created 40 × 40 pixel grid (1,600 cells).");log("Base map includes city, walls, gates, river channels and gardens.");log("10 additive construction tools ready.");requestAnimationFrame(loop);
+})();
+</script>
+</body>
+</html>
