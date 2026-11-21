@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Ocean Radar Compass</title>
+
+<style>
+
+/* Define the overall page. */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+/* Main body styling. */
+body {
+    background:
+        radial-gradient(circle at center, #063b48, #02151d 70%);
+    color: #7ffcff;
+    font-family: monospace;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+/* Main dashboard. */
+.dashboard {
+    width: min(1200px, 96%);
+    margin: auto;
+    padding: 20px;
+}
+
+/* Header. */
+header {
+    border: 2px solid #27f7ff;
+    padding: 18px;
+    text-align: center;
+    background: rgba(0, 20, 30, 0.8);
+    box-shadow: 0 0 25px #00eaff;
+}
+
+/* Main title. */
+header h1 {
+    font-size: clamp(22px, 5vw, 42px);
+    letter-spacing: 5px;
+}
+
+/* Subtitle. */
+header p {
+    margin-top: 8px;
+    color: #76ffb5;
+}
+
+/* Dashboard grid. */
+.grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+    margin-top: 18px;
+}
+
+/* Panel styling. */
+.panel {
+    border: 2px solid #146d78;
+    background: rgba(0, 15, 25, 0.9);
+    padding: 18px;
+    box-shadow: inset 0 0 20px rgba(0, 255, 255, 0.08);
+}
+
+/* Radar panel. */
+.radar-panel {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 560px;
+}
+
+/* Radar screen. */
+.radar {
+    width: min(480px, 90vw);
+    aspect-ratio: 1;
+    border-radius: 50%;
+    border: 3px solid #26f7ff;
+
+    background:
+        radial-gradient(circle,
+            transparent 0 18%,
+            rgba(0,255,255,.15) 18.2% 18.5%,
+            transparent 18.7% 39%,
+            rgba(0,255,255,.15) 39.2% 39.5%,
+            transparent 39.7% 59%,
+            rgba(0,255,255,.15) 59.2% 59.5%,
+            transparent 59.7% 79%,
+            rgba(0,255,255,.15) 79.2% 79.5%,
+            transparent 79.7%
+        );
+
+    position: relative;
+
+    box-shadow:
+        0 0 20px #00eaff,
+        inset 0 0 40px rgba(0,255,255,.2);
+
+    overflow: hidden;
+}
+
+/* Radar crosshair. */
+.radar::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 0;
+    width: 1px;
+    height: 100%;
+    background: rgba(0,255,255,.5);
+}
+
+/* Horizontal crosshair. */
+.radar::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background: rgba(0,255,255,.5);
+}
+
+/* Compass labels. */
+.direction {
+    position: absolute;
+    font-weight: bold;
+    text-shadow: 0 0 10px #00ffff;
+    z-index: 5;
+}
+
+.north {
+    top: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.south {
+    bottom: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.east {
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.west {
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+/* Radar sweep. */
+.sweep {
+    position: absolute;
+    width: 50%;
+    height: 50%;
+    left: 50%;
+    top: 50%;
+    transform-origin: 0% 100%;
+    background:
+        linear-gradient(
+            90deg,
+            rgba(0,255,180,.35),
+            transparent
+        );
+
+    border-right: 2px solid #76ffb5;
+
+    animation: sweep 3s linear infinite;
+}
+
+/* Radar scanning animation. */
+@keyframes sweep {
+
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Target marker. */
+.target {
+    position: absolute;
+    width: 11px;
+    height: 11px;
+    background: #ff4757;
+    border-radius: 50%;
+    box-shadow:
+        0 0 8px #ff4757,
+        0 0 20px #ff4757;
+
+    transform: translate(-50%, -50%);
+    z-index: 10;
+}
+
+/* Target pulse animation. */
+@keyframes pulse {
+
+    0%, 100% {
+        transform: translate(-50%, -50%) scale(1);
+    }
+
+    50% {
+        transform: translate(-50%, -50%) scale(1.8);
+    }
+}
+
+/* Target information. */
+.target-info {
+    position: absolute;
+    font-size: 10px;
+    color: #fff;
+    margin-left: 10px;
+    white-space: nowrap;
+}
+
+/* Data panel. */
+.data-panel {
+    min-height: 560px;
+}
+
+/* Metrics. */
+.metrics {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+/* Individual metric. */
+.metric {
+    border: 1px solid #176a75;
+    padding: 15px;
+    background: #031b24;
+}
+
+/* Metric label. */
+.metric span:first-child {
+    display: block;
+    color: #6b9fa8;
+    font-size: 12px;
+}
+
+/* Metric value. */
+.metric strong {
+    display: block;
+    margin-top: 8px;
+    font-size: 22px;
+    color: #76ffb5;
+}
+
+/* Target table. */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+/* Table cells. */
+th,
+td {
+    border-bottom: 1px solid #155762;
+    padding: 9px;
+    text-align: left;
+}
+
+/* Table heading. */
+th {
+    color: #76ffb5;
+}
+
+/* Status area. */
+.status {
+    margin-top: 20px;
+    padding: 12px;
+    border: 1px solid #176a75;
+    color: #76ffb5;
+}
+
+/* Responsive layout. */
+@media (max-width: 800px) {
+
+    .grid {
+        grid-template-columns: 1fr;
+    }
+
+    .radar-panel,
+    .data-panel {
+        min-height: auto;
+    }
+
+    .radar {
+        width: 85vw;
+    }
+
+    table {
+        font-size: 11px;
+    }
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="dashboard">
+
+<header>
+
+<h1>OCEAN RADAR COMMAND</h1>
+
+<p>SKY EQUIPMENT • COMPASS • LIVE TRACKING</p>
+
+</header>
+
+<div class="grid">
+
+<section class="panel radar-panel">
+
+<div class="radar" id="radar">
+
+<div class="direction north">N</div>
+
+<div class="direction east">E</div>
+
+<div class="direction south">S</div>
+
+<div class="direction west">W</div>
+
+<div class="sweep"></div>
+
+</div>
+
+</section>
+
+<section class="panel data-panel">
+
+<h2>VESSEL / RADAR TELEMETRY</h2>
+
+<br>
+
+<div class="metrics">
+
+<div class="metric">
+
+<span>HEADING</span>
+
+<strong id="heading">000°</strong>
+
+</div>
+
+<div class="metric">
+
+<span>SEA STATE</span>
+
+<strong id="seaState">0</strong>
+
+</div>
+
+<div class="metric">
+
+<span>CONTACTS</span>
+
+<strong id="contacts">0</strong>
+
+</div>
+
+<div class="metric">
+
+<span>RADAR STATUS</span>
+
+<strong>ONLINE</strong>
+
+</div>
+
+</div>
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>ID</th>
+
+<th>TYPE</th>
+
+<th>BRG</th>
+
+<th>RANGE</th>
+
+<th>ALT</th>
+
+</tr>
+
+</thead>
+
+<tbody id="targetTable">
+
+</tbody>
+
+</table>
+
+<div class="status">
+
+<span id="status">
+Connecting to Node.js radar server...
+</span>
+
+</div>
+
+</section>
+
+</div>
+
+</div>
+
+<script>
+
+// Get the radar display.
+const radar = document.getElementById("radar");
+
+// Get the heading display.
+const headingElement = document.getElementById("heading");
+
+// Get the sea-state display.
+const seaStateElement = document.getElementById("seaState");
+
+// Get the contact counter.
+const contactsElement = document.getElementById("contacts");
+
+// Get the target table.
+const targetTable = document.getElementById("targetTable");
+
+// Get the status message.
+const statusElement = document.getElementById("status");
+
+// Connect to the Node.js WebSocket server.
+const socket = new WebSocket(`ws://${location.host}`);
+
+// Convert compass bearing into radar coordinates.
+function bearingToPosition(bearing, distance) {
+
+    // Convert degrees into radians.
+    const radians = (bearing - 90) * Math.PI / 180;
+
+    // Convert distance into a percentage.
+    const radius = Math.min(distance / 40, 1) * 45;
+
+    // Calculate X coordinate.
+    const x = 50 + Math.cos(radians) * radius;
+
+    // Calculate Y coordinate.
+    const y = 50 + Math.sin(radians) * radius;
+
+    // Return radar coordinates.
+    return {
+        x,
+        y
+    };
+}
+
+// Display targets on the radar.
+function drawTargets(targets) {
+
+    // Remove previous target markers.
+    document
+        .querySelectorAll(".target")
+        .forEach(element => element.remove());
+
+    // Create a marker for every target.
+    targets.forEach(target => {
+
+        // Calculate target position.
+        const position =
+            bearingToPosition(
+                target.bearing,
+                target.distance
+            );
+
+        // Create marker.
+        const marker = document.createElement("div");
+
+        // Add target class.
+        marker.className = "target";
+
+        // Set horizontal position.
+        marker.style.left = `${position.x}%`;
+
+        // Set vertical position.
+        marker.style.top = `${position.y}%`;
+
+        // Add target information.
+        marker.innerHTML =
+            `<span class="target-info">
+                ${target.id}
+            </span>`;
+
+        // Add marker to radar.
+        radar.appendChild(marker);
+    });
+}
+
+// Populate the target table.
+function updateTable(targets) {
+
+    // Clear table.
+    targetTable.innerHTML = "";
+
+    // Add every target.
+    targets.forEach(target => {
+
+        // Create table row.
+        const row = document.createElement("tr");
+
+        // Add target information.
+        row.innerHTML = `
+            <td>${target.id}</td>
+            <td>${target.type}</td>
+            <td>${Math.round(target.bearing)}°</td>
+            <td>${target.distance.toFixed(1)} km</td>
+            <td>${target.altitude.toLocaleString()} ft</td>
+        `;
+
+        // Add row to table.
+        targetTable.appendChild(row);
+    });
+}
+
+// Handle successful WebSocket connection.
+socket.addEventListener("open", () => {
+
+    // Update status.
+    statusElement.textContent =
+        "NODE.JS RADAR LINK ESTABLISHED";
+});
+
+// Receive radar data.
+socket.addEventListener("message", event => {
+
+    // Parse JSON received from Node.js.
+    const data = JSON.parse(event.data);
+
+    // Update heading.
+    headingElement.textContent =
+        `${data.heading.toString().padStart(3, "0")}°`;
+
+    // Update sea state.
+    seaStateElement.textContent =
+        data.seaState;
+
+    // Update contact count.
+    contactsElement.textContent =
+        data.targets.length;
+
+    // Draw radar targets.
+    drawTargets(data.targets);
+
+    // Update target table.
+    updateTable(data.targets);
+
+    // Update status.
+    statusElement.textContent =
+        `LIVE • ${new Date(data.timestamp).toLocaleTimeString()}`;
+});
+
+// Handle connection errors.
+socket.addEventListener("error", () => {
+
+    // Display error.
+    statusElement.textContent =
+        "RADAR CONNECTION ERROR";
+});
+
+// Handle disconnection.
+socket.addEventListener("close", () => {
+
+    // Display offline status.
+    statusElement.textContent =
+        "RADAR LINK OFFLINE";
+});
+
+</script>
+
+</body>
+
+</html>
