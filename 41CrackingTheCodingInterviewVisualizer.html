@@ -1,0 +1,799 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cracking the Coding Interview | Visual Lab</title>
+<style>
+:root{
+  --bg:#080e19;--panel:#111c2d;--panel2:#17263b;
+  --cyan:#36e5ff;--blue:#438bff;--green:#55efad;
+  --gold:#ffd166;--text:#edf5ff;--muted:#92a7c2;
+  --border:#293c56;--red:#ff7085;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;background:var(--bg);color:var(--text);
+  font:15px/1.6 system-ui,Segoe UI,sans-serif;
+}
+button,select{font:inherit}
+button{
+  cursor:pointer;border:1px solid var(--border);
+  color:var(--text);background:var(--panel2);
+  padding:10px 14px;border-radius:9px;transition:.2s;
+}
+button:hover{border-color:var(--cyan);transform:translateY(-1px)}
+button:focus-visible{outline:2px solid var(--cyan);outline-offset:3px}
+button.primary{background:var(--blue);border-color:var(--blue)}
+button.active{background:#17465a;border-color:var(--cyan)}
+header{
+  padding:30px max(20px,calc((100% - 1200px)/2));
+  background:linear-gradient(120deg,#102747,#10152a 65%,#103543);
+  border-bottom:1px solid var(--border);
+}
+.eyebrow{color:var(--cyan);font-size:12px;font-weight:800;letter-spacing:3px}
+h1{font-size:clamp(27px,5vw,43px);line-height:1.15;margin:12px 0}
+header p{color:#b8c9df;max-width:700px;margin-bottom:22px}
+.stats{display:flex;gap:12px;flex-wrap:wrap}
+.stat{padding:10px 16px;border:1px solid #ffffff1d;border-radius:10px;background:#ffffff08}
+.stat b{color:var(--cyan);font-size:20px;margin-right:6px}
+main{max-width:1200px;margin:auto;padding:24px 18px}
+.layout{display:grid;grid-template-columns:270px minmax(0,1fr);gap:20px}
+.panel{background:var(--panel);border:1px solid var(--border);border-radius:15px;overflow:hidden}
+.panel-head{padding:17px 18px;border-bottom:1px solid var(--border)}
+.panel-head h2,.panel-head h3{margin:0;font-size:16px}
+.sidebar{align-self:start;position:sticky;top:12px}
+.question-list{padding:9px;display:grid;gap:6px}
+.qbtn{text-align:left;display:flex;gap:10px;align-items:center;padding:11px}
+.qnum{display:grid;place-items:center;width:30px;height:30px;flex-shrink:0;border-radius:8px;background:#23354d;color:var(--cyan);font-weight:800}
+.qbtn.active .qnum{background:var(--cyan);color:#07101b}
+.qname{font-size:13px;font-weight:650;line-height:1.3}
+.qtype{display:block;color:var(--muted);font-size:11px;margin-top:4px}
+.side-bottom{padding:15px;border-top:1px solid var(--border)}
+.progress{height:7px;background:#25354b;border-radius:9px;overflow:hidden;margin:10px 0}
+.progress div{height:100%;width:0;background:linear-gradient(90deg,var(--blue),var(--cyan));transition:width .3s}
+.workspace{min-width:0}
+.topline{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:15px}
+.tag{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--cyan);font-weight:800}
+h2{line-height:1.3}
+#questionTitle{font-size:clamp(23px,4vw,32px);margin:7px 0}
+.muted{color:var(--muted)}
+.question-body{padding:22px}
+.question-body p{margin:7px 0 15px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0}
+.chip{border:1px solid var(--border);padding:4px 10px;border-radius:20px;font-size:12px;color:#c7d9ee}
+.visual{margin-top:18px;background:#091321;border:1px solid var(--border);border-radius:12px;padding:17px}
+.visual-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.visual-head h3{margin:0;font-size:15px}
+.canvas{min-height:145px;display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;padding:20px 5px}
+.cell{width:56px;height:62px;display:grid;place-items:center;border-radius:9px;border:1px solid #365477;background:#142741;font-weight:800;font-size:18px;position:relative}
+.cell small{position:absolute;top:-21px;font-size:10px;color:var(--muted);font-weight:500}
+.cell.hot{border-color:var(--gold);background:#46391b;color:var(--gold)}
+.cell.done{border-color:var(--green);background:#12392e;color:var(--green)}
+.arrow{font-size:24px;color:var(--cyan)}
+.visual-caption{text-align:center;color:var(--muted);font-size:12px;min-height:20px}
+.controls{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.answer{margin-top:18px;border:1px solid var(--border);border-radius:12px;overflow:hidden}
+.answer-head{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;padding:13px 16px;background:#16263a}
+.answer-content{padding:17px}
+.answer-content[hidden]{display:none}
+.answer-content h3{font-size:15px;color:var(--green);margin:12px 0 5px}
+.answer-content p{color:#c4d3e6}
+pre{background:#060b13;color:#a8f3d2;padding:16px;border:1px solid #24344a;border-radius:10px;overflow:auto;font-size:12px;line-height:1.65;white-space:pre}
+.complexity{display:flex;gap:10px;flex-wrap:wrap}
+.complexity div{padding:9px 13px;background:#091321;border-radius:8px;flex:1;min-width:120px}
+.complexity b{color:var(--gold);display:block}
+.quiz{padding:18px;margin-top:18px}
+.quiz h3{margin:0 0 8px}
+.quiz-options{display:grid;gap:8px;margin:13px 0}
+.quiz-options button{text-align:left}
+.quiz-options button.correct{border-color:var(--green);background:#12382d}
+.quiz-options button.wrong{border-color:var(--red);background:#3b1b29}
+.feedback{min-height:25px;color:var(--green);font-size:13px}
+.bottom-nav{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:18px}
+footer{text-align:center;color:var(--muted);padding:28px 15px;border-top:1px solid var(--border);margin-top:30px;font-size:13px}
+@media(max-width:760px){
+ .layout{grid-template-columns:1fr}
+ .sidebar{position:static}
+ .question-list{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .qbtn{padding:8px}
+ .qname{font-size:12px}
+ .question-body{padding:16px}
+}
+@media(max-width:400px){.question-list{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="eyebrow">PROGRAMMING INTERVIEW VISUALIZER / C++ & DSA</div>
+  <h1>Cracking the Coding<br>Interview</h1>
+  <p>10 coding challenges. Visual explanations. C++ solutions.
+     Practice the patterns used in technical interviews, one step at a time.</p>
+  <div class="stats">
+    <div class="stat"><b id="completedStat">0</b>/10 completed</div>
+    <div class="stat"><b id="scoreStat">0</b> quiz points</div>
+    <div class="stat"><b>10</b> challenges</div>
+  </div>
+</header>
+
+<main>
+<div class="layout">
+  <aside class="panel sidebar">
+    <div class="panel-head"><h2>Question Navigator</h2></div>
+    <div class="question-list" id="questionList"></div>
+    <div class="side-bottom">
+      <strong>Learning progress</strong>
+      <div class="progress"><div id="progressBar"></div></div>
+      <small class="muted" id="progressText">0 of 10 explored</small>
+      <div class="controls">
+        <button onclick="resetProgress()">Reset progress</button>
+      </div>
+    </div>
+  </aside>
+
+  <section class="workspace">
+    <div class="topline">
+      <span class="tag" id="category">ARRAYS AND STRINGS</span>
+      <span class="muted" id="difficulty">Beginner</span>
+    </div>
+
+    <div class="panel">
+      <div class="question-body">
+        <div class="tag" id="questionNumber">QUESTION 01 / 10</div>
+        <h2 id="questionTitle"></h2>
+        <p id="questionDescription"></p>
+        <div class="chips" id="questionTags"></div>
+
+        <div class="visual">
+          <div class="visual-head">
+            <h3 id="visualTitle">Algorithm Visualizer</h3>
+            <span class="tag">LIVE SIMULATION</span>
+          </div>
+          <div class="canvas" id="canvas"></div>
+          <div class="visual-caption" id="visualCaption" aria-live="polite"></div>
+          <div class="controls">
+            <button class="primary" onclick="stepVisual()">Next step →</button>
+            <button onclick="runVisual()">Run all</button>
+            <button onclick="resetVisual()">Reset visual</button>
+          </div>
+        </div>
+
+        <div class="answer">
+          <div class="answer-head">
+            <strong>Solution & explanation</strong>
+            <button id="answerToggle" onclick="toggleAnswer()">Show answer</button>
+          </div>
+          <div class="answer-content" id="answerContent" hidden>
+            <h3>Approach</h3>
+            <p id="approach"></p>
+            <h3>C++ solution</h3>
+            <pre><code id="solutionCode"></code></pre>
+            <button onclick="copyCode()">Copy C++ code</button>
+            <h3>Complexity analysis</h3>
+            <div class="complexity">
+              <div>Time complexity<b id="timeComplexity"></b></div>
+              <div>Space complexity<b id="spaceComplexity"></b></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel quiz">
+      <div class="tag">KNOWLEDGE CHECK</div>
+      <h3 id="quizTitle">Test your understanding</h3>
+      <p id="quizQuestion"></p>
+      <div class="quiz-options" id="quizOptions"></div>
+      <div class="feedback" id="quizFeedback" aria-live="polite"></div>
+      <button onclick="newQuiz()">Try another question</button>
+    </div>
+
+    <div class="bottom-nav">
+      <button onclick="navigate(-1)">← Previous</button>
+      <span class="muted" id="navCount">1 / 10</span>
+      <button class="primary" onclick="navigate(1)">Next question →</button>
+    </div>
+  </section>
+</div>
+</main>
+
+<footer>
+  C++ INTERVIEW LAB · Learn the pattern · Trace the algorithm · Explain the trade-offs
+</footer>
+
+<script>
+const questions = [
+{
+ title:"Is Unique",
+ category:"Arrays & Strings", difficulty:"Easy",
+ tags:["Hash set","Strings","CTCI-style"],
+ description:"Determine whether a string contains only unique characters. For example, \"planet\" is unique, but \"letter\" is not.",
+ approach:"Track each character in a boolean array. If a character appears twice, return false. This version assumes the input contains ASCII characters.",
+ code:`#include <iostream>
+#include <string>
+using namespace std;
+
+bool isUnique(const string& s) {
+    bool seen[128] = {};
+
+    for (unsigned char c : s) {
+        if (c >= 128) return false;
+        if (seen[c]) return false;
+        seen[c] = true;
+    }
+    return true;
+}
+
+int main() {
+    cout << boolalpha << isUnique("planet");
+}`,
+ time:"O(n)",space:"O(1)",
+ quiz:"What should happen when a character is encountered for the second time?",
+ options:["Ignore it","Return false","Sort the string"],correct:1,
+ visualTitle:"Character uniqueness scan",
+ states:[
+ ["p","l","a","n","e","t"],
+ ["p","l","a","n","e","t"],
+ ["p","l","a","n","e","t"],
+ ["p","l","a","n","e","t"]
+ ],captions:["Start with an empty set of seen characters.","Read p: this character has not appeared before.","Continue scanning and record each new character.","All characters are unique. Return true."],
+ highlights:[0,1,2,5]
+},
+{
+ title:"Check Permutation",
+ category:"Arrays & Strings",difficulty:"Easy",
+ tags:["Frequency counts","Strings"],
+ description:"Check whether two strings contain exactly the same characters with the same frequencies. Example: \"listen\" and \"silent\".",
+ approach:"Count the characters in the first string, then subtract the frequencies from the second. Equal lengths and all-zero final counts mean the strings are permutations. This example supports ASCII input.",
+ code:`#include <iostream>
+#include <string>
+using namespace std;
+
+bool permutation(string a, string b) {
+    if (a.size() != b.size()) return false;
+
+    int count[128] = {};
+
+    for (unsigned char c : a) {
+        if (c >= 128) return false;
+        count[c]++;
+    }
+
+    for (unsigned char c : b) {
+        if (c >= 128 || --count[c] < 0)
+            return false;
+    }
+    return true;
+}
+
+int main() {
+    cout << boolalpha
+         << permutation("listen", "silent");
+}`,
+ time:"O(n)",space:"O(1)",
+ quiz:"Why must character frequencies match?",
+ options:["Order must match","Every character must occur equally often","Both strings must be sorted"],correct:1,
+ visualTitle:"Character frequency comparison",
+ states:[["l","i","s","t","e","n"],["s","i","l","e","n","t"],["l:1","i:1","s:1","t:1","e:1","n:1"],["l:0","i:0","s:0","t:0","e:0","n:0"]],
+ captions:["Read the first string.","Read the second string; its order differs.","Count the characters from the first string.","Subtract the second string's counts. All are zero."],
+ highlights:[0,1,2,3]
+},
+{
+ title:"URLify a String",
+ category:"Arrays & Strings",difficulty:"Easy",
+ tags:["Strings","Two pointers"],
+ description:"Replace every space in a string with %20. For example, \"hello world\" becomes \"hello%20world\".",
+ approach:"Build a new string and append %20 whenever a space is found. Building a new string avoids writing beyond the original string's allocated storage.",
+ code:`#include <iostream>
+#include <string>
+using namespace std;
+
+string urlify(const string& s) {
+    string result;
+
+    for (char c : s) {
+        if (c == ' ')
+            result += "%20";
+        else
+            result += c;
+    }
+
+    return result;
+}
+
+int main() {
+    cout << urlify("hello world");
+}`,
+ time:"O(n + m)",space:"O(n + m)",
+ quiz:"What does a space become in URL encoding for this exercise?",
+ options:["%20","%00","%30"],correct:0,
+ visualTitle:"Space replacement",
+ states:[["h","e","l","l","o"," ","w","o","r","l","d"],["h","e","l","l","o","%","2","0","w","o","r","l","d"],["h","e","l","l","o","%20","w","o","r","l","d"]],
+ captions:["Inspect each character from left to right.","Replace the space with the three-character sequence %20.","Join the resulting characters to produce the encoded string."],
+ highlights:[5,5,5]
+},
+{
+ title:"Palindrome Permutation",
+ category:"Arrays & Strings",difficulty:"Easy",
+ tags:["Frequency counts","Odd counts"],
+ description:"Determine whether the characters of a phrase can be rearranged into a palindrome. Example: \"Tact Coa\" can form \"taco cat\" when case and spaces are ignored.",
+ approach:"Normalize letters to lowercase and ignore nonletters. A palindrome can have at most one character with an odd frequency.",
+ code:`#include <iostream>
+#include <string>
+#include <cctype>
+using namespace std;
+
+bool canFormPalindrome(const string& s) {
+    int count[26] = {};
+
+    for (unsigned char c : s) {
+        if (isalpha(c)) {
+            c = tolower(c);
+            count[c - 'a']++;
+        }
+    }
+
+    int odd = 0;
+    for (int n : count) {
+        if (n % 2 != 0) odd++;
+    }
+    return odd <= 1;
+}
+
+int main() {
+    cout << boolalpha
+         << canFormPalindrome("Tact Coa");
+}`,
+ time:"O(n)",space:"O(1)",
+ quiz:"How many character frequencies may be odd in a palindrome?",
+ options:["Zero only","At most one","Exactly two"],correct:1,
+ visualTitle:"Odd frequency detector",
+ states:[["t","a","c","t"," ","c","o","a"],["t","a","c","t","c","o","a"],["a:2","c:2","t:2","o:1"],["Odd counts: 1"]],
+ captions:["Start with the original phrase.","Ignore spaces and treat letters without regard to case.","Count the letters: o occurs once, while the others occur twice.","One odd count is allowed. A palindrome is possible."],
+ highlights:[4,4,3,3]
+},
+{
+ title:"One Away",
+ category:"Arrays & Strings",difficulty:"Medium",
+ tags:["Two pointers","Edit distance"],
+ description:"Check whether two strings are identical or differ by just one insertion, deletion, or replacement. Example: \"pale\" and \"ple\".",
+ approach:"Scan both strings with two pointers. On a mismatch, allow one edit. Equal-length strings advance both pointers; unequal-length strings advance only the pointer in the longer string.",
+ code:`#include <iostream>
+#include <string>
+#include <cstdlib>
+using namespace std;
+
+bool oneAway(string a, string b) {
+    if (abs((int)a.size() -
+            (int)b.size()) > 1)
+        return false;
+
+    if (a.size() > b.size()) swap(a, b);
+
+    size_t i = 0, j = 0;
+    bool edited = false;
+
+    while (i < a.size() && j < b.size()) {
+        if (a[i] == b[j]) {
+            i++; j++;
+        } else {
+            if (edited) return false;
+            edited = true;
+            if (a.size() == b.size()) i++;
+            j++;
+        }
+    }
+    return true;
+}
+
+int main() {
+    cout << boolalpha << oneAway("pale", "ple");
+}`,
+ time:"O(n)",space:"O(n) for copies",
+ quiz:"If one string is longer, which pointer should advance after a mismatch?",
+ options:["Both pointers","Only the longer string's pointer","Neither pointer"],correct:1,
+ visualTitle:"Two-pointer comparison",
+ states:[["p","a","l","e"],["p","a","l","e"],["p","l","e"],["p","a","l","e"]],
+ captions:["Compare the strings character by character.","The a in the longer string has no matching character here.","Skip a in the longer string; the remaining characters match.","Only one deletion is needed. Return true."],
+ highlights:[0,1,1,3]
+},
+{
+ title:"String Compression",
+ category:"Arrays & Strings",difficulty:"Medium",
+ tags:["Run-length encoding","Strings"],
+ description:"Compress repeated consecutive characters. Example: \"aaabbc\" becomes \"a3b2c1\". Return the original if compression is not shorter.",
+ approach:"Count each consecutive run, append its character and count, and compare the compressed length with the original length.",
+ code:`#include <iostream>
+#include <string>
+using namespace std;
+
+string compress(const string& s) {
+    if (s.empty()) return s;
+
+    string out;
+    int count = 1;
+
+    for (size_t i = 1; i <= s.size(); i++) {
+        if (i < s.size() && s[i] == s[i-1]) {
+            count++;
+        } else {
+            out += s[i-1];
+            out += to_string(count);
+            count = 1;
+        }
+    }
+
+    return out.size() < s.size() ? out : s;
+}
+
+int main() {
+    cout << compress("aaabbc");
+}`,
+ time:"O(n)",space:"O(n)",
+ quiz:"When should this implementation return the original string?",
+ options:["When compression is not shorter","Whenever there is a repeated character","Only when the input is empty"],correct:0,
+ visualTitle:"Run-length compression",
+ states:[["a","a","a","b","b","c"],["a","a","a","b","b","c"],["a3","b2","c1"],["a3b2c1"]],
+ captions:["Start with aaabbc.","Count the consecutive runs: three a characters, two b characters, one c.","Encode each run with its count.","The encoded result is longer here, so return the original string."],
+ highlights:[0,1,2,3]
+},
+{
+ title:"Rotate Matrix",
+ category:"Matrices",difficulty:"Medium",
+ tags:["2D arrays","Matrix transformation"],
+ description:"Rotate an n × n matrix 90 degrees clockwise in place. Try the 3 × 3 example.",
+ approach:"First transpose the square matrix, swapping values across its diagonal. Then reverse every row.",
+ code:`#include <iostream>
+#include <vector>
+#include <algorithm>
+using namespace std;
+
+void rotate(vector<vector<int>>& a) {
+    int n = a.size();
+
+    for (int r = 0; r < n; r++)
+        for (int c = r + 1; c < n; c++)
+            swap(a[r][c], a[c][r]);
+
+    for (auto& row : a)
+        reverse(row.begin(), row.end());
+}
+
+int main() {
+    vector<vector<int>> a = {
+        {1,2,3}, {4,5,6}, {7,8,9}
+    };
+
+    rotate(a);
+
+    for (auto& row : a) {
+        for (int x : row) cout << x << " ";
+        cout << "\\n";
+    }
+}`,
+ time:"O(n²)",space:"O(1) auxiliary",
+ quiz:"What are the two main operations used to rotate the matrix?",
+ options:["Sort then search","Transpose then reverse each row","Reverse columns then sort"],correct:1,
+ visualTitle:"Matrix rotation",
+ states:[[1,2,3,4,5,6,7,8,9],[1,4,7,2,5,8,3,6,9],[7,4,1,8,5,2,9,6,3]],
+ captions:["Original matrix: rows run from left to right.","Transpose the matrix across its main diagonal.","Reverse each row to finish the 90-degree clockwise rotation."],
+ highlights:[0,1,2]
+},
+{
+ title:"Zero Matrix",
+ category:"Matrices",difficulty:"Medium",
+ tags:["2D arrays","In-place updates"],
+ description:"If any cell in a matrix is zero, set its entire row and column to zero.",
+ approach:"First record which rows and columns contain zero. In a second pass, zero each cell whose row or column was marked. The original zero positions are collected before changes begin.",
+ code:`#include <iostream>
+#include <vector>
+using namespace std;
+
+void zeroMatrix(vector<vector<int>>& a) {
+    if (a.empty()) return;
+    int m = a.size(), n = a[0].size();
+
+    vector<bool> rows(m, false), cols(n, false);
+
+    for (int r = 0; r < m; r++)
+        for (int c = 0; c < n; c++)
+            if (a[r][c] == 0) {
+                rows[r] = true;
+                cols[c] = true;
+            }
+
+    for (int r = 0; r < m; r++)
+        for (int c = 0; c < n; c++)
+            if (rows[r] || cols[c])
+                a[r][c] = 0;
+}`,
+ time:"O(m × n)",space:"O(m + n)",
+ quiz:"Why mark zero rows and columns before modifying the matrix?",
+ options:["To avoid losing original zero information","To sort the matrix","To allocate more cells"],correct:0,
+ visualTitle:"Mark rows and columns",
+ states:[[1,2,3,4,0,6,7,8,9],[1,2,0,4,0,6,7,8,9],[1,0,0,4,0,6,7,8,9],[1,0,0,4,0,6,7,8,9]],
+ captions:["Inspect the matrix and locate the original zero.","Mark the row and column containing the zero.","Every cell in that row or column must become zero.","Apply all marks after scanning the original matrix."],
+ highlights:[4,4,1,1]
+},
+{
+ title:"Linked List: Remove Duplicates",
+ category:"Linked Lists",difficulty:"Medium",
+ tags:["Nodes","Pointers","Hash set"],
+ description:"Given a linked list, remove repeated values while preserving the first occurrence. Example: 1 → 2 → 1 → 3 becomes 1 → 2 → 3.",
+ approach:"Keep a set of values already seen. When the next node contains a duplicate, bypass it and delete it. Otherwise record its value and advance.",
+ code:`#include <iostream>
+#include <unordered_set>
+using namespace std;
+
+struct Node {
+    int data;
+    Node* next;
+};
+
+void removeDuplicates(Node* head) {
+    unordered_set<int> seen;
+    Node* curr = head;
+    Node* prev = nullptr;
+
+    while (curr) {
+        if (seen.count(curr->data)) {
+            Node* duplicate = curr;
+            prev->next = curr->next;
+            curr = curr->next;
+            delete duplicate;
+        } else {
+            seen.insert(curr->data);
+            prev = curr;
+            curr = curr->next;
+        }
+    }
+}`,
+ time:"O(n) average",space:"O(n)",
+ quiz:"What should happen to the previous node when a duplicate is removed?",
+ options:["Point to the duplicate again","Point to the duplicate's next node","Become nullptr"],correct:1,
+ visualTitle:"Linked-list pointer updates",
+ states:[[1,2,1,3],[1,2,1,3],[1,2,3],[1,2,3]],
+ captions:["The list contains a repeated value 1.","Visit the second 1; it is already in the set.","Update the previous node's next pointer to skip the duplicate.","Delete the removed node. The list now contains unique values."],
+ highlights:[0,2,1,2]
+},
+{
+ title:"Stack: Validate Parentheses",
+ category:"Stacks",difficulty:"Easy",
+ tags:["Stack","LIFO","Parsing"],
+ description:"Check whether opening and closing brackets are balanced. Examples: \"([])\" is valid, while \"([)]\" is invalid.",
+ approach:"Push opening brackets onto a stack. For each closing bracket, verify that the top opening bracket matches. At the end, the stack must be empty.",
+ code:`#include <iostream>
+#include <stack>
+#include <string>
+using namespace std;
+
+bool valid(string s) {
+    stack<char> st;
+
+    for (char c : s) {
+        if (c == '(' || c == '[' || c == '{') {
+            st.push(c);
+        } else {
+            if (st.empty()) return false;
+
+            char top = st.top();
+            st.pop();
+
+            if ((c == ')' && top != '(') ||
+                (c == ']' && top != '[') ||
+                (c == '}' && top != '{'))
+                return false;
+        }
+    }
+    return st.empty();
+}
+
+int main() {
+    cout << boolalpha << valid("([])");
+}`,
+ time:"O(n)",space:"O(n)",
+ quiz:"Which stack rule makes bracket validation work?",
+ options:["FIFO","LIFO","Random access"],correct:1,
+ visualTitle:"Stack operations",
+ states:[["(","[","]",")"],["("],["(","["],["("],[]],
+ captions:["Process the expression from left to right.","Push the opening parenthesis onto the stack.","Push the opening bracket; the most recent opener is on top.","A matching closing bracket pops the stack.","The stack is empty after all brackets match: valid."],
+ highlights:[0,0,1,0,0]
+},
+{
+ title:"Bit Insertion",
+ category:"Bit Manipulation",difficulty:"Medium",
+ tags:["Binary","Bit masks","Shifts"],
+ description:"Insert the bits of M into N from bit position i through j, where bit 0 is the least significant bit. Example: insert 100 into 10000000000 at positions 2–4.",
+ approach:"Clear the target bit range in N, shift M left by i, and combine both values using bitwise OR. Assume M fits within the target range.",
+ code:`#include <iostream>
+using namespace std;
+
+int insertBits(int N, int M, int i, int j) {
+    unsigned int allOnes = ~0u;
+
+    unsigned int left = allOnes << (j + 1);
+    unsigned int right = (1u << i) - 1u;
+    unsigned int mask = left | right;
+
+    unsigned int n = (unsigned int)N & mask;
+    unsigned int m = (unsigned int)M << i;
+
+    return (int)(n | m);
+}
+
+int main() {
+    cout << insertBits(1024, 19, 2, 6);
+}`,
+ time:"O(1)",space:"O(1)",
+ quiz:"What is the purpose of clearing the target bits in N first?",
+ options:["Prevent old bits from interfering","Sort the bits","Increase the number of bits"],correct:0,
+ visualTitle:"Bit-mask insertion",
+ states:[["N: 10000000000"],["Clear target bits"],["M shifted left"],["N OR shifted M"]],
+ captions:["Start with the original integer N.","Create a mask that clears positions i through j.","Shift M left by i positions to align its bits.","Use bitwise OR to insert M into the cleared region."],
+ highlights:[0,0,0,0]
+}
+];
+
+let current = 0;
+let visualStep = 0;
+let completed = new Set();
+let score = 0;
+let answered = new Set();
+let quizUsed = new Set();
+
+const $ = id => document.getElementById(id);
+
+function renderList(){
+  $("questionList").innerHTML = questions.map((q,i)=>`
+    <button class="qbtn ${i===current?'active':''}" onclick="selectQuestion(${i})">
+      <span class="qnum">${completed.has(i)?"✓":String(i+1).padStart(2,"0")}</span>
+      <span class="qname">${q.title}<span class="qtype">${q.category}</span></span>
+    </button>`).join("");
+  $("completedStat").textContent = completed.size;
+  $("scoreStat").textContent = score;
+  $("progressBar").style.width = completed.size*10+"%";
+  $("progressText").textContent = completed.size+" of 10 explored";
+}
+
+function selectQuestion(i){
+  current = (i+questions.length)%questions.length;
+  visualStep = 0;
+  renderQuestion();
+}
+
+function renderQuestion(){
+  const q = questions[current];
+  $("category").textContent = q.category.toUpperCase();
+  $("difficulty").textContent = q.difficulty;
+  $("questionNumber").textContent = `QUESTION ${String(current+1).padStart(2,"0")} / 10`;
+  $("questionTitle").textContent = q.title;
+  $("questionDescription").textContent = q.description;
+  $("questionTags").innerHTML = q.tags.map(t=>`<span class="chip">${t}</span>`).join("");
+  $("visualTitle").textContent = q.visualTitle;
+  $("approach").textContent = q.approach;
+  $("solutionCode").textContent = q.code;
+  $("timeComplexity").textContent = q.time;
+  $("spaceComplexity").textContent = q.space;
+  $("answerContent").hidden = true;
+  $("answerToggle").textContent = "Show answer";
+  $("navCount").textContent = `${current+1} / ${questions.length}`;
+  renderList();
+  renderVisual();
+  renderQuiz();
+}
+
+function renderVisual(){
+  const q = questions[current];
+  const state = q.states[Math.min(visualStep,q.states.length-1)];
+  const highlight = q.highlights[Math.min(visualStep,q.highlights.length-1)];
+  $("canvas").innerHTML = state.map((v,i)=>{
+    const hot = i===highlight;
+    return `<div class="cell ${hot?'hot':''} ${visualStep===q.states.length-1?'done':''}">
+      ${v}
+    </div>`;
+  }).join("");
+  $("visualCaption").textContent = q.captions[Math.min(visualStep,q.captions.length-1)];
+}
+
+function stepVisual(){
+  const q = questions[current];
+  if(visualStep < q.states.length-1) visualStep++;
+  else visualStep=0;
+  renderVisual();
+}
+
+function runVisual(){
+  visualStep=questions[current].states.length-1;
+  renderVisual();
+  completed.add(current);
+  renderList();
+}
+
+function resetVisual(){
+  visualStep=0;
+  renderVisual();
+}
+
+function toggleAnswer(){
+  const hidden=$("answerContent").hidden;
+  $("answerContent").hidden=!hidden;
+  $("answerToggle").textContent=hidden?"Hide answer":"Show answer";
+  if(hidden){
+    completed.add(current);
+    renderList();
+  }
+}
+
+function navigate(direction){
+  selectQuestion(current+direction);
+}
+
+function renderQuiz(){
+  const q=questions[current];
+  $("quizTitle").textContent="Question "+(current+1)+" knowledge check";
+  $("quizQuestion").textContent=q.quiz;
+  $("quizFeedback").textContent="";
+  $("quizOptions").innerHTML=q.options.map((o,i)=>
+    `<button onclick="checkAnswer(${i})">${String.fromCharCode(65+i)}. ${o}</button>`
+  ).join("");
+}
+
+function checkAnswer(choice){
+  const q=questions[current];
+  if(answered.has(current)){
+    $("quizFeedback").textContent="You've already answered this question. Try another challenge.";
+    return;
+  }
+  answered.add(current);
+  const buttons=[...$("quizOptions").querySelectorAll("button")];
+  buttons.forEach((b,i)=>{
+    b.disabled=true;
+    if(i===q.correct)b.classList.add("correct");
+    else if(i===choice)b.classList.add("wrong");
+  });
+  if(choice===q.correct){
+    score++;
+    $("quizFeedback").textContent="Correct! +1 point. Great work.";
+  }else{
+    $("quizFeedback").textContent="Not quite. Review the explanation and try the next question.";
+  }
+  completed.add(current);
+  renderList();
+}
+
+function newQuiz(){
+  // Select an unanswered question, if available.
+  const available=questions.map((_,i)=>i).filter(i=>!answered.has(i));
+  if(!available.length){
+    $("quizFeedback").textContent="All 10 quizzes completed! Use Reset progress to practice again.";
+    return;
+  }
+  selectQuestion(available[0]);
+}
+
+function resetProgress(){
+  completed.clear();
+  answered.clear();
+  quizUsed.clear();
+  score=0;
+  visualStep=0;
+  renderQuestion();
+}
+
+async function copyCode(){
+  const code=questions[current].code;
+  try{
+    await navigator.clipboard.writeText(code);
+    $("answerToggle").textContent="Code copied!";
+    setTimeout(()=>{$("answerToggle").textContent=$("answerContent").hidden?"Show answer":"Hide answer"},1200);
+  }catch(e){
+    $("quizFeedback").textContent="Clipboard access unavailable. Select and copy the code manually.";
+  }
+}
+
+renderQuestion();
+</script>
+</body>
+</html>
